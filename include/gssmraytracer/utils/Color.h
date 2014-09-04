@@ -5,6 +5,7 @@ namespace gssmraytracer {
   namespace utils {
     class Color {
     public:
+      Color();
       Color(const float red,
             const float green,
             const float blue,
