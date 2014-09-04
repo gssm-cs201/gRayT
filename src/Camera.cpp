@@ -3,13 +3,14 @@
 
 namespace gssmraytracer {
 namespace utils {
-class Camera::Impl {
-public:
+  
+  class Camera::Impl {
+  public:
     Imath::Vec3<float> eye;
     Imath::Vec3<float> view;
     Imath::Vec3<float> up;
 
-};
+  };
 
 Camera::Camera(): mImpl(new Impl) {
     mImpl->eye = Imath::Vec3<float>(0,0,0);

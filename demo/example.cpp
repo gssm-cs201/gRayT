@@ -1,9 +1,10 @@
 #include <gssmraytracer/utils/Camera.h>
-
+#include <gssmraytracer/utils/Scene.h>
 int main(void) {
     // Use the default constructor
     gssmraytracer::utils::Camera cam;
-
+    gssmraytracer::utils::Scene *scene = gssmraytracer::utils::Scene::Instance();
+    delete scene;
     // Create three vectors for the eye, view and up
     const Imath::Vec3<float> eye(0,0,0);
     const Imath::Vec3<float> view(0,0,1);
@@ -11,7 +12,6 @@ int main(void) {
 
     // Use the overloaded constructor
     gssmraytracer::utils::Camera cam2(eye, view, up);
-
     return 0;
 
 }
