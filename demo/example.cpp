@@ -22,11 +22,6 @@ void display_picture() {
   const unsigned char *pixmap = image.getPixelBuffer();
   glClearColor(0 , 0, 0, 1);
   glClear(GL_COLOR_BUFFER_BIT);
-  std::cout << "=====" << std::endl;
-  std::cout << pixmap[((1*1*4) +1*4)] << std::endl;
-  std::cout << pixmap[((1*1*4) +1*4) + 1] << std::endl;
-  std::cout << pixmap[((1*1*4) +1*4) + 2] << std::endl;
-  std::cout << pixmap[((1*1*4) +1*4) + 3] << std::endl;
   glDrawPixels(image.getWidth(), image.getHeight(), GL_RGBA, GL_UNSIGNED_BYTE, (void *)pixmap);
   glFlush();
   delete pixmap;
@@ -103,7 +98,7 @@ int main(int argc, char* argv[]) {
     image.write("checker.ppm");
     stripes(image, 9, Color(255,0,0,255), Color(255,255,255,255));
     image.write("stripes.ppm");
-//    image.read("test.ppm");
+    image.read("checker.ppm");
 //    image.write("test2.ppm");
 
     RenderGlobals::getInstance().setImage(image);
