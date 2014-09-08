@@ -24,7 +24,7 @@ void display_picture() {
   glClear(GL_COLOR_BUFFER_BIT);
   glDrawPixels(image.getWidth(), image.getHeight(), GL_RGBA, GL_UNSIGNED_BYTE, (void *)pixmap);
   glFlush();
-  delete pixmap;
+  delete [] pixmap;
 
 
 }
@@ -83,6 +83,16 @@ void stripes(Image &image, int num_stripes, Color color1, Color color2) {
         image.setPixel(row, col, color2);
       }
 
+    }
+  }
+}
+
+void gradient(Image &image) {
+
+  for (int row = 0; row < image.getHeight(); ++row) {
+    for (int col = 0; col < image.getWidth(); ++col) {
+      float normalized = (float)col/image.getWidth()/4.0;
+        image.setPixel(row, col, Color(sin(normalized*2 * M_PI) * 255,255,0,255));
     }
   }
 }
