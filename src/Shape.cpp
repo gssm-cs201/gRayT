@@ -12,5 +12,16 @@ namespace gssmraytracer {
         mImpl->position = position;
         mImpl->shader = shader;
     }
+    bool Shape::hit(const Ray &ray, float &time) {
+      return false;
+    }
+
+    Shape::Shape(const Shape& shape) : mImpl(new Impl) {
+      mImpl->position = shape.mImpl->position;
+      mImpl->shader = shape.mImpl->shader;
+    }
+    Shape::~Shape() {
+
+    }
   }
 }

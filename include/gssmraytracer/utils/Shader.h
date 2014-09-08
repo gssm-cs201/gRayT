@@ -1,12 +1,12 @@
 #ifndef __SHADER_H__
 #define __SHADER_H__
 
-#include "Point.h"
-#include "Scene.h"
+#include <OpenEXR/ImathVec.h>
 
-#include "Color.h"
 namespace gssmraytracer {
   namespace utils {
+    class Point; // forward declaration
+    class Color; // forward declaration
     class Shader {
     public:
       virtual Color shade(const Point &hitpoint,

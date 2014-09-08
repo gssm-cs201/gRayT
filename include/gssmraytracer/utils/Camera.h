@@ -10,9 +10,11 @@ namespace utils {
     // Set eye, view and up vectors
     Camera(const Imath::Vec3<float> &eye, const Imath::Vec3<float> &view, const Imath::Vec3<float> &up);
 
+    ~Camera();
+
     private:
     class Impl;
-    std::shared_ptr<Impl> mImpl;    
+    std::shared_ptr<Impl> mImpl;
 
     };
 }

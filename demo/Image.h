@@ -1,28 +1,59 @@
+#ifndef __IMAGE_H__
+#define __IMAGE_H__
+
 #include <iostream>
 #include <fstream>
 #include <gssmraytracer/utils/Color.h>
 #include <stdlib.h>
 #include <string>
 
+
+
 using namespace gssmraytracer::utils;
 class Image {
 public:
-  Image(int w, int h) : width(w), height(h) {
-    buffer = new Color[width * height];
+  Image() : width(0), height(0), buffer() {}
+  Image(const int w, const int h) : width(w), height(h), buffer() {
+    resizeBuffer(width * height);
+  //  buffer = new Color[width * height];
   }
   ~Image() {
     delete [] buffer;
   }
+  Image(const Image &image) : width(image.width), height(image.height), buffer( new Color[width * height]) {
+
+    for (int r = 0; r < height; ++r) {
+      for (int c = 0; c < width; ++c) {
+        buffer[(r*width) + c] = image.buffer[(r*width) + c];
+      }
+    }
+
+  }
+  Image & operator=(const Image &other) {
+    if (this != &other) {
+      width = other.width;
+      height = other.height;
+      resizeBuffer(width * height);
+      for (int r = 0; r < height; ++r) {
+        for (int c = 0; c < width; ++c) {
+          buffer[(r*width) + c] = other.buffer[(r*width) + c];
+        }
+      }
+    }
+    return *this;
+  }
+
+  const int getWidth() const { return width;}
+
+  const int getHeight() const { return height;}
+
   void setPixel(int r, int c, const Color color) {
     buffer[(r * width) + c] = color;
   }
-  Color getPixel(int r, int c) {
+  const Color getPixel(int r, int c) const{
     return buffer[(r*width) + c];
   }
-  void resizeBuffer(const int size) {
-    delete [] buffer;
-    buffer = new Color[size];
-  }
+
   void read(const char* filename) {
     std::ifstream file(filename, std::ios::in);
     if (file.is_open()) {
@@ -30,10 +61,8 @@ public:
       file >> word; // P3
       file >> word; // width
       width = std::stoi(word);
-      std::cout << width << std::endl;
       file >> word; // height
       height = std::stoi(word);
-      std::cout << height << std::endl;
       file >> word; // 255
 
       resizeBuffer(width * height);
@@ -68,10 +97,36 @@ public:
     file.close();
 
   }
+  const unsigned char* getPixelBuffer() const {
+    unsigned char* pixelbuffer = new unsigned char[width * height * 4];
+    for (int r = 0; r < height; ++r) {
+      for (int c = 0; c < width; ++c ) {
+
+        pixelbuffer[((r*width*4) +c*4)] = (unsigned char)(buffer[(r*width) +c].red);
+
+
+        pixelbuffer[((r*width*4) +c*4) + 1] = (unsigned char)(buffer[(r*width) +c].green);
+        pixelbuffer[((r*width*4) +c*4) + 2] = (unsigned char)(buffer[(r*width) +c].blue);
+        pixelbuffer[((r*width*4) +c*4) + 3] = (unsigned char)(buffer[(r*width) +c].alpha);
+      }
+    }
+
+
+    return pixelbuffer;
+  }
 private:
+  void resizeBuffer(const int size) {
+    // delete the color buffer
+    delete [] buffer;
+    // create a new color buffer
+    buffer = new Color[size];
+  }
+
   int width;
   int height;
   Color *buffer;
 
 
 };
+
+#endif // __IMAGE_H__
