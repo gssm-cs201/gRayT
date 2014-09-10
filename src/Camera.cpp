@@ -1,6 +1,7 @@
 #include "gssmraytracer/utils/Camera.h"
 #include <OpenEXR/ImathVec.h>
 #include "gssmraytracer/utils/RenderGlobals.h"
+#include "gssmraytracer/utils/Color.h"
 
 namespace gssmraytracer {
 namespace utils {
@@ -31,11 +32,24 @@ Camera::Camera(const Imath::Vec3<float> &eye,
 }
 
 Camera::~Camera() {
-  
+
 }
 
-void Camera::render(const RenderGlobals &renderGlobals) {
-    
+void Camera::render(RenderGlobals &renderGlobals) const {
+  // try to get image from render globals
+  Image image = renderGlobals.getImage();
+//  const Scene scene = renderGlobals.getScene();
+  for (int r =0; r< image.getHeight(); ++r) {
+    for (int c = 0; c < image.getWidth(); ++c) {
+      Color color;
+//      Ray ray(eye, direction);
+//      color = scene.getShade(ray);
+      image.setPixel(r,c,color);
+
+    }
+  }
+  renderGlobals.setImage(image);
+
 
 }
 }

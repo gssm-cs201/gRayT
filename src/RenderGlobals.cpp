@@ -25,7 +25,7 @@ namespace gssmraytracer {
       mImpl->image = image;
     }
 
-    const Image& RenderGlobals::getImage() {
+    const Image& RenderGlobals::getImage() const {
       return mImpl->image;
     }
 

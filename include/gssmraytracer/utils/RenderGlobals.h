@@ -11,7 +11,8 @@ namespace gssmraytracer {
       static RenderGlobals& getInstance();
       void addShape(const Shape& shape);
       void setImage(const Image& image);
-      const Image& getImage();
+      const Image& getImage() const;
+
     private:
       RenderGlobals(); // default constructor
       RenderGlobals(const RenderGlobals&); // copy constructor

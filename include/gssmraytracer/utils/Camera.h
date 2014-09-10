@@ -11,7 +11,7 @@ namespace utils {
     // Set eye, view and up vectors
     Camera(const Imath::Vec3<float> &eye, const Imath::Vec3<float> &view, const Imath::Vec3<float> &up);
     ~Camera();
-    void render(const RenderGlobals &renderGlobals);
+    void render(RenderGlobals &renderGlobals) const;
 
     private:
     class Impl;
