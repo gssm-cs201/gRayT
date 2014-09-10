@@ -10,8 +10,8 @@
 #endif
 
 
-#include "Image.h"
-#include "RenderGlobals.h"
+#include <gssmraytracer/utils/Image.h>
+#include <gssmraytracer/utils/RenderGlobals.h>
 #include <iostream>
 
 using namespace gssmraytracer::utils;
@@ -103,7 +103,7 @@ int main(int argc, char* argv[]) {
     int width = 500;
     int height = 500;
     Image image(width, height);
-
+    Camera camera;
     checker(image, 10, Color(0,0,255,255), Color(255,255,255,255));
     image.write("checker.ppm");
     stripes(image, 9, Color(255,0,0,255), Color(255,255,255,255));
@@ -112,6 +112,7 @@ int main(int argc, char* argv[]) {
 //    image.write("test2.ppm");
 
     RenderGlobals::getInstance().setImage(image);
+    camera.render(RenderGlobals::getInstance());
 
 
     // start up the glut utilities

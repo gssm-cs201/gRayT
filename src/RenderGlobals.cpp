@@ -1,4 +1,4 @@
-#include "RenderGlobals.h"
+#include "gssmraytracer/utils/RenderGlobals.h"
 #include "gssmraytracer/utils/Shape.h"
 #include <vector>
 namespace gssmraytracer {

@@ -1,5 +1,6 @@
 #include "gssmraytracer/utils/Camera.h"
 #include <OpenEXR/ImathVec.h>
+#include "gssmraytracer/utils/RenderGlobals.h"
 
 namespace gssmraytracer {
 namespace utils {
@@ -33,6 +34,9 @@ Camera::~Camera() {
   
 }
 
+void Camera::render(const RenderGlobals &renderGlobals) {
+    
 
+}
 }
 }

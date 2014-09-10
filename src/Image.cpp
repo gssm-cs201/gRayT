@@ -1,26 +1,23 @@
-#ifndef __IMAGE_H__
-#define __IMAGE_H__
 
 #include <iostream>
 #include <fstream>
 #include <gssmraytracer/utils/Color.h>
 #include <stdlib.h>
 #include <string>
+#include <gssmraytracer/utils/Image.h>
 
 
-
-using namespace gssmraytracer::utils;
-class Image {
-public:
-  Image() : width(0), height(0), buffer() {}
-  Image(const int w, const int h) : width(w), height(h), buffer() {
+namespace gssmraytracer {
+namespace utils {
+  Image::Image() : width(0), height(0), buffer() {}
+  Image::Image(const int w, const int h) : width(w), height(h), buffer() {
     resizeBuffer(width * height);
   //  buffer = new Color[width * height];
   }
-  ~Image() {
+  Image::~Image() {
     delete [] buffer;
   }
-  Image(const Image &image) : width(image.width), height(image.height), buffer( new Color[width * height]) {
+  Image::Image(const Image &image) : width(image.width), height(image.height), buffer( new Color[width * height]) {
 
     for (int r = 0; r < height; ++r) {
       for (int c = 0; c < width; ++c) {
@@ -29,7 +26,7 @@ public:
     }
 
   }
-  Image & operator=(const Image &other) {
+  Image & Image::operator=(const Image &other) {
     if (this != &other) {
       width = other.width;
       height = other.height;
@@ -43,18 +40,18 @@ public:
     return *this;
   }
 
-  const int getWidth() const { return width;}
+  const int Image::getWidth() const { return width;}
 
-  const int getHeight() const { return height;}
+  const int Image::getHeight() const { return height;}
 
-  void setPixel(int r, int c, const Color color) {
+  void Image::setPixel(int r, int c, const Color color) {
     buffer[(r * width) + c] = color;
   }
-  const Color getPixel(int r, int c) const{
+  const Color Image::getPixel(int r, int c) const{
     return buffer[(r*width) + c];
   }
 
-  void read(const char* filename) {
+  void Image::read(const char* filename) {
     std::ifstream file(filename, std::ios::in);
     if (file.is_open()) {
       std::string word;
@@ -81,7 +78,7 @@ public:
     file.close();
 
   }
-  void write(const char* filename) {
+  void Image::write(const char* filename) {
     std::ofstream file(filename, std::ios::out);
     file << "P3\n" << width << " " << height << "\n" << "255\n";
     for (int r = 0; r < height; ++r) {
@@ -97,7 +94,7 @@ public:
     file.close();
 
   }
-  const unsigned char* getPixelBuffer() const {
+  const unsigned char* Image::getPixelBuffer() const {
     unsigned char* pixelbuffer = new unsigned char[width * height * 4];
     for (int r = 0; r < height; ++r) {
       for (int c = 0; c < width; ++c ) {
@@ -114,19 +111,11 @@ public:
 
     return pixelbuffer;
   }
-private:
-  void resizeBuffer(const int size) {
+  void Image::resizeBuffer(const int size) {
     // delete the color buffer
     delete [] buffer;
     // create a new color buffer
     buffer = new Color[size];
   }
-
-  int width;
-  int height;
-  Color *buffer;
-
-
-};
-
-#endif // __IMAGE_H__
+ }
+}
