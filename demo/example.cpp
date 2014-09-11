@@ -1,6 +1,9 @@
 #include <gssmraytracer/utils/Camera.h>
 #include <gssmraytracer/utils/Scene.h>
 #include <gssmraytracer/utils/Color.h>
+#include <gssmraytracer/utils/Shader.h>
+#include "Sphere.h"
+
 
 
 #ifdef __APPLE__
@@ -103,15 +106,19 @@ int main(int argc, char* argv[]) {
     int width = 500;
     int height = 500;
     Image image(width, height);
-    Camera camera;
+    Camera camera(Imath::Vec3<float>(0,0,-5),Imath::Vec3<float>(0,0,1),Imath::Vec3<float>(0,1,0));
+    camera.setAspectRatio(1.0);
     checker(image, 10, Color(0,0,255,255), Color(255,255,255,255));
     image.write("checker.ppm");
     stripes(image, 9, Color(255,0,0,255), Color(255,255,255,255));
     image.write("stripes.ppm");
     image.read("checker.ppm");
 //    image.write("test2.ppm");
-
+    Imath::Vec3<float> position(0,990,-5);
+    Shader shader;
+    Sphere *sphere = new Sphere(position, shader, 1.0);
     RenderGlobals::getInstance().setImage(image);
+    RenderGlobals::getInstance().addShape(sphere);
     camera.render(RenderGlobals::getInstance());
 
 

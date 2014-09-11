@@ -6,12 +6,14 @@
 namespace gssmraytracer {
   namespace utils {
     class Shape; // forward declaration
+    class Ray; // forward declaration
     class RenderGlobals {
     public:
       static RenderGlobals& getInstance();
-      void addShape(const Shape& shape);
+      void addShape(Shape* shape);
       void setImage(const Image& image);
-      const Image& getImage() const;
+      const Image getImage() const;
+      bool hit(const Ray &ws_ray, float &t0, float &t1);
 
     private:
       RenderGlobals(); // default constructor

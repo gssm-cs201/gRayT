@@ -14,7 +14,7 @@ namespace gssmraytracer {
     public:
       Shape(const Imath::Vec3<float> &position, const Shader &shader);
       Shape(const Shape&);
-      virtual bool hit(const Ray &ray, float &time);
+      virtual bool hit(const Ray &ws_ray, float &t0, float &t1) = 0;
       virtual ~Shape();
     private:
       class Impl;
