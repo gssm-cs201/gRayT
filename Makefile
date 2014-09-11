@@ -22,7 +22,7 @@ makelib:
 	mkdir -p lib
 
 %.o: %.cpp
-	$(CC) $(INCLUDES) -o $@ $< $(CFLAGS)
+	$(CC) $(INCLUDES)  -o $@ $< $(CFLAGS)
 
 $(GSSMRAYTRACERSTATICLIB).$(LIB_VERSION): $(OBJECTS)
 	ar rvs $(GSSMRAYTRACERSTATICLIB) $(OBJECTS)

@@ -1,7 +1,10 @@
 #include <gssmraytracer/utils/Ray.h>
+#include <gssmraytracer/math/Transform.h>
 #include "Sphere.h"
 #include <algorithm>
+#include <iostream>
 
+using namespace gssmraytracer::math;
 namespace gssmraytracer {
   namespace utils {
 
@@ -23,10 +26,7 @@ namespace gssmraytracer {
                               if (*t0 > *t1) std::swap(*t0, *t1);
                               return true;
                             }
-      Ray worldToObjectSpace(const Ray &ray) {
-        // TO-DO
-        return ray;
-      }
+
     };
 
     Sphere::Sphere(const Imath::Vec3<float> &position,
@@ -37,7 +37,7 @@ namespace gssmraytracer {
     }
     Sphere::~Sphere() {}
     bool Sphere::hit(const Ray &ws_ray, float &t0, float &t1) {
-      Ray os_ray = mImpl->worldToObjectSpace(ws_ray);
+      Ray os_ray = worldToObjectSpace(ws_ray);
 
       // Do ray-sphere intersection in object space
       // Compute quadratic sphere coefficients

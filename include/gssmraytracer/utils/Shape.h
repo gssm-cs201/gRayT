@@ -14,8 +14,11 @@ namespace gssmraytracer {
     public:
       Shape(const Imath::Vec3<float> &position, const Shader &shader);
       Shape(const Shape&);
-      virtual bool hit(const Ray &ws_ray, float &t0, float &t1) = 0;
       virtual ~Shape();
+      virtual bool hit(const Ray &ws_ray, float &t0, float &t1) = 0;
+      const Ray worldToObjectSpace(const Ray &ws_ray);
+      const Ray objectToWorldSpace(const Ray &os_ray);
+
     private:
       class Impl;
       std::shared_ptr<Impl> mImpl;

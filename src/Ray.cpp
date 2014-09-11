@@ -19,11 +19,14 @@ namespace gssmraytracer {
                mImpl->mint = 0;
                mImpl->maxt = std::numeric_limits<double>::infinity();
              }
-
-    const Imath::Vec3<float> Ray::origin() {
+    std::ostream& operator<<(std::ostream &os, const Ray &ray) {
+      os << "(" << ray.origin() << ", " << ray.dir() << ")" << std::endl;
+      return os;
+    }
+    const Imath::Vec3<float> Ray::origin() const {
       return mImpl->origin;
     }
-    const Imath::Vec3<float> Ray::dir() {
+    const Imath::Vec3<float> Ray::dir() const {
       return mImpl->direction.normalize();
     }
 
