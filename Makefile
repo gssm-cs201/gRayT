@@ -1,6 +1,7 @@
 CC=clang++
 CFLAGS = -std=c++11 -c -Wall -fPIC
 LDFLAGS =
+LIBS = -L /usr/local/lib -lImath -lIex
 SOURCES=$(wildcard src/*.cpp)
 BOOST_INC = /usr/include
 BOOST_LIB = /usr/lib

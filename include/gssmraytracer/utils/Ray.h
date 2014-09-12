@@ -15,6 +15,7 @@ namespace gssmraytracer {
       void setMint(const double);
       const double maxt();
       void setMaxt(const double);
+      const Imath::Vec3<float> point(const float t) const;
       friend std::ostream& operator<<(std::ostream &os, const Ray &ray);
     private:
       class Impl;

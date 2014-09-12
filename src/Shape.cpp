@@ -7,10 +7,10 @@ namespace gssmraytracer {
     class Shape::Impl {
     public:
       Imath::Vec3<float> position;
-      Shader shader;
+      std::shared_ptr<Shader> shader;
       math::Transform transform;
     };
-    Shape::Shape(const Imath::Vec3<float> &position, const Shader &shader) :
+    Shape::Shape(const Imath::Vec3<float> &position, const std::shared_ptr<Shader> shader) :
       mImpl(new Impl) {
         mImpl->transform.translate(position);
         mImpl->shader = shader;
@@ -25,17 +25,20 @@ namespace gssmraytracer {
 
     }
 
-    const Ray Shape::worldToObjectSpace(const Ray &ws_ray) {
+    const Ray Shape::worldToObjectSpace(const Ray &ws_ray) const{
       Ray os_ray = mImpl->transform.transform(ws_ray);
 
       return os_ray;
 
     }
-    const Ray Shape::objectToWorldSpace(const Ray &os_ray) {
+    const Ray Shape::objectToWorldSpace(const Ray &os_ray) const{
       Ray ws_ray = mImpl->transform.inverse().transform(os_ray);
 
       return ws_ray;
 
+    }
+    const std::shared_ptr<Shader> Shape::getShader() const {
+      return mImpl->shader;
     }
   }
 }

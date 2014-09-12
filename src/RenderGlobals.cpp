@@ -1,6 +1,7 @@
 #include "gssmraytracer/utils/RenderGlobals.h"
 #include "gssmraytracer/utils/Shape.h"
 #include "gssmraytracer/utils/Ray.h"
+#include "gssmraytracer/utils/Color.h"
 #include <vector>
 namespace gssmraytracer {
   namespace utils {
@@ -37,15 +38,31 @@ namespace gssmraytracer {
       }
       return *this;
     }
-    bool RenderGlobals::hit(const Ray &ws_ray, float &t0, float &t1) {
+    bool RenderGlobals::hit(const Ray &ws_ray, float &t0, float &t1,
+            Imath::Vec3<float> &hitpoint,
+            Imath::Vec3<float> &normal) {
       for (std::vector<Shape*>::iterator iter = mImpl->shapes.begin();
           iter != mImpl->shapes.end(); ++iter) {
-            if ((*iter)->hit(ws_ray, t0, t1)) {
+            if ((*iter)->hit(ws_ray, t0, t1, hitpoint, normal)) {
               return true;
             }
           }
           return false;
     }
+
+    const Color RenderGlobals::shade(const Ray &ws_ray) const {
+      Color color;
+      float t0, t1;
+      Imath::Vec3<float> hitpoint, normal;
+      for (std::vector<Shape*>::iterator iter = mImpl->shapes.begin();
+          iter != mImpl->shapes.end(); ++iter) {
+            if ((*iter)->hit(ws_ray, t0, t1, hitpoint, normal)) {
+              return (*iter)->getShade(ws_ray);
+            }
+          }
+          return color;
+    }
+
 
 
   }

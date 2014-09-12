@@ -42,5 +42,8 @@ namespace gssmraytracer {
     void Ray::setMaxt(const double maxt) {
       mImpl->maxt = maxt;
     }
+    const Imath::Vec3<float> Ray::point(const float t) const {
+      return origin() + (t * dir());
+    }
   }
 }

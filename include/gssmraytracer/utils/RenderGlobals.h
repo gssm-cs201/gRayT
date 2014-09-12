@@ -3,6 +3,7 @@
 
 #include <memory>
 #include "Image.h"
+#include <OpenEXR/ImathVec.h>
 namespace gssmraytracer {
   namespace utils {
     class Shape; // forward declaration
@@ -13,7 +14,10 @@ namespace gssmraytracer {
       void addShape(Shape* shape);
       void setImage(const Image& image);
       const Image getImage() const;
-      bool hit(const Ray &ws_ray, float &t0, float &t1);
+      bool hit(const Ray &ws_ray, float &t0, float &t1,
+              Imath::Vec3<float> &hitpoint,
+              Imath::Vec3<float> &normal);
+      const Color shade(const Ray &ws_ray) const;
 
     private:
       RenderGlobals(); // default constructor

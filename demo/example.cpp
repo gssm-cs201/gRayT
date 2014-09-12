@@ -2,6 +2,7 @@
 #include <gssmraytracer/utils/Scene.h>
 #include <gssmraytracer/utils/Color.h>
 #include <gssmraytracer/utils/Shader.h>
+#include <memory>
 #include "Sphere.h"
 
 
@@ -16,6 +17,8 @@
 #include <gssmraytracer/utils/Image.h>
 #include <gssmraytracer/utils/RenderGlobals.h>
 #include <iostream>
+
+#include "ConstantShader.h"
 
 using namespace gssmraytracer::utils;
 
@@ -114,8 +117,8 @@ int main(int argc, char* argv[]) {
     image.write("stripes.ppm");
     image.read("checker.ppm");
 //    image.write("test2.ppm");
-    Imath::Vec3<float> position(0.0,0.0,0.0);
-    Shader shader;
+    Imath::Vec3<float> position(0.0,0.3,0.0);
+    std::shared_ptr<Shader> shader(new ConstantShader(Color(255,255,0,255)));
     Sphere *sphere = new Sphere(position, shader, 3.0);
     RenderGlobals::getInstance().setImage(image);
     RenderGlobals::getInstance().addShape(sphere);

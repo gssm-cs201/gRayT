@@ -5,13 +5,13 @@
 
 namespace gssmraytracer {
   namespace utils {
-    class Point; // forward declaration
+    class Shape;
     class Color; // forward declaration
     class Shader {
     public:
-      virtual Color shade(const Point &hitpoint,
+      virtual Color shade(const Imath::Vec3<float> &hitpoint,
                      const Imath::Vec3<float> &normal
-                     );
+                     ) = 0;
     };
   }
 }

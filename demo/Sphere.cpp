@@ -1,5 +1,6 @@
 #include <gssmraytracer/utils/Ray.h>
 #include <gssmraytracer/math/Transform.h>
+#include <gssmraytracer/utils/Color.h>
 #include "Sphere.h"
 #include <algorithm>
 #include <iostream>
@@ -30,13 +31,15 @@ namespace gssmraytracer {
     };
 
     Sphere::Sphere(const Imath::Vec3<float> &position,
-                 const Shader &shader,
+                 const std::shared_ptr<Shader> shader,
                  const double radius) : Shape(position, shader), mImpl(new Impl) {
                    mImpl->radius = radius;
 
     }
     Sphere::~Sphere() {}
-    bool Sphere::hit(const Ray &ws_ray, float &t0, float &t1) {
+    bool Sphere::hit(const Ray &ws_ray, float &t0, float &t1,
+                      Imath::Vec3<float> &hitpoint,
+                      Imath::Vec3<float> &normal) const {
       Ray os_ray = worldToObjectSpace(ws_ray);
 
       // Do ray-sphere intersection in object space
@@ -64,7 +67,21 @@ namespace gssmraytracer {
       }
       // if the ray intersects the sphere return true
       t0 = thit;
+      hitpoint = os_ray.point(thit);
+      normal = hitpoint.normalize();
        return true;
+    }
+
+    const Color Sphere::getShade(const Ray &ws_ray) const {
+      float t0,t1;
+      Color color;
+      Imath::Vec3<float> hitpoint, normal;
+      if (hit(ws_ray, t0, t1, hitpoint, normal))
+        color =  (getShader())->shade(hitpoint, normal);
+
+      return color;
+
+
     }
 
   }

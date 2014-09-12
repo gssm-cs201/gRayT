@@ -3,6 +3,7 @@
 #include "gssmraytracer/utils/RenderGlobals.h"
 #include "gssmraytracer/utils/Color.h"
 #include "gssmraytracer/utils/Ray.h"
+#include "gssmraytracer/utils/Shape.h"
 
 namespace gssmraytracer {
 namespace utils {
@@ -94,8 +95,9 @@ void Camera::render(RenderGlobals &renderGlobals) const {
       Color color;
       Ray ray(mImpl->eye, direction);
       float t0, t1;
-      if (renderGlobals.hit(ray, t0, t1)) {
-        color = Color(255,0,0,255);
+      Imath::Vec3<float> hitpoint, normal;
+      if (renderGlobals.hit(ray, t0, t1, hitpoint, normal)) {
+        color = renderGlobals.shade(ray);
       }
       else
         color = Color(0,0,0,255);
