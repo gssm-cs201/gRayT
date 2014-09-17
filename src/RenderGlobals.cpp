@@ -1,8 +1,11 @@
 #include "gssmraytracer/utils/RenderGlobals.h"
-#include "gssmraytracer/utils/Shape.h"
+#include "gssmraytracer/geometry/Shape.h"
 #include "gssmraytracer/utils/Ray.h"
 #include "gssmraytracer/utils/Color.h"
 #include <vector>
+
+using namespace gssmraytracer::geometry;
+
 namespace gssmraytracer {
   namespace utils {
     RenderGlobals& RenderGlobals::getInstance() {

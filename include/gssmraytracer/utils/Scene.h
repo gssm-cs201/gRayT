@@ -2,14 +2,14 @@
 #define __SCENE_H__
 #include <memory>
 #include <vector>
+#include "gssmraytracer/geometry/Shape.h"
 
 namespace gssmraytracer {
   namespace utils {
-    class Shape; // forward declaration
     class Scene {
     public:
       static Scene * Instance();
-      void addShape(const Shape *);
+      void addShape(const geometry::Shape *);
       ~Scene();
     private:
       Scene();

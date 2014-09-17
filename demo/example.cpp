@@ -21,7 +21,7 @@
 #include "ConstantShader.h"
 
 using namespace gssmraytracer::utils;
-
+using namespace gssmraytracer::geometry;
 
 void display_picture() {
   const Image image = RenderGlobals::getInstance().getImage();

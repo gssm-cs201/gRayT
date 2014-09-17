@@ -3,7 +3,9 @@
 #include "gssmraytracer/utils/RenderGlobals.h"
 #include "gssmraytracer/utils/Color.h"
 #include "gssmraytracer/utils/Ray.h"
-#include "gssmraytracer/utils/Shape.h"
+#include "gssmraytracer/geometry/Shape.h"
+
+using namespace gssmraytracer::geometry;
 
 namespace gssmraytracer {
 namespace utils {

@@ -6,8 +6,9 @@
 #include <iostream>
 
 using namespace gssmraytracer::math;
+using namespace gssmraytracer::utils;
 namespace gssmraytracer {
-  namespace utils {
+  namespace geometry {
 
     class Sphere::Impl {
     public:
@@ -72,9 +73,9 @@ namespace gssmraytracer {
        return true;
     }
 
-    const Color Sphere::getShade(const Ray &ws_ray) const {
+    const utils::Color Sphere::getShade(const Ray &ws_ray) const {
       float t0,t1;
-      Color color;
+      utils::Color color;
       Imath::Vec3<float> hitpoint, normal;
       if (hit(ws_ray, t0, t1, hitpoint, normal))
         color =  (getShader())->shade(hitpoint, normal);

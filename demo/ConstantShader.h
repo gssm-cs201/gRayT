@@ -1,8 +1,9 @@
 #include <gssmraytracer/utils/Shader.h>
+#include <gssmraytracer/utils/Color.h>
 #include <memory>
+
 namespace gssmraytracer {
   namespace utils {
-    class Color;
     class ConstantShader: public Shader {
     public:
       ConstantShader(const Color &color);

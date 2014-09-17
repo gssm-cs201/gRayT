@@ -1,20 +1,20 @@
 #include <vector>
 #include "gssmraytracer/utils/Scene.h"
-#include "gssmraytracer/utils/Shape.h"
+#include "gssmraytracer/geometry/Shape.h"
 
 namespace gssmraytracer {
   namespace utils {
     class Scene::Impl {
     public:
 
-      std::vector<const Shape*> shapes;
+      std::vector<const geometry::Shape*> shapes;
 
 
     };
     Scene::Scene() : mImpl(new Impl) {}
 
     Scene::~Scene() {
-      for (std::vector<const Shape*>::iterator iter = mImpl->shapes.begin();
+      for (std::vector<const geometry::Shape*>::iterator iter = mImpl->shapes.begin();
         iter != mImpl->shapes.end(); ++iter) {
           delete *iter;
         }
@@ -27,7 +27,7 @@ namespace gssmraytracer {
       return m_pInstance;
     }
 
-    void Scene::addShape(const Shape *shape) {
+    void Scene::addShape(const geometry::Shape *shape) {
 
       mImpl->shapes.push_back(shape);
     }

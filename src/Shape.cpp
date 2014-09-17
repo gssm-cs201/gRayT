@@ -1,9 +1,9 @@
-#include "gssmraytracer/utils/Shape.h"
+#include "gssmraytracer/geometry/Shape.h"
 #include "gssmraytracer/utils/Shader.h"
-#include "gssmraytracer/utils/Ray.h"
 #include "gssmraytracer/math/Transform.h"
+using namespace gssmraytracer::utils;
 namespace gssmraytracer {
-  namespace utils {
+  namespace geometry {
     class Shape::Impl {
     public:
       Imath::Vec3<float> position;
@@ -25,14 +25,14 @@ namespace gssmraytracer {
 
     }
 
-    const Ray Shape::worldToObjectSpace(const Ray &ws_ray) const{
-      Ray os_ray = mImpl->transform.transform(ws_ray);
+    const utils::Ray Shape::worldToObjectSpace(const utils::Ray &ws_ray) const{
+      utils::Ray os_ray = mImpl->transform.transform(ws_ray);
 
       return os_ray;
 
     }
-    const Ray Shape::objectToWorldSpace(const Ray &os_ray) const{
-      Ray ws_ray = mImpl->transform.inverse().transform(os_ray);
+    const utils::Ray Shape::objectToWorldSpace(const utils::Ray &os_ray) const{
+      utils::Ray ws_ray = mImpl->transform.inverse().transform(os_ray);
 
       return ws_ray;
 

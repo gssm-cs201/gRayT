@@ -3,19 +3,25 @@
 
 #include <OpenEXR/ImathVec.h>
 #include "gssmraytracer/geometry/Point.h"
-#include "gssmraytracer/geometry/Normal.h"
-#include "gssmraytracer/utils/Shape.h"
+#include "gssmraytracer/geometry/Shape.h"
 
 namespace gssmraytracer {
   namespace geometry {
     struct DifferentialGeometry {
       DifferentialGeometry() : u(0.), v(0.), shape(NULL) {}
+      DifferentialGeometry(
+            const Point &P,
+            const Imath::Vec3<float> &dpdu, const Imath::Vec3<float> &dpdv,
+            const Imath::Vec3<float> &dndu, const Imath::Vec3<float> &dndv,
+            const float u,
+            const float v,
+            const Shape *sh);
       Point p;
       Imath::Vec3<float> nn;
       float u, v;
-      const Shape *shape;
       Imath::Vec3<float> dpdu, dpdv;
       Imath::Vec3<float> dndu, dndv;
+      const Shape *shape;
     };
   }
 }

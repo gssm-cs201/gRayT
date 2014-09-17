@@ -4,14 +4,14 @@
 #include <memory>
 #include "Image.h"
 #include <OpenEXR/ImathVec.h>
+#include "gssmraytracer/geometry/Shape.h"
 namespace gssmraytracer {
   namespace utils {
-    class Shape; // forward declaration
     class Ray; // forward declaration
     class RenderGlobals {
     public:
       static RenderGlobals& getInstance();
-      void addShape(Shape* shape);
+      void addShape(geometry::Shape* shape);
       void setImage(const Image& image);
       const Image getImage() const;
       bool hit(const Ray &ws_ray, float &t0, float &t1,

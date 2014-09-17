@@ -6,10 +6,5 @@
 
 namespace gssmraytracer {
   namespace utils {
-    Color Shader::shade(const Imath::Vec3<float> &hitpoint,
-                        const Imath::Vec3<float> &normal
-                        ) {
-                          return Color(0,0,0,0);
-                        }
   }
 }
