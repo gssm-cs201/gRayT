@@ -1,121 +1,115 @@
-
-#include <iostream>
-#include <fstream>
-#include <gssmraytracer/utils/Color.h>
-#include <stdlib.h>
-#include <string>
-#include <gssmraytracer/utils/Image.h>
-
+#include "gssmraytracer/utils/Image.h"
+#include <OpenImageIO/imageio.h>
 
 namespace gssmraytracer {
 namespace utils {
-  Image::Image() : width(0), height(0), buffer() {}
-  Image::Image(const int w, const int h) : width(w), height(h), buffer() {
-    resizeBuffer(width * height);
-  //  buffer = new Color[width * height];
+class Image::Impl {
+public:
+  Impl() : width(0), height(0), nchannels(0), pixels() {}
+  int width;
+  int height;
+  int nchannels;
+  std::vector<float> pixels;
+};
+
+Image::Image() : mImpl(new Impl) {
+  mImpl->width = mImpl->height = 0;
+
+}
+
+Image::Image(const char *imagename) : mImpl(new Impl) {
+
+  read(imagename);
+
+}
+
+Image::Image(const Image &image) : mImpl(new Impl) {
+  mImpl->pixels = image.mImpl->pixels;
+  mImpl->width = image.mImpl->width;
+  mImpl->height = image.mImpl->height;
+  mImpl->nchannels = image.mImpl->nchannels;
+
+}
+
+Image::Image(const int width, const int height, const int numChannels) : mImpl(new Impl) {
+  mImpl->width = width;
+  mImpl->height = height;
+  mImpl->nchannels = numChannels;
+  mImpl->pixels.resize(mImpl->width * mImpl->height * mImpl->nchannels);
+
+}
+
+Image& Image::operator=(const Image &other) {
+  if (this != &other) {
+    mImpl->pixels = other.mImpl->pixels;
+    mImpl->width = other.mImpl->width;
+    mImpl->height = other.mImpl->height;
+    mImpl->nchannels = other.mImpl->nchannels;
   }
-  Image::~Image() {
-    delete [] buffer;
+
+  return *this;
+}
+
+void Image::read(const char *imagename) {
+  OpenImageIO::ImageInput *input = OpenImageIO::ImageInput::open(imagename);
+  if (!input) {
+    std::cout << "Cannot load image " << imagename << std::endl;
+    return;
   }
-  Image::Image(const Image &image) : width(image.width), height(image.height), buffer( new Color[width * height]) {
+  const OpenImageIO::ImageSpec &spec = input->spec();
+  mImpl->width = spec.width;
+  mImpl->height = spec.height;
+  mImpl->nchannels = spec.nchannels;
+  std::vector<float> pixels
+                    (mImpl->width * mImpl->height * mImpl->nchannels);
+  input->read_image(OpenImageIO::TypeDesc::FLOAT, &pixels[0]);
+  input->close();
+  delete input;
 
-    for (int r = 0; r < height; ++r) {
-      for (int c = 0; c < width; ++c) {
-        buffer[(r*width) + c] = image.buffer[(r*width) + c];
-      }
-    }
+  mImpl->pixels = pixels;
 
-  }
-  Image & Image::operator=(const Image &other) {
-    if (this != &other) {
-      width = other.width;
-      height = other.height;
-      resizeBuffer(width * height);
-      for (int r = 0; r < height; ++r) {
-        for (int c = 0; c < width; ++c) {
-          buffer[(r*width) + c] = other.buffer[(r*width) + c];
-        }
-      }
-    }
-    return *this;
-  }
+}
 
-  const int Image::getWidth() const { return width;}
-
-  const int Image::getHeight() const { return height;}
-
-  void Image::setPixel(int r, int c, const Color color) {
-    buffer[(r * width) + c] = color;
-  }
-  const Color Image::getPixel(int r, int c) const{
-    return buffer[(r*width) + c];
+void Image::write(const char *imagename) {
+  OpenImageIO::ImageOutput *out = OpenImageIO::ImageOutput::create(imagename);
+  if (!out) {
+    std::cout << "Unable to write image " << imagename << std::endl;
+    return;
   }
 
-  void Image::read(const char* filename) {
-    std::ifstream file(filename, std::ios::in);
-    if (file.is_open()) {
-      std::string word;
-      file >> word; // P3
-      file >> word; // width
-      width = std::stoi(word);
-      file >> word; // height
-      height = std::stoi(word);
-      file >> word; // 255
+  OpenImageIO::ImageSpec spec(mImpl->width, mImpl->height,
+                              mImpl->nchannels, OpenImageIO::TypeDesc::FLOAT);
+  out->open(imagename, spec);
+  out->write_image(OpenImageIO::TypeDesc::FLOAT, mImpl->pixels.data());
+  out->close();
+  delete out;
 
-      resizeBuffer(width * height);
-      for (int r = 0; r < height; ++r) {
-        for (int c = 0; c < width; ++c) {
-          file >> word;
-          buffer[(r*width) + c].red = std::stoi(word);
-          file >> word;
-          buffer[(r*width) + c].green = std::stoi(word);
-          file >> word;
-          buffer[(r*width) + c].blue = std::stoi(word);
-        }
-      }
+}
+const float* Image::getPixelBuffer() const {
 
-    }
-    file.close();
+  return mImpl->pixels.data();
+}
 
-  }
-  void Image::write(const char* filename) {
-    std::ofstream file(filename, std::ios::out);
-    file << "P3\n" << width << " " << height << "\n" << "255\n";
-    for (int r = 0; r < height; ++r) {
-      for (int c = 0; c < width; ++c) {
-        file << int(buffer[(r*width) + c].red) << " ";
+const int Image::getWidth() const {
+  return mImpl->width;
+}
 
-        file << int(buffer[(r*width) + c].green) << " ";
+const int Image::getHeight() const {
+  return mImpl->height;
+}
 
-        file << int(buffer[(r*width) + c].blue) << "\t";
-      }
-      file << "\n";
-    }
-    file.close();
+const int Image::getNumChannels() const {
+  return mImpl->nchannels;
+}
 
-  }
-  const unsigned char* Image::getPixelBuffer() const {
-    unsigned char* pixelbuffer = new unsigned char[width * height * 4];
-    for (int r = 0; r < height; ++r) {
-      for (int c = 0; c < width; ++c ) {
+void Image::setPixel(const int row, const int column, const Color &pixel) {
+  mImpl->pixels[mImpl->nchannels*(row * mImpl->width + column)] = pixel.red;
+  mImpl->pixels[mImpl->nchannels*(row * mImpl->width + column) + 1] = pixel.green;
+  mImpl->pixels[mImpl->nchannels*(row * mImpl->width + column) + 2] = pixel.blue;
+  if (mImpl->nchannels == 4)
+   mImpl->pixels[mImpl->nchannels*(row * mImpl->width + column) + 3] = pixel.alpha;
 
-        pixelbuffer[((r*width*4) +c*4)] = (unsigned char)(buffer[(r*width) +c].red);
+}
 
-
-        pixelbuffer[((r*width*4) +c*4) + 1] = (unsigned char)(buffer[(r*width) +c].green);
-        pixelbuffer[((r*width*4) +c*4) + 2] = (unsigned char)(buffer[(r*width) +c].blue);
-        pixelbuffer[((r*width*4) +c*4) + 3] = (unsigned char)(buffer[(r*width) +c].alpha);
-      }
-    }
-
-
-    return pixelbuffer;
-  }
-  void Image::resizeBuffer(const int size) {
-    // delete the color buffer
-    delete [] buffer;
-    // create a new color buffer
-    buffer = new Color[size];
-  }
- }
+}
 }

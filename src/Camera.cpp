@@ -102,7 +102,7 @@ void Camera::render(RenderGlobals &renderGlobals) const {
         color = renderGlobals.shade(ray);
       }
       else
-        color = Color(0,0,0,255);
+        color = Color(0,0,0,1);
 //      color = scene.getShade(ray);
       image.setPixel(r,c,color);
 

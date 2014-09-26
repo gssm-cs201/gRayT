@@ -16,6 +16,7 @@
 
 #include <gssmraytracer/utils/Image.h>
 #include <gssmraytracer/utils/RenderGlobals.h>
+#include <gssmraytracer/utils/Color.h>
 #include <iostream>
 
 #include "ConstantShader.h"
@@ -25,12 +26,11 @@ using namespace gssmraytracer::geometry;
 
 void display_picture() {
   const Image image = RenderGlobals::getInstance().getImage();
-  const unsigned char *pixmap = image.getPixelBuffer();
+  const float *pixmap = image.getPixelBuffer();
   glClearColor(0 , 0, 0, 1);
   glClear(GL_COLOR_BUFFER_BIT);
-  glDrawPixels(image.getWidth(), image.getHeight(), GL_RGBA, GL_UNSIGNED_BYTE, (void *)pixmap);
+  glDrawPixels(image.getWidth(), image.getHeight(), GL_RGBA, GL_FLOAT, (void *)pixmap);
   glFlush();
-  delete [] pixmap;
 
 
 }
@@ -98,7 +98,7 @@ void gradient(Image &image) {
   for (int row = 0; row < image.getHeight(); ++row) {
     for (int col = 0; col < image.getWidth(); ++col) {
       float normalized = (float)col/image.getWidth()/4.0;
-        image.setPixel(row, col, Color(sin(normalized*2 * M_PI) * 255,255,0,255));
+        image.setPixel(row, col, Color(sin(normalized*2 * M_PI) * 1,1,0,1));
     }
   }
 }
@@ -111,14 +111,13 @@ int main(int argc, char* argv[]) {
     Image image(width, height);
     Camera camera(Imath::Vec3<float>(0,0,-40),Imath::Vec3<float>(0,0,1),Imath::Vec3<float>(0,1,0));
     camera.setAspectRatio(1.0);
-    checker(image, 10, Color(0,0,255,255), Color(255,255,255,255));
-    image.write("checker.ppm");
-    stripes(image, 9, Color(255,0,0,255), Color(255,255,255,255));
-    image.write("stripes.ppm");
-    image.read("checker.ppm");
-//    image.write("test2.ppm");
-    Imath::Vec3<float> position(0.0,0.3,0.0);
-    std::shared_ptr<Shader> shader(new ConstantShader(Color(255,255,0,255)));
+    checker(image, 10, Color(0,0,1,1), Color(1,1,1,1));
+    image.write("checker.png");
+    stripes(image, 9, Color(1,0,0,1), Color(1,1,1,1));
+    image.write("stripes.png");
+    image.read("checker.png");
+    Imath::Vec3<float> position(0.0,0.0,0.0);
+    std::shared_ptr<Shader> shader(new ConstantShader(Color(1,1,0,1)));
     Sphere *sphere = new Sphere(position, shader, 3.0);
     RenderGlobals::getInstance().setImage(image);
     RenderGlobals::getInstance().addShape(sphere);

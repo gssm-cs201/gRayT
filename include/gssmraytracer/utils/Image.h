@@ -1,39 +1,32 @@
 #ifndef __IMAGE_H__
 #define __IMAGE_H__
-
-
-
-
+#include <memory>
+#include "Color.h"
 namespace gssmraytracer {
 namespace utils {
-class Color; // forward declaration
+
 class Image {
 public:
   Image();
-  Image(const int w, const int h);
-  ~Image();
+  Image(const int width, const int height, const int numChannels=4);
+  Image(const char *imagename);
   Image(const Image &image);
-  Image & operator=(const Image &other);
 
+  Image& operator=(const Image &other);
+
+  void read(const char *imagename);
+  void write(const char *imagename);
+
+  const float* getPixelBuffer() const;
   const int getWidth() const;
-
   const int getHeight() const;
+  const int getNumChannels() const;
 
-  void setPixel(int r, int c, const Color color);
-
-  const Color getPixel(int r, int c) const;
-
-  void read(const char* filename);
-  void write(const char* filename);
-  const unsigned char* getPixelBuffer() const;
+  void setPixel(const int row, const int column, const Color &value);
 
 private:
-  void resizeBuffer(const int size);
-
-  int width;
-  int height;
-  Color *buffer;
-
+  class Impl;
+  std::shared_ptr<Impl> mImpl;
 
 };
 }
