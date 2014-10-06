@@ -109,7 +109,7 @@ int main(int argc, char* argv[]) {
     int width = 500;
     int height = 500;
     Image image(width, height);
-    Camera camera(Imath::Vec3<float>(0,0,-40),Imath::Vec3<float>(0,0,1),Imath::Vec3<float>(0,1,0));
+    Camera camera(Imath::Vec3<float>(-5,0,-40),Imath::Vec3<float>(0,0,1),Imath::Vec3<float>(0,1,0));
     camera.setAspectRatio(1.0);
     checker(image, 10, Color(0,0,1,1), Color(1,1,1,1));
     image.write("checker.png");
@@ -117,10 +117,14 @@ int main(int argc, char* argv[]) {
     image.write("stripes.png");
     image.read("checker.png");
     Imath::Vec3<float> position(0.0,0.0,0.0);
-    std::shared_ptr<Shader> shader(new ConstantShader(Color(1,1,0,1)));
-    Sphere *sphere = new Sphere(position, shader, 3.0);
+    Imath::Vec3<float> position2(0.3,0.0,0.0);
+    std::shared_ptr<Shader> shader(new ConstantShader(Color(1,0,0,1)));
+    std::shared_ptr<Shader> shader2(new ConstantShader(Color(1,1,0,1)));
+    Sphere *sphere = new Sphere(position, shader, 10.0);
+    Sphere *sphere2 = new Sphere(position2, shader2, 10.0);
     RenderGlobals::getInstance().setImage(image);
     RenderGlobals::getInstance().addShape(sphere);
+    RenderGlobals::getInstance().addShape(sphere2);
     camera.render(RenderGlobals::getInstance());
 
 
