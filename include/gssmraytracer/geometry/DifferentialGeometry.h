@@ -2,6 +2,7 @@
 #define __DIFFERENTIALGEOMETRY_H__
 
 #include <OpenEXR/ImathVec.h>
+#include <memory>
 #include "gssmraytracer/geometry/Point.h"
 #include "gssmraytracer/geometry/Shape.h"
 
@@ -15,13 +16,13 @@ namespace gssmraytracer {
             const Imath::Vec3<float> &dndu, const Imath::Vec3<float> &dndv,
             const float u,
             const float v,
-            const Shape *sh);
+            const std::shared_ptr<Shape> sh);
       Point p;
       Imath::Vec3<float> nn;
       float u, v;
       Imath::Vec3<float> dpdu, dpdv;
       Imath::Vec3<float> dndu, dndv;
-      const Shape *shape;
+      const std::shared_ptr<Shape> shape;
     };
   }
 }

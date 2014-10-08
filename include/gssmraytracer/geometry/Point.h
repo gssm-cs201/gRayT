@@ -1,5 +1,6 @@
 #ifndef __POINT_H__
 #define __POINT_H__
+#include <memory>
 namespace gssmraytracer {
   namespace geometry {
     class Point {
@@ -8,10 +9,12 @@ namespace gssmraytracer {
       Point(const float x, const float y, const float z);
       Point(const Point &);
       Point& operator=(const Point &);
-
-      float x;
-      float y;
-      float z;
+      const float x() const;
+      const float y() const;
+      const float z() const;
+    private:
+      class Impl;
+      std::shared_ptr<Impl> mImpl;
 
     };
   }

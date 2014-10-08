@@ -8,7 +8,7 @@ namespace gssmraytracer {
           const Imath::Vec3<float> &DNDU, const Imath::Vec3<float> &DNDV,
           const float uu,
           const float vv,
-          const Shape *sh) : p(P), u(uu), v(vv), dpdu(DPDU), dpdv(DPDV), dndu(DNDU), dndv(DNDV),
+          const std::shared_ptr<Shape> sh) : p(P), u(uu), v(vv), dpdu(DPDU), dpdv(DPDV), dndu(DNDU), dndv(DNDV),
                  shape(sh){
 
               nn = (dpdu.cross(dpdv)).normalize();

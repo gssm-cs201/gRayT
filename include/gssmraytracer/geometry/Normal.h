@@ -1,12 +1,19 @@
 #include <OpenEXR/ImathVec.h>
+#include <memory>
+
 namespace gssmraytracer {
   namespace geometry {
-    struct Normal {
-      explicit Normal(const Imath::Vec3<float> &vec)
-                      : x(vec.x), y(vec.y), z(vec.z) {}
-      Normal(const float xx, const float xy, const float xz)
-                      : x(xx), y(yy), z(zz) {}
+    class Normal {
+    public:
+      explicit Normal(const Imath::Vec3<float> &vec);
+      Normal(const float x, const float y, const float z);
+      const float x() const;
+      const float y() const;
+      const float z() const;
 
+    private:
+      class Impl;
+      std::shared_ptr<Impl> mImpl;
 
     };
   }

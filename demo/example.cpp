@@ -106,11 +106,11 @@ void gradient(Image &image) {
 int main(int argc, char* argv[]) {
     // Use the default constructor
 
-    int width = 500;
-    int height = 500;
+    int width = 1280;
+    int height = 720;
     Image image(width, height);
     Camera camera(Imath::Vec3<float>(-5,0,-40),Imath::Vec3<float>(0,0,1),Imath::Vec3<float>(0,1,0));
-    camera.setAspectRatio(1.0);
+    camera.setAspectRatio(16./9.);
     checker(image, 10, Color(0,0,1,1), Color(1,1,1,1));
     image.write("checker.png");
     stripes(image, 9, Color(1,0,0,1), Color(1,1,1,1));
