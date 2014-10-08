@@ -117,7 +117,7 @@ int main(int argc, char* argv[]) {
     image.write("stripes.png");
     image.read("checker.png");
     Imath::Vec3<float> position(0.0,0.0,0.0);
-    Imath::Vec3<float> position2(0.3,0.0,0.0);
+    Imath::Vec3<float> position2(10.,0.0,0.0);
     std::shared_ptr<Shader> shader(new ConstantShader(Color(1,0,0,1)));
     std::shared_ptr<Shader> shader2(new ConstantShader(Color(1,1,0,1)));
     Sphere *sphere = new Sphere(position, shader, 10.0);

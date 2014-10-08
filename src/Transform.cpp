@@ -42,7 +42,7 @@ namespace gssmraytracer {
     utils::Ray Transform::transform(const utils::Ray &ray) {
         Imath::Vec3<float> new_origin, new_direction;
         mImpl->mat.multVecMatrix(ray.origin(), new_origin );
-        mImpl->mat.multVecMatrix(ray.dir(), new_direction );
+        mImpl->mat.multDirMatrix(ray.dir(), new_direction );
         return utils::Ray(new_origin, new_direction);
     }
 
