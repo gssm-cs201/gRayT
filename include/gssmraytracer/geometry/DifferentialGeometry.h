@@ -4,11 +4,11 @@
 #include <OpenEXR/ImathVec.h>
 #include <memory>
 #include "gssmraytracer/geometry/Point.h"
-#include "gssmraytracer/geometry/Shape.h"
 
 namespace gssmraytracer {
   namespace geometry {
     struct DifferentialGeometry {
+      class Shape;
       DifferentialGeometry() : u(0.), v(0.), shape(NULL) {}
       DifferentialGeometry(
             const Point &P,

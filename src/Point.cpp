@@ -1,5 +1,4 @@
 #include "gssmraytracer/geometry/Point.h"
-#include <OpenEXR/ImathVec.h>
 namespace gssmraytracer {
   namespace geometry {
     class Point::Impl {
@@ -15,6 +14,9 @@ namespace gssmraytracer {
         mImpl->vec.y = y;
         mImpl->vec.z = z;
       }
+    Point::Point(const Imath::Vec3<float> &vec) : mImpl(new Impl) {
+      mImpl->vec = vec;
+    }
 
     Point::Point(const Point &p) : mImpl(new Impl) {
       mImpl->vec = p.mImpl->vec;
@@ -25,6 +27,17 @@ namespace gssmraytracer {
         mImpl->vec = other.mImpl->vec;
       }
       return *this;
+    }
+
+
+    const float Point::x() const {
+      return mImpl->vec.x;
+    }
+    const float Point::y() const {
+      return mImpl->vec.y;
+    }
+    const float Point::z() const {
+      return mImpl->vec.z;
     }
 
   }

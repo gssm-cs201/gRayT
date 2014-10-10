@@ -14,9 +14,8 @@ namespace gssmraytracer {
       void addShape(geometry::Shape* shape);
       void setImage(const Image& image);
       const Image getImage() const;
-      bool hit(const Ray &ws_ray, float &t0, float &t1,
-              Imath::Vec3<float> &hitpoint,
-              Imath::Vec3<float> &normal);
+      bool hit(const Ray &ws_ray, float &thit,
+                      geometry::DifferentialGeometry *dg);
       const Color shade(const Ray &ws_ray) const;
 
     private:

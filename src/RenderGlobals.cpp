@@ -41,12 +41,11 @@ namespace gssmraytracer {
       }
       return *this;
     }
-    bool RenderGlobals::hit(const Ray &ws_ray, float &t0, float &t1,
-            Imath::Vec3<float> &hitpoint,
-            Imath::Vec3<float> &normal) {
+    bool RenderGlobals::hit(const Ray &ws_ray, float &thit,
+            DifferentialGeometry *dg) {
       for (std::vector<Shape*>::iterator iter = mImpl->shapes.begin();
           iter != mImpl->shapes.end(); ++iter) {
-            if ((*iter)->hit(ws_ray, t0, t1, hitpoint, normal)) {
+            if ((*iter)->hit(ws_ray, &thit, dg)) {
               return true;
             }
           }
@@ -55,11 +54,11 @@ namespace gssmraytracer {
 
     const Color RenderGlobals::shade(const Ray &ws_ray) const {
       Color color;
-      float t0, t1;
-      Imath::Vec3<float> hitpoint, normal;
+      float thit;
+      DifferentialGeometry dg;
       for (std::vector<Shape*>::iterator iter = mImpl->shapes.begin();
           iter != mImpl->shapes.end(); ++iter) {
-            if ((*iter)->hit(ws_ray, t0, t1, hitpoint, normal)) {
+            if ((*iter)->hit(ws_ray, &thit, &dg)) {
               return (*iter)->getShade(ws_ray);
             }
           }

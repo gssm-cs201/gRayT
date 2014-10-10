@@ -8,9 +8,8 @@ namespace gssmraytracer {
       Sphere (const Imath::Vec3<float> &position,
                           const std::shared_ptr<utils::Shader> shader,
                           const double radius);
-      bool hit(const utils::Ray &ws_ray, float &t0, float &t1,
-               Imath::Vec3<float> &hitpoint,
-               Imath::Vec3<float> &normal) const;
+      bool hit(const utils::Ray &ws_ray, float *tHit,
+               DifferentialGeometry *dg) const;
       const utils::Color getShade(const utils::Ray &ws_ray) const;
       virtual ~Sphere();
     private:

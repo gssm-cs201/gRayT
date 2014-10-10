@@ -96,9 +96,9 @@ void Camera::render(RenderGlobals &renderGlobals) const {
       Imath::Vec3<float> direction = view((float)c/image.getWidth(), (float)r/image.getHeight());
       Color color;
       Ray ray(mImpl->eye, direction);
-      float t0, t1;
-      Imath::Vec3<float> hitpoint, normal;
-      if (renderGlobals.hit(ray, t0, t1, hitpoint, normal)) {
+      float thit;
+      DifferentialGeometry dg;
+      if (renderGlobals.hit(ray, thit, &dg)) {
         color = renderGlobals.shade(ray);
       }
       else

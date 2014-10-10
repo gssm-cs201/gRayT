@@ -38,9 +38,11 @@ namespace gssmraytracer {
 
     }
     Sphere::~Sphere() {}
-    bool Sphere::hit(const Ray &ws_ray, float &t0, float &t1,
-                      Imath::Vec3<float> &hitpoint,
-                      Imath::Vec3<float> &normal) const {
+    bool Sphere::hit(const Ray &ws_ray, float *thit,
+                      DifferentialGeometry *dg) const {
+      float phi;
+      Point phit;
+      // Transform the ray into object space
       Ray os_ray = worldToObjectSpace(ws_ray);
 
       // Do ray-sphere intersection in object space
@@ -57,28 +59,66 @@ namespace gssmraytracer {
                 mImpl->radius * mImpl->radius;
 
       // Solve quadratic equation for t values
+      float t0, t1;
       if (!mImpl->Quadratic(A,B,C, &t0, &t1)) return false;
       // compute intersection distance along ray
       if (t0 > os_ray.maxt() || t1 < os_ray.mint())
         return false;
-      float thit = t0;
+
+      thit = &t0;
       if (t0 < os_ray.mint()) {
-        thit = t1;
-        if (thit > os_ray.maxt()) return false;
+        thit = &t1;
+        if (*thit > os_ray.maxt()) return false;
       }
+
+      /*
+      // Compute sphere hit position and phi
+      phit = ray(thit);
+      if (phit.x == 0.f && phit.y == 0.f) phit.x = 1e-5f * radius;
+      phi = atan2f(phit.y, phit.x);
+      if (phi < 0.) phi += 2.f*M_PI;
+      // Test against clipping parameters
+      if ((zmin > -radius && phit.z < zmin) ||
+        (zmax < radius && phit.z > zmax) ||
+         phi > phiMax) {
+           if (this == t1) return false;
+           thit = t1;
+
+           if ((zmin > -radius && phit.z < zmin) ||
+             (zmax < radius && phit.z > zmax) ||
+             phi > phiMax)
+             return false;
+         }
+
+         // find parametric representation of sphere
+         float u = phi/phiMax;
+         float theta = acosf(Clamp(phit.z/radius, -1.f, 1.f));
+         float v = (theta - thetaMin) / (thetaMax - thetaMin);
+         float zradius = sqrtf(phit.x * phit.x + phit.y * phit.y);
+         float invzradius = 1.f / zradius;
+         float cosphi = phit.x * invradius;
+         float sinphi = phit.y * invradius;
+         Vector dpdu(-phiMax * phit.y, phiMax * phit.x, 0);
+         Vector dpdv = (thetaMax - thetaMin) *
+                Vector(phit.z * cosphi, phit.z * sinphi,
+                      -radius * sinf(theta));
+
+                      */
+
+
       // if the ray intersects the sphere return true
-      t0 = thit;
-      hitpoint = os_ray.point(thit);
-      normal = hitpoint.normalize();
+      dg->p = Point(os_ray.point(*thit));
+    //  dp->nn = hitpoint.normalize();
        return true;
     }
 
     const utils::Color Sphere::getShade(const Ray &ws_ray) const {
-      float t0,t1;
+      float thit;
       utils::Color color;
-      Imath::Vec3<float> hitpoint, normal;
-      if (hit(ws_ray, t0, t1, hitpoint, normal))
-        color =  (getShader())->shade(hitpoint, normal);
+      DifferentialGeometry dg;
+
+      if (hit(ws_ray, &thit, &dg))
+        color =  (getShader())->shade(Imath::Vec3<float>(dg.p.x(), dg.p.y(), dg.p.z()), dg.nn);
 
       return color;
 

@@ -40,5 +40,8 @@ namespace gssmraytracer {
     const std::shared_ptr<Shader> Shape::getShader() const {
       return mImpl->shader;
     }
+
+    
+
   }
 }
