@@ -1,7 +1,8 @@
 #ifndef __DIFFERENTIALGEOMETRY_H__
 #define __DIFFERENTIALGEOMETRY_H__
 
-#include <OpenEXR/ImathVec.h>
+#include "gssmraytracer/math/Vector.h"
+#include "gssmraytracer/geometry/Normal.h"
 #include <memory>
 #include "gssmraytracer/geometry/Point.h"
 
@@ -9,19 +10,21 @@ namespace gssmraytracer {
   namespace geometry {
     struct DifferentialGeometry {
       class Shape;
-      DifferentialGeometry() : u(0.), v(0.), shape(NULL) {}
+      DifferentialGeometry() : p(), nn(0.,1.,0.), u(0.), v(0.), dpdu(),
+                                dpdv(), dndu(0.,1.,0.), dndv(0.,1.,0.), shape(NULL) {}
       DifferentialGeometry(
             const Point &P,
-            const Imath::Vec3<float> &dpdu, const Imath::Vec3<float> &dpdv,
-            const Imath::Vec3<float> &dndu, const Imath::Vec3<float> &dndv,
+            const math::Vector &dpdu, const math::Vector &dpdv,
+            const Normal &dndu, const Normal &dndv,
             const float u,
             const float v,
-            const std::shared_ptr<Shape> sh);
+            const std::shared_ptr<Shape> sh
+      );
       Point p;
-      Imath::Vec3<float> nn;
+      Normal nn;
       float u, v;
-      Imath::Vec3<float> dpdu, dpdv;
-      Imath::Vec3<float> dndu, dndv;
+      math::Vector dpdu, dpdv;
+      Normal dndu, dndv;
       const std::shared_ptr<Shape> shape;
     };
   }

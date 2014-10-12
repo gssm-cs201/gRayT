@@ -4,14 +4,14 @@ namespace gssmraytracer {
   namespace geometry {
     DifferentialGeometry::DifferentialGeometry(
           const Point &P,
-          const Imath::Vec3<float> &DPDU, const Imath::Vec3<float> &DPDV,
-          const Imath::Vec3<float> &DNDU, const Imath::Vec3<float> &DNDV,
+          const math::Vector &DPDU, const math::Vector &DPDV,
+          const Normal &DNDU, const Normal &DNDV,
           const float uu,
           const float vv,
-          const std::shared_ptr<Shape> sh) : p(P), u(uu), v(vv), dpdu(DPDU), dpdv(DPDV), dndu(DNDU), dndv(DNDV),
+          const std::shared_ptr<Shape> sh) : p(P), nn(0.,1.,0.), u(uu), v(vv), dpdu(DPDU), dpdv(DPDV), dndu(DNDU), dndv(DNDV),
                  shape(sh){
 
-              nn = (dpdu.cross(dpdv)).normalize();
+              nn = Normal(dpdu.cross(dpdv)).normalized();
 
           }
 

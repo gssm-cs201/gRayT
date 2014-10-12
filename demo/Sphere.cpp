@@ -31,9 +31,9 @@ namespace gssmraytracer {
 
     };
 
-    Sphere::Sphere(const Imath::Vec3<float> &position,
+    Sphere::Sphere(const Transform &transform,
                  const std::shared_ptr<Shader> shader,
-                 const double radius) : Shape(position, shader), mImpl(new Impl) {
+                 const double radius) : Shape(transform, shader), mImpl(new Impl) {
                    mImpl->radius = radius;
 
     }
@@ -42,21 +42,24 @@ namespace gssmraytracer {
                       DifferentialGeometry *dg) const {
       float phi;
       Point phit;
+
       // Transform the ray into object space
       Ray os_ray = worldToObjectSpace(ws_ray);
 
       // Do ray-sphere intersection in object space
       // Compute quadratic sphere coefficients
-      float A = os_ray.dir().x * os_ray.dir().x +
-                os_ray.dir().y * os_ray.dir().y +
-                os_ray.dir().z * os_ray.dir().z;
-      float B = 2.0 * (os_ray.dir().x * os_ray.origin().x +
-                     os_ray.dir().y * os_ray.origin().y +
-                     os_ray.dir().z * os_ray.origin().z);
-      float C = os_ray.origin().x * os_ray.origin().x +
-                os_ray.origin().y * os_ray.origin().y +
-                os_ray.origin().z * os_ray.origin().z -
+
+      float A = os_ray.dir().x() * os_ray.dir().x() +
+                os_ray.dir().y() * os_ray.dir().y() +
+                os_ray.dir().z() * os_ray.dir().z();
+      float B = 2.0 * (os_ray.dir().x() * os_ray.origin().x() +
+                     os_ray.dir().y() * os_ray.origin().y() +
+                     os_ray.dir().z() * os_ray.origin().z());
+      float C = os_ray.origin().x() * os_ray.origin().x() +
+                os_ray.origin().y() * os_ray.origin().y() +
+                os_ray.origin().z() * os_ray.origin().z() -
                 mImpl->radius * mImpl->radius;
+
 
       // Solve quadratic equation for t values
       float t0, t1;
@@ -118,7 +121,7 @@ namespace gssmraytracer {
       DifferentialGeometry dg;
 
       if (hit(ws_ray, &thit, &dg))
-        color =  (getShader())->shade(Imath::Vec3<float>(dg.p.x(), dg.p.y(), dg.p.z()), dg.nn);
+        color =  (getShader())->shade(Imath::Vec3<float>(dg.p.x(), dg.p.y(), dg.p.z()), Normal(dg.nn.x(), dg.nn.y(), dg.nn.z()));
 
       return color;
 

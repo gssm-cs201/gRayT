@@ -1,6 +1,10 @@
+#ifndef __TRANSFORM_H__
+#define __TRANSFORM_H__
 #include <OpenEXR/ImathMatrix.h>
 #include <memory>
 #include "gssmraytracer/utils/Ray.h"
+#include "gssmraytracer/math/Vector.h"
+
 namespace gssmraytracer {
   namespace math {
     class Transform {
@@ -13,9 +17,9 @@ namespace gssmraytracer {
 
       Transform inverse();
 
-      void translate(Imath::Vec3<float> translate);
-      void rotate(Imath::Vec3<float> rotate);
-      void scale(Imath::Vec3<float> scale);
+      void translate(const Vector &translate);
+      void rotate(const Vector &rotate);
+      void scale(const Vector &scale);
 
       utils::Ray transform(const utils::Ray &ray);
     private:
@@ -25,3 +29,4 @@ namespace gssmraytracer {
     };
   }
 }
+#endif // __TRANSFORM_H__

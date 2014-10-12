@@ -9,8 +9,8 @@ namespace gssmraytracer {
       ConstantShader(const Color &color);
       ConstantShader(const ConstantShader &);
       ConstantShader& operator=(const ConstantShader &);
-      Color shade(const Imath::Vec3<float> &hitpoint,
-                     const Imath::Vec3<float> &normal
+      Color shade(const geometry::Point &hitpoint,
+                     const geometry::Normal &normal
                      );
 
     private:

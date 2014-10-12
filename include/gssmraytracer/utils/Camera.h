@@ -1,4 +1,5 @@
-#include <OpenEXR/ImathVec.h>
+#include "gssmraytracer/geometry/Point.h"
+#include "gssmraytracer/math/Vector.h"
 #include <limits>
 #include <memory>
 
@@ -10,18 +11,18 @@ namespace utils {
     // Default Constructor
     Camera();
     // Set eye, view and up vectors
-    Camera(const Imath::Vec3<float> &eye,
-           const Imath::Vec3<float> &view,
-           const Imath::Vec3<float> &up,
+    Camera(const geometry::Point &eye,
+           const math::Vector &view,
+           const math::Vector &up,
            const float near=1.0,
            const float far = std::numeric_limits<float>::infinity());
     ~Camera();
-    void setEyeViewUp(const Imath::Vec3<float> &eye,
-                      const Imath::Vec3<float> &view,
-                      const Imath::Vec3<float> &up);
-    const Imath::Vec3<float> view(const double x, const double y) const;
-    void setFOV(const double fov);
-    void setAspectRatio(const double aspect_ratio);
+    void setEyeViewUp(const geometry::Point &eye,
+                      const math::Vector &view,
+                      const math::Vector &up);
+    const math::Vector view(const float x, const float y) const;
+    void setFOV(const float fov);
+    void setAspectRatio(const float aspect_ratio);
     void render(RenderGlobals &renderGlobals) const;
 
     private:

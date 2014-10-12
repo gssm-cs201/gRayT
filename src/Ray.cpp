@@ -5,15 +5,15 @@ namespace gssmraytracer {
   namespace utils {
     class Ray::Impl {
     public:
-      Imath::Vec3<float> origin;
-      Imath::Vec3<float> direction;
+      geometry::Point origin;
+      math::Vector direction;
       double mint;
       double maxt;
     };
 
     Ray::Ray() : mImpl(new Impl) {}
-    Ray::Ray(const Imath::Vec3<float> &origin,
-             const Imath::Vec3<float> &direction) : mImpl(new Impl) {
+    Ray::Ray(const geometry::Point &origin,
+             const math::Vector &direction) : mImpl(new Impl) {
                mImpl->origin = origin;
                mImpl->direction = direction;
                mImpl->mint = 0;
@@ -23,11 +23,11 @@ namespace gssmraytracer {
       os << "(" << ray.origin() << ", " << ray.dir() << ")" << std::endl;
       return os;
     }
-    const Imath::Vec3<float> Ray::origin() const {
+    const geometry::Point Ray::origin() const {
       return mImpl->origin;
     }
-    const Imath::Vec3<float> Ray::dir() const {
-      return mImpl->direction.normalize();
+    const math::Vector Ray::dir() const {
+      return mImpl->direction.normalized();
     }
 
     const double Ray::mint() {
@@ -42,8 +42,10 @@ namespace gssmraytracer {
     void Ray::setMaxt(const double maxt) {
       mImpl->maxt = maxt;
     }
-    const Imath::Vec3<float> Ray::point(const float t) const {
-      return origin() + (t * dir());
+    const geometry::Point Ray::point(const float t) const {
+      return  origin() + (dir() * t);
     }
+
+
   }
 }

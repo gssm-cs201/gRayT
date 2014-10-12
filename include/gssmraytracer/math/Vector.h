@@ -14,8 +14,18 @@ namespace gssmraytracer {
       Vector& operator+=(const Vector &v);
       Vector operator-(const Vector &v) const;
       Vector& operator-=(const Vector &v);
+      Vector operator*(const float s) const;
+      Vector& operator*=(const float s);
       Vector cross(const Vector &other) const;
       const float dot(const Vector &other) const;
+      const float length() const;
+      const Vector direction() const;
+      void normalize();
+      const Vector normalized() const;
+      friend std::ostream& operator<<(std::ostream &os, const Vector &vec);
+      const float x() const;
+      const float y() const;
+      const float z() const;
     private:
       class Impl;
       std::shared_ptr<Impl> mImpl;

@@ -2,6 +2,7 @@
 #include <gssmraytracer/utils/Scene.h>
 #include <gssmraytracer/utils/Color.h>
 #include <gssmraytracer/utils/Shader.h>
+#include <gssmraytracer/math/Vector.h>
 #include <memory>
 #include "Sphere.h"
 
@@ -23,6 +24,7 @@
 
 using namespace gssmraytracer::utils;
 using namespace gssmraytracer::geometry;
+using namespace gssmraytracer::math;
 
 void display_picture() {
   const Image image = RenderGlobals::getInstance().getImage();
@@ -106,22 +108,27 @@ void gradient(Image &image) {
 int main(int argc, char* argv[]) {
     // Use the default constructor
 
-    int width = 1280;
-    int height = 720;
+    int width = 640;
+    int height = 360;
     Image image(width, height);
-    Camera camera(Imath::Vec3<float>(-5,0,-40),Imath::Vec3<float>(0,0,1),Imath::Vec3<float>(0,1,0));
+    Camera camera(Point(-5,0,-40),Vector(0,0,1),Vector(0,1,0));
     camera.setAspectRatio(16./9.);
     checker(image, 10, Color(0,0,1,1), Color(1,1,1,1));
     image.write("checker.png");
     stripes(image, 9, Color(1,0,0,1), Color(1,1,1,1));
     image.write("stripes.png");
     image.read("checker.png");
-    Imath::Vec3<float> position(0.0,0.0,0.0);
-    Imath::Vec3<float> position2(10.,0.0,0.0);
+    Transform transform1, transform2;
+    Vector position(0.0,0.0,0.0);
+    Vector position2(10.,0.0,0.0);
+    transform1.translate(position);
+    transform2.translate(position2);
+
+
     std::shared_ptr<Shader> shader(new ConstantShader(Color(1,0,0,1)));
     std::shared_ptr<Shader> shader2(new ConstantShader(Color(1,1,0,1)));
-    Sphere *sphere = new Sphere(position, shader, 10.0);
-    Sphere *sphere2 = new Sphere(position2, shader2, 10.0);
+    Sphere *sphere = new Sphere(transform1, shader, 10.0);
+    Sphere *sphere2 = new Sphere(transform2, shader2, 10.0);
     RenderGlobals::getInstance().setImage(image);
     RenderGlobals::getInstance().addShape(sphere);
     RenderGlobals::getInstance().addShape(sphere2);

@@ -6,19 +6,18 @@ namespace gssmraytracer {
   namespace geometry {
     class Shape::Impl {
     public:
-      Imath::Vec3<float> position;
       std::shared_ptr<Shader> shader;
       math::Transform transform;
     };
-    Shape::Shape(const Imath::Vec3<float> &position, const std::shared_ptr<Shader> shader) :
+    Shape::Shape(const math::Transform &transform, const std::shared_ptr<Shader> shader) :
       mImpl(new Impl) {
-        mImpl->transform.translate(position);
+        mImpl->transform = transform;
         mImpl->shader = shader;
     }
 
 
     Shape::Shape(const Shape& shape) : mImpl(new Impl) {
-      mImpl->position = shape.mImpl->position;
+      mImpl->transform = shape.mImpl->transform;
       mImpl->shader = shape.mImpl->shader;
     }
     Shape::~Shape() {
@@ -41,7 +40,7 @@ namespace gssmraytracer {
       return mImpl->shader;
     }
 
-    
+
 
   }
 }

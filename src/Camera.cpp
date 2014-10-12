@@ -1,5 +1,4 @@
 #include "gssmraytracer/utils/Camera.h"
-#include <OpenEXR/ImathVec.h>
 #include "gssmraytracer/utils/RenderGlobals.h"
 #include "gssmraytracer/utils/Color.h"
 #include "gssmraytracer/utils/Ray.h"
@@ -12,12 +11,12 @@ namespace utils {
 
   class Camera::Impl {
   public:
-    Imath::Vec3<float> eye;
-    Imath::Vec3<float> view;
-    Imath::Vec3<float> up;
-    Imath::Vec3<float> axis_view;
-    Imath::Vec3<float> axis_up;
-    Imath::Vec3<float> axis_right;
+    geometry::Point eye;
+    math::Vector view;
+    math::Vector up;
+    math::Vector axis_view;
+    math::Vector axis_up;
+    math::Vector axis_right;
     float aspect_ratio;
     float htanfov;
     float vtanfov;
@@ -28,9 +27,9 @@ namespace utils {
   };
 
 Camera::Camera(): mImpl(new Impl) {
-    setEyeViewUp(Imath::Vec3<float>(0,0,0),
-                 Imath::Vec3<float>(0,0,1),
-                 Imath::Vec3<float>(0,1,0));
+    setEyeViewUp(geometry::Point(0,0,0),
+                 math::Vector(0,0,1),
+                 math::Vector(0,1,0));
     setAspectRatio(16.0/9.0);
     setFOV(60.0);
     mImpl->near = 0.0;
@@ -38,9 +37,9 @@ Camera::Camera(): mImpl(new Impl) {
 
 }
 
-Camera::Camera(const Imath::Vec3<float> &eye,
-               const Imath::Vec3<float> &view,
-               const Imath::Vec3<float> &up,
+Camera::Camera(const geometry::Point &eye,
+               const math::Vector &view,
+               const math::Vector &up,
                const float near,
                const float far
               ) : mImpl(new Impl) {
@@ -54,30 +53,32 @@ Camera::Camera(const Imath::Vec3<float> &eye,
 
 }
 
-void Camera::setEyeViewUp(const Imath::Vec3<float> &eye,
-                          const Imath::Vec3<float> &view,
-                          const Imath::Vec3<float> & up) {
+void Camera::setEyeViewUp(const geometry::Point &eye,
+                          const math::Vector &view,
+                          const math::Vector &up) {
     mImpl->eye = eye;
     mImpl->axis_view = view.normalized();
-    mImpl->axis_up = (up - (up.dot(mImpl->axis_view)) * mImpl->axis_view).normalize();
-    mImpl->axis_right = (mImpl->axis_view.cross(mImpl->axis_up)).normalize();
+    float blah = up.dot(mImpl->axis_view);
+    mImpl->axis_up = (up - (mImpl->axis_view * up.dot(mImpl->axis_view))).normalized();
+    mImpl->axis_right = (mImpl->axis_view.cross(mImpl->axis_up)).normalized();
 }
 
-void Camera::setFOV(const double fov) {
+void Camera::setFOV(const float fov) {
   mImpl->fov = fov;
   mImpl->htanfov = tan(mImpl->fov * 0.5 * M_PI/180.0);
   mImpl->vtanfov = mImpl->htanfov/mImpl->aspect_ratio;
 }
 
-const Imath::Vec3<float> Camera::view(const double x, const double y) const {
-  double xx = (2.0 * x - 1.0) * mImpl->htanfov;
-  double yy = (2.0 * y - 1.0) * mImpl->vtanfov;
-  return (mImpl->axis_up * yy +
-          mImpl->axis_right * xx +
-          mImpl->axis_view).normalize();
+const math::Vector Camera::view(const float x, const float y) const {
+  float xx = (2.0 * x - 1.0) * mImpl->htanfov;
+  float yy = (2.0 * y - 1.0) * mImpl->vtanfov;
+
+  return (math::Vector((mImpl->axis_up * yy) +
+          (mImpl->axis_right * xx) +
+          mImpl->axis_view).normalized());
 }
 
-void Camera::setAspectRatio(const double aspect_ratio) {
+void Camera::setAspectRatio(const float aspect_ratio) {
   mImpl->aspect_ratio = aspect_ratio;
   mImpl->vtanfov = mImpl->htanfov/mImpl->aspect_ratio;
 }
@@ -93,7 +94,7 @@ void Camera::render(RenderGlobals &renderGlobals) const {
 //  const Scene scene = renderGlobals.getScene();
   for (int r =0; r< image.getHeight(); ++r) {
     for (int c = 0; c < image.getWidth(); ++c) {
-      Imath::Vec3<float> direction = view((float)c/image.getWidth(), (float)r/image.getHeight());
+      math::Vector direction = view((float)c/image.getWidth(), (float)r/image.getHeight());
       Color color;
       Ray ray(mImpl->eye, direction);
       float thit;

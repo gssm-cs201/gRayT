@@ -6,6 +6,7 @@
 #include "gssmraytracer/utils/Shader.h"
 #include "gssmraytracer/utils/Ray.h"
 #include "gssmraytracer/utils/Color.h"
+#include "gssmraytracer/math/Transform.h"
 #include "DifferentialGeometry.h"
 
 namespace gssmraytracer {
@@ -14,7 +15,7 @@ namespace gssmraytracer {
 
     class Shape {
     public:
-      Shape(const Imath::Vec3<float> &position, const std::shared_ptr<utils::Shader> shader);
+      Shape(const math::Transform &transform, const std::shared_ptr<utils::Shader> shader);
       Shape(const Shape&);
       virtual ~Shape();
       virtual bool hit(const utils::Ray &ws_ray, float *tHit,

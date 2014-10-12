@@ -1,12 +1,15 @@
-#include <OpenEXR/ImathVec.h>
+#ifndef __NORMAL_H__
+#define __NORMAL_H__
 #include <memory>
-
+#include "gssmraytracer/math/Vector.h"
 namespace gssmraytracer {
   namespace geometry {
     class Normal {
     public:
-      explicit Normal(const Imath::Vec3<float> &vec);
+      explicit Normal(const math::Vector &vec);
       Normal(const float x, const float y, const float z);
+      void normalize();
+      const Normal normalized() const;
       const float x() const;
       const float y() const;
       const float z() const;
@@ -18,3 +21,4 @@ namespace gssmraytracer {
     };
   }
 }
+#endif // __NORMAL_H__

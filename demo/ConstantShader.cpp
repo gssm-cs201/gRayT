@@ -1,5 +1,7 @@
 #include "ConstantShader.h"
 #include <gssmraytracer/utils/Color.h>
+
+using namespace gssmraytracer::geometry;
 namespace gssmraytracer {
   namespace utils {
     class ConstantShader::Impl {
@@ -20,8 +22,8 @@ namespace gssmraytracer {
       }
       return *this;
     }
-    Color ConstantShader::shade(const Imath::Vec3<float> &hitpoint,
-                   const Imath::Vec3<float> &normal) {
+    Color ConstantShader::shade(const Point &hitpoint,
+                   const Normal &normal) {
                      return mImpl->color;
                    }
   }
