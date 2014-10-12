@@ -30,6 +30,7 @@ namespace gssmraytracer {
       class Impl;
       std::shared_ptr<Impl> mImpl;
     };
+    Vector operator*(const float s, const Vector &vec);
   }
 }
 #endif // __VECTOR_H__

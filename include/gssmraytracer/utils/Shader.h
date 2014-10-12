@@ -3,16 +3,13 @@
 
 #include <OpenEXR/ImathVec.h>
 #include "gssmraytracer/utils/Color.h"
-#include "gssmraytracer/geometry/Point.h"
-#include "gssmraytracer/geometry/Normal.h"
+#include "gssmraytracer/geometry/DifferentialGeometry.h"
 
 namespace gssmraytracer {
   namespace utils {
     class Shader {
     public:
-      virtual Color shade(const geometry::Point &hitpoint,
-                          const geometry::Normal &normal
-                     ) = 0;
+      virtual Color shade(const geometry::DifferentialGeometry &dg) = 0;
     };
   }
 }

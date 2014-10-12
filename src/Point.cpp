@@ -50,6 +50,15 @@ namespace gssmraytracer {
     const float Point::z() const {
       return mImpl->vec.z;
     }
+    void Point::x(float xx) {
+      mImpl->vec.x = xx;
+    }
+    void Point::y(float yy) {
+      mImpl->vec.y = yy;
+    }
+    void Point::z(float zz) {
+      mImpl->vec.z = zz;
+    }
 
   }
 }

@@ -42,7 +42,7 @@ namespace gssmraytracer {
     void Ray::setMaxt(const double maxt) {
       mImpl->maxt = maxt;
     }
-    const geometry::Point Ray::point(const float t) const {
+    const geometry::Point Ray::operator()(const float t) const {
       return  origin() + (dir() * t);
     }
 

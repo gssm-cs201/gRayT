@@ -17,8 +17,11 @@ namespace gssmraytracer {
       friend std::ostream& operator<<(std::ostream &os, const Point &point);
 
       const float x() const;
+      void x(float xx);
       const float y() const;
+      void y(float yy);
       const float z() const;
+      void z(float zz);
     private:
       class Impl;
       std::shared_ptr<Impl> mImpl;

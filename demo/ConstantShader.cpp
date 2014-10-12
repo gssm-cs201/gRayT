@@ -22,8 +22,7 @@ namespace gssmraytracer {
       }
       return *this;
     }
-    Color ConstantShader::shade(const Point &hitpoint,
-                   const Normal &normal) {
+    Color ConstantShader::shade(const geometry::DifferentialGeometry &dg) {
                      return mImpl->color;
                    }
   }

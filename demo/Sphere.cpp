@@ -1,6 +1,7 @@
 #include <gssmraytracer/utils/Ray.h>
 #include <gssmraytracer/math/Transform.h>
 #include <gssmraytracer/utils/Color.h>
+#include <gssmraytracer/utils/gssmraytracer.h>
 #include "Sphere.h"
 #include <algorithm>
 #include <iostream>
@@ -12,7 +13,11 @@ namespace gssmraytracer {
 
     class Sphere::Impl {
     public:
-      double radius;
+      float radius;
+      float phiMax;
+      float zmin, zmax;
+      float thetaMin, thetaMax;
+
       inline bool Quadratic(const float A, const float B,
                             const float C, float *t0, float *t1) {
                               float discrim = B * B -4.f * A * C;
@@ -33,8 +38,13 @@ namespace gssmraytracer {
 
     Sphere::Sphere(const Transform &transform,
                  const std::shared_ptr<Shader> shader,
-                 const double radius) : Shape(transform, shader), mImpl(new Impl) {
+                 const float radius, float z0, float z1, float pm) : Shape(transform, shader), mImpl(new Impl) {
                    mImpl->radius = radius;
+                   mImpl->zmin = Clamp(fmin(z0,z1), -radius, radius);
+                   mImpl->zmax = Clamp(fmax(z0,z1), -radius, radius);
+                   mImpl->thetaMin = acosf(Clamp(mImpl->zmin/radius, -1.f, 1.f));
+                   mImpl->thetaMax = acosf(Clamp(mImpl->zmax/radius, -1.f, 1.f));
+                   mImpl->phiMax = Radians(Clamp(pm, 0.0f, 360.0f));
 
     }
     Sphere::~Sphere() {}
@@ -74,44 +84,73 @@ namespace gssmraytracer {
         if (*thit > os_ray.maxt()) return false;
       }
 
-      /*
-      // Compute sphere hit position and phi
-      phit = ray(thit);
-      if (phit.x == 0.f && phit.y == 0.f) phit.x = 1e-5f * radius;
-      phi = atan2f(phit.y, phit.x);
-      if (phi < 0.) phi += 2.f*M_PI;
-      // Test against clipping parameters
-      if ((zmin > -radius && phit.z < zmin) ||
-        (zmax < radius && phit.z > zmax) ||
-         phi > phiMax) {
-           if (this == t1) return false;
-           thit = t1;
 
-           if ((zmin > -radius && phit.z < zmin) ||
-             (zmax < radius && phit.z > zmax) ||
-             phi > phiMax)
+      // Compute sphere hit position and phi
+      phit = os_ray(*thit);
+
+      if (phit.x() == 0.f && phit.y() == 0.f) phit.x(1e-5f * mImpl->radius);
+
+      phi = atan2f(phit.y(), phit.x());
+
+      if (phi < 0.) phi += 2.f*M_PI;
+
+      // Test against clipping parameters
+      if ((mImpl->zmin > -mImpl->radius && phit.z() < mImpl->zmin) ||
+        (mImpl->zmax < mImpl->radius && phit.z() > mImpl->zmax) ||
+         phi > mImpl->phiMax) {
+           if (*thit == t1) return false;
+           *thit = t1;
+
+           if ((mImpl->zmin > -mImpl->radius && phit.z() < mImpl->zmin) ||
+             (mImpl->zmax < mImpl->radius && phit.z() > mImpl->zmax) ||
+             phi > mImpl->phiMax)
              return false;
          }
 
          // find parametric representation of sphere
-         float u = phi/phiMax;
-         float theta = acosf(Clamp(phit.z/radius, -1.f, 1.f));
-         float v = (theta - thetaMin) / (thetaMax - thetaMin);
-         float zradius = sqrtf(phit.x * phit.x + phit.y * phit.y);
-         float invzradius = 1.f / zradius;
-         float cosphi = phit.x * invradius;
-         float sinphi = phit.y * invradius;
-         Vector dpdu(-phiMax * phit.y, phiMax * phit.x, 0);
-         Vector dpdv = (thetaMax - thetaMin) *
-                Vector(phit.z * cosphi, phit.z * sinphi,
-                      -radius * sinf(theta));
+         float u = phi/mImpl->phiMax;
 
-                      */
+         float theta = acosf(Clamp(phit.z()/mImpl->radius, -1.f, 1.f));
+
+         float v = (theta - mImpl->thetaMin) / (mImpl->thetaMax - mImpl->thetaMin);
+         float zradius = sqrtf(phit.x() * phit.x() + phit.y() * phit.y());
+         float invzradius = 1.f / zradius;
+         float cosphi = phit.x() * invzradius;
+         float sinphi = phit.y() * invzradius;
+         Vector dpdu(-mImpl->phiMax * phit.y(), mImpl->phiMax * phit.x(), 0);
+         Vector dpdv = (mImpl->thetaMax - mImpl->thetaMin) *
+                Vector(phit.z() * cosphi, phit.z() * sinphi,
+                      -mImpl->radius * sinf(theta));
+
+        Vector d2Pduu = -mImpl->phiMax * mImpl->phiMax * Vector(phit.x(), phit.y(), 0.0f);
+        Vector d2Pduv = (mImpl->thetaMax - mImpl->thetaMin) * phit.z() * mImpl->phiMax * Vector(-sinphi, cosphi, 0.0f);
+        Vector d2Pdvv = -(mImpl->thetaMax - mImpl->thetaMin) * (mImpl->thetaMax - mImpl->thetaMin) * Vector(phit.x(), phit.y(), phit.z());
+
+        float E = dpdu.dot(dpdu);
+        float F = dpdu.dot(dpdv);
+        float G = dpdv.dot(dpdv);
+        Vector N = dpdu.cross(dpdv).normalized();
+        float e = N.dot(d2Pduu);
+        float f = N.dot(d2Pduv);
+        float g = N.dot(d2Pdvv);
+
+        float invEGF2 = 1.f/(E * G - F * F);
+        Normal dndu = Normal((f * F - e * G) * invEGF2 * dpdu +
+                            (e * F - f * E) * invEGF2 * dpdv);
+        Normal dndv = Normal((g * F - f * G) * invEGF2 * dpdu +
+                            (f*F - g * E) * invEGF2 * dpdv);
+
+
 
 
       // if the ray intersects the sphere return true
-      dg->p = Point(os_ray.point(*thit));
-    //  dp->nn = hitpoint.normalize();
+      dg->p = os_ray(*thit);
+      dg->dpdu = dpdu;
+      dg->dpdv = dpdv;
+      dg->dndu = dndu;
+      dg->dndv = dndv;
+      dg->u = u;
+      dg->v = v;
        return true;
     }
 
@@ -121,7 +160,7 @@ namespace gssmraytracer {
       DifferentialGeometry dg;
 
       if (hit(ws_ray, &thit, &dg))
-        color =  (getShader())->shade(Imath::Vec3<float>(dg.p.x(), dg.p.y(), dg.p.z()), Normal(dg.nn.x(), dg.nn.y(), dg.nn.z()));
+        color =  (getShader())->shade(dg);
 
       return color;
 

@@ -127,8 +127,8 @@ int main(int argc, char* argv[]) {
 
     std::shared_ptr<Shader> shader(new ConstantShader(Color(1,0,0,1)));
     std::shared_ptr<Shader> shader2(new ConstantShader(Color(1,1,0,1)));
-    Sphere *sphere = new Sphere(transform1, shader, 10.0);
-    Sphere *sphere2 = new Sphere(transform2, shader2, 10.0);
+    Sphere *sphere = new Sphere(transform1, shader, 10.0f, -10.0f, 10.0f, 360.0f);
+    Sphere *sphere2 = new Sphere(transform2, shader2, 10.0f, -10.0f, 10.0f, 360.0f);
     RenderGlobals::getInstance().setImage(image);
     RenderGlobals::getInstance().addShape(sphere);
     RenderGlobals::getInstance().addShape(sphere2);

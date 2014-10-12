@@ -51,6 +51,9 @@ namespace gssmraytracer {
     Vector Vector::operator*(const float s) const {
       return Vector(mImpl->vec.x * s, mImpl->vec.y * s, mImpl->vec.z * s);
     }
+    Vector operator*(const float s, const Vector &vec) {
+      return vec * s;
+    }
     Vector& Vector::operator*=(const float s) {
       mImpl->vec *= s;
       return *this;
