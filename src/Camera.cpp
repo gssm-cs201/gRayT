@@ -58,7 +58,6 @@ void Camera::setEyeViewUp(const geometry::Point &eye,
                           const math::Vector &up) {
     mImpl->eye = eye;
     mImpl->axis_view = view.normalized();
-    float blah = up.dot(mImpl->axis_view);
     mImpl->axis_up = (up - (mImpl->axis_view * up.dot(mImpl->axis_view))).normalized();
     mImpl->axis_right = (mImpl->axis_view.cross(mImpl->axis_up)).normalized();
 }
