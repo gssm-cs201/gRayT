@@ -80,7 +80,12 @@ void Image::write(const char *imagename) {
   OpenImageIO::ImageSpec spec(mImpl->width, mImpl->height,
                               mImpl->nchannels, OpenImageIO::TypeDesc::FLOAT);
   out->open(imagename, spec);
-  out->write_image(OpenImageIO::TypeDesc::FLOAT, mImpl->pixels.data());
+  int scanlinesize = mImpl->width * mImpl->nchannels * sizeof(float);
+  out->write_image(OpenImageIO::TypeDesc::FLOAT,
+                  mImpl->pixels.data(),
+                  OpenImageIO::AutoStride,
+                  -scanlinesize,
+                  OpenImageIO::AutoStride);
   out->close();
   delete out;
 
@@ -108,6 +113,22 @@ void Image::setPixel(const int row, const int column, const Color &pixel) {
   mImpl->pixels[mImpl->nchannels*(row * mImpl->width + column) + 2] = pixel.blue;
   if (mImpl->nchannels == 4)
    mImpl->pixels[mImpl->nchannels*(row * mImpl->width + column) + 3] = pixel.alpha;
+
+}
+
+const Color Image::getPixel(const int row, const int column) const {
+  Color result;
+  float red, green, blue, alpha;
+  red = mImpl->pixels[mImpl->nchannels *(row *mImpl->width + column)];
+  green = mImpl->pixels[mImpl->nchannels *(row *mImpl->width + column) + 1];
+  blue = mImpl->pixels[mImpl->nchannels *(row *mImpl->width + column) + 2];
+  alpha = 1.0;
+  if (mImpl->nchannels == 4)
+    alpha = mImpl->pixels[mImpl->nchannels *(row *mImpl->width + column) + 3];
+
+  result = Color(red, green, blue, alpha);
+
+  return result;
 
 }
 

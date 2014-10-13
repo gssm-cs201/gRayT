@@ -23,6 +23,7 @@ public:
   const int getNumChannels() const;
 
   void setPixel(const int row, const int column, const Color &value);
+  const Color getPixel(const int row, const int column) const;
 
 private:
   class Impl;
