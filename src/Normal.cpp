@@ -19,8 +19,24 @@ namespace gssmraytracer {
       mImpl->vec.y = y;
       mImpl->vec.z = z;
     }
+    Normal::Normal(const Normal &normal) : mImpl(new Impl) {
+      mImpl->vec = normal.mImpl->vec;
+    }
+
+    Normal& Normal::operator=(const Normal &normal)  {
+      if (this != &normal) {
+        mImpl->vec = normal.mImpl->vec;
+      }
+      return *this;
+    }
     void Normal::normalize() { mImpl->vec.normalize();}
-    const Normal Normal::normalized() const { return Normal(math::Vector(mImpl->vec.x, mImpl->vec.y, mImpl->vec.z)).normalized();}
+
+    const Normal Normal::normalized() const {
+      Normal new_normal = *this;
+      new_normal.normalize();
+      return new_normal;
+
+    }
 
     const float Normal::x() const { return mImpl->vec.x;}
     const float Normal::y() const { return mImpl->vec.y;}

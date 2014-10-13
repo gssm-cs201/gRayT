@@ -18,8 +18,9 @@ namespace gssmraytracer {
       Shape(const math::Transform &transform, const std::shared_ptr<utils::Shader> shader);
       Shape(const Shape&);
       virtual ~Shape();
+      virtual bool hit(const utils::Ray &ws_ray, float *tHit) const = 0;
       virtual bool hit(const utils::Ray &ws_ray, float *tHit,
-                        DifferentialGeometry *dg) const = 0;
+                        std::shared_ptr<DifferentialGeometry> &dg) const = 0;
 
       const std::shared_ptr<utils::Shader> getShader() const;
       virtual const utils::Color getShade(const utils::Ray &ws_ray) const = 0;

@@ -15,7 +15,7 @@ namespace gssmraytracer {
       void setImage(const Image& image);
       const Image getImage() const;
       bool hit(const Ray &ws_ray, float &thit,
-                      geometry::DifferentialGeometry *dg);
+                      std::shared_ptr<geometry::DifferentialGeometry> &dg);
       const Color shade(const Ray &ws_ray) const;
 
     private:

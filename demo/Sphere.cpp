@@ -52,13 +52,78 @@ namespace gssmraytracer {
 
     }
     Sphere::~Sphere() {}
-    bool Sphere::hit(const Ray &ws_ray, float *thit,
-                      DifferentialGeometry *dg) const {
+
+    bool Sphere::hit(const utils::Ray &ws_ray, float *thit) const {
       float phi;
       Point phit;
 
       // Transform the ray into object space
       Ray os_ray = worldToObjectSpace(ws_ray);
+
+      // Do ray-sphere intersection in object space
+      // Compute quadratic sphere coefficients
+
+      float A = os_ray.dir().x() * os_ray.dir().x() +
+                os_ray.dir().y() * os_ray.dir().y() +
+                os_ray.dir().z() * os_ray.dir().z();
+      float B = 2.0 * (os_ray.dir().x() * os_ray.origin().x() +
+                     os_ray.dir().y() * os_ray.origin().y() +
+                     os_ray.dir().z() * os_ray.origin().z());
+      float C = os_ray.origin().x() * os_ray.origin().x() +
+                os_ray.origin().y() * os_ray.origin().y() +
+                os_ray.origin().z() * os_ray.origin().z() -
+                mImpl->radius * mImpl->radius;
+
+
+      // Solve quadratic equation for t values
+      float t0, t1;
+      if (!mImpl->Quadratic(A,B,C, &t0, &t1)) return false;
+      // compute intersection distance along ray
+      if (t0 > os_ray.maxt() || t1 < os_ray.mint())
+        return false;
+
+      thit = &t0;
+      if (t0 < os_ray.mint()) {
+        thit = &t1;
+        if (*thit > os_ray.maxt()) return false;
+      }
+
+
+      // Compute sphere hit position and phi
+      phit = os_ray(*thit);
+
+      if (phit.x() == 0.f && phit.y() == 0.f) phit.x(1e-5f * mImpl->radius);
+
+      phi = atan2f(phit.y(), phit.x());
+
+      if (phi < 0.) phi += 2.f*M_PI;
+
+      // Test against clipping parameters
+      if ((mImpl->zmin > -mImpl->radius && phit.z() < mImpl->zmin) ||
+        (mImpl->zmax < mImpl->radius && phit.z() > mImpl->zmax) ||
+         phi > mImpl->phiMax) {
+           if (*thit == t1) return false;
+           *thit = t1;
+
+           if ((mImpl->zmin > -mImpl->radius && phit.z() < mImpl->zmin) ||
+             (mImpl->zmax < mImpl->radius && phit.z() > mImpl->zmax) ||
+             phi > mImpl->phiMax)
+             return false;
+         }
+
+
+      return true;
+
+    }
+    bool Sphere::hit(const Ray &ws_ray, float *thit,
+                      std::shared_ptr<DifferentialGeometry> &dg) const {
+      float phi;
+      Point phit;
+
+      // Transform the ray into object space
+      Ray os_ray = worldToObjectSpace(ws_ray);
+
+
 
       // Do ray-sphere intersection in object space
       // Compute quadratic sphere coefficients
@@ -148,6 +213,15 @@ namespace gssmraytracer {
 
 
       // if the ray intersects the sphere return true
+      std::shared_ptr<DifferentialGeometry> dg_temp(new DifferentialGeometry(mImpl->o2w(os_ray(*thit)),
+                                mImpl->o2w(dpdu),
+                                mImpl->o2w(dpdv),
+                                mImpl->o2w(dndu),
+                                mImpl->o2w(dndv),
+                                u, v, this));
+      dg = dg_temp;
+
+/*
       dg->p = mImpl->o2w(os_ray(*thit));
       dg->dpdu = mImpl->o2w(dpdu);
       dg->dpdv = mImpl->o2w(dpdv);
@@ -157,16 +231,18 @@ namespace gssmraytracer {
       dg->v = v;
       Normal nn = Normal(dg->dpdu.cross(dg->dpdv).normalized());
       dg->nn = nn;
+      */
        return true;
+
     }
 
     const utils::Color Sphere::getShade(const Ray &ws_ray) const {
       float thit;
       utils::Color color;
-      DifferentialGeometry dg;
+      std::shared_ptr<DifferentialGeometry> dg;
 
-      if (hit(ws_ray, &thit, &dg))
-        color =  (getShader())->shade(dg);
+      if (hit(ws_ray, &thit, dg))
+        color =  (getShader())->shade(*dg);
 
       return color;
 

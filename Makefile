@@ -1,5 +1,5 @@
 CC=clang++
-CFLAGS = -std=c++11 -c -Wall -fPIC 
+CFLAGS = -std=c++11 -c -Wall -fPIC -g
 LDFLAGS =
 LIBS = -L /usr/local/lib -lImath -lIex -L/usr/local/dist/linux64/lib -lOpenImageIO
 SOURCES=$(wildcard src/*.cpp)

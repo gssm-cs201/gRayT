@@ -14,6 +14,11 @@ namespace gssmraytracer {
       mImpl->vec.y = y;
       mImpl->vec.z = z;
     }
+    Vector::Vector(const Vector &vec) : mImpl(new Impl) {
+      mImpl->vec.x = vec.x();
+      mImpl->vec.y = vec.y();
+      mImpl->vec.z = vec.z();
+    }
 
     Vector Vector::operator+(const Vector &v) const {
       Vector newVector;

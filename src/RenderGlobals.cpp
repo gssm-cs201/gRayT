@@ -2,6 +2,7 @@
 #include "gssmraytracer/geometry/Shape.h"
 #include "gssmraytracer/utils/Ray.h"
 #include "gssmraytracer/utils/Color.h"
+#include <limits>
 #include <vector>
 
 using namespace gssmraytracer::geometry;
@@ -42,10 +43,19 @@ namespace gssmraytracer {
       return *this;
     }
     bool RenderGlobals::hit(const Ray &ws_ray, float &thit,
-            DifferentialGeometry *dg) {
+            std::shared_ptr<DifferentialGeometry> &dg) {
+              float t = std::numeric_limits<float>::infinity();
+              Shape *target_shape = nullptr;
       for (std::vector<Shape*>::iterator iter = mImpl->shapes.begin();
           iter != mImpl->shapes.end(); ++iter) {
-            if ((*iter)->hit(ws_ray, &thit, dg)) {
+            if ((*iter)->hit(ws_ray, &thit)) {
+              if (thit < t) {
+                target_shape = *iter;
+                t = thit;
+              }
+            }
+            if (target_shape != nullptr) {
+              target_shape->hit(ws_ray, &thit, dg);
               return true;
             }
           }
@@ -55,10 +65,10 @@ namespace gssmraytracer {
     const Color RenderGlobals::shade(const Ray &ws_ray) const {
       Color color;
       float thit;
-      DifferentialGeometry dg;
+      std::shared_ptr<DifferentialGeometry> dg;
       for (std::vector<Shape*>::iterator iter = mImpl->shapes.begin();
           iter != mImpl->shapes.end(); ++iter) {
-            if ((*iter)->hit(ws_ray, &thit, &dg)) {
+            if ((*iter)->hit(ws_ray, &thit, dg)) {
               return (*iter)->getShade(ws_ray);
             }
           }

@@ -97,8 +97,8 @@ void Camera::render(RenderGlobals &renderGlobals) const {
       Color color;
       Ray ray(mImpl->eye, direction);
       float thit;
-      DifferentialGeometry dg;
-      if (renderGlobals.hit(ray, thit, &dg)) {
+      std::shared_ptr<DifferentialGeometry> dg;
+      if (renderGlobals.hit(ray, thit, dg)) {
         color = renderGlobals.shade(ray);
       }
       else
