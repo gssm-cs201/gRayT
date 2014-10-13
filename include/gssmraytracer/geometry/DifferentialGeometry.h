@@ -20,6 +20,7 @@ namespace gssmraytracer {
             const float v,
             const std::shared_ptr<Shape> sh
       );
+      DifferentialGeometry(const DifferentialGeometry &dg);
       Point p;
       Normal nn;
       float u, v;

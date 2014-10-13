@@ -26,6 +26,10 @@ namespace gssmraytracer {
     const float Normal::y() const { return mImpl->vec.y;}
     const float Normal::z() const { return mImpl->vec.z;}
 
+    std::ostream& operator<<(std::ostream &os, const Normal &normal) {
+      os << "(" << normal.x() << ", " << normal.y() << ", " << normal.z() << ")" << std::endl;
+      return os;
+    }
 
   }
 

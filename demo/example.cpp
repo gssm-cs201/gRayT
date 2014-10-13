@@ -21,6 +21,7 @@
 #include <iostream>
 
 #include "ConstantShader.h"
+#include "NormalShader.h"
 
 using namespace gssmraytracer::utils;
 using namespace gssmraytracer::geometry;
@@ -111,7 +112,8 @@ int main(int argc, char* argv[]) {
     int width = 640;
     int height = 360;
     Image image(width, height);
-    Camera camera(Point(-5,0,-40),Vector(0,0,1),Vector(0,1,0));
+    //Camera camera(Point(-5,0,-40),Vector(0,0,1),Vector(0,1,0));
+    Camera camera(Point(-5,0,40),Vector(0,0,-1),Vector(0,1,0));
     camera.setAspectRatio(16./9.);
     checker(image, 10, Color(0,0,1,1), Color(1,1,1,1));
     image.write("checker.png");
@@ -125,8 +127,8 @@ int main(int argc, char* argv[]) {
     transform2.translate(position2);
 
 
-    std::shared_ptr<Shader> shader(new ConstantShader(Color(1,0,0,1)));
-    std::shared_ptr<Shader> shader2(new ConstantShader(Color(1,1,0,1)));
+    std::shared_ptr<Shader> shader(new NormalShader());
+    std::shared_ptr<Shader> shader2(new NormalShader());
     Sphere *sphere = new Sphere(transform1, shader, 10.0f, -10.0f, 10.0f, 360.0f);
     Sphere *sphere2 = new Sphere(transform2, shader2, 10.0f, -10.0f, 10.0f, 360.0f);
     RenderGlobals::getInstance().setImage(image);

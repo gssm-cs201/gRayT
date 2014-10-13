@@ -17,6 +17,8 @@ namespace gssmraytracer {
       float phiMax;
       float zmin, zmax;
       float thetaMin, thetaMax;
+      Transform o2w;
+      Transform w2o;
 
       inline bool Quadratic(const float A, const float B,
                             const float C, float *t0, float *t1) {
@@ -45,6 +47,8 @@ namespace gssmraytracer {
                    mImpl->thetaMin = acosf(Clamp(mImpl->zmin/radius, -1.f, 1.f));
                    mImpl->thetaMax = acosf(Clamp(mImpl->zmax/radius, -1.f, 1.f));
                    mImpl->phiMax = Radians(Clamp(pm, 0.0f, 360.0f));
+                   mImpl->w2o = transform;
+                   mImpl->o2w = transform.inverse();
 
     }
     Sphere::~Sphere() {}
@@ -144,13 +148,15 @@ namespace gssmraytracer {
 
 
       // if the ray intersects the sphere return true
-      dg->p = os_ray(*thit);
-      dg->dpdu = dpdu;
-      dg->dpdv = dpdv;
-      dg->dndu = dndu;
-      dg->dndv = dndv;
+      dg->p = mImpl->o2w(os_ray(*thit));
+      dg->dpdu = mImpl->o2w(dpdu);
+      dg->dpdv = mImpl->o2w(dpdv);
+      dg->dndu = mImpl->o2w(dndu);
+      dg->dndv = mImpl->o2w(dndv);
       dg->u = u;
       dg->v = v;
+      Normal nn = Normal(dg->dpdu.cross(dg->dpdv).normalized());
+      dg->nn = nn;
        return true;
     }
 

@@ -4,6 +4,8 @@
 #include <memory>
 #include "gssmraytracer/utils/Ray.h"
 #include "gssmraytracer/math/Vector.h"
+#include "gssmraytracer/geometry/Normal.h"
+#include "gssmraytracer/geometry/Point.h"
 
 namespace gssmraytracer {
   namespace math {
@@ -15,13 +17,16 @@ namespace gssmraytracer {
 
       Transform(const Imath::Matrix44<float> transformMatrix);
 
-      Transform inverse();
+      Transform inverse() const;
 
       void translate(const Vector &translate);
       void rotate(const Vector &rotate);
       void scale(const Vector &scale);
 
-      utils::Ray transform(const utils::Ray &ray);
+      utils::Ray operator()(const utils::Ray &ray);
+      geometry::Point operator()(const geometry::Point &point);
+      math::Vector operator()(const math::Vector &vector);
+      geometry::Normal operator()(const geometry::Normal &normal);
     private:
       class Impl;
       std::shared_ptr<Impl> mImpl;

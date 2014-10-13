@@ -19,6 +19,7 @@ namespace gssmraytracer {
       std::shared_ptr<Impl> mImpl;
 
     };
+    std::ostream& operator<<(std::ostream &os, const Normal &normal);
   }
 }
 #endif // __NORMAL_H__
