@@ -5,7 +5,10 @@ namespace gssmraytracer {
   namespace utils {
     class Color {
     public:
+      //! Initializes a Color set to (0,0,0,0)
       Color();
+
+      //! Sets the Color r,g,b,a
       Color(const float red,
             const float green,
             const float blue,

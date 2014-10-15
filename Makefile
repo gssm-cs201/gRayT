@@ -15,12 +15,15 @@ GSSMRAYTRACERSTATICLIB=lib/$(GSSMRAYTRACERSTATICLIBNAME)
 GSSMRAYTRACERSTATICSIMLIB=$(GSSMRAYTRACERLIBBASENAME).a
 MKDIR_P = mkdir -p
 
-.PHONY : makelib
+.PHONY : makelib makedocs docs
 
-all: makelib $(SOURCES) $(OBJECTS) $(GSSMRAYTRACERSTATICLIB).$(LIB_VERSION)
+all: makelib makedocs $(SOURCES) $(OBJECTS) $(GSSMRAYTRACERSTATICLIB).$(LIB_VERSION)
 
 makelib: 
 	mkdir -p lib
+
+makedocs:
+	mkdir -p docs
 
 %.o: %.cpp
 	$(CC) $(INCLUDES)  -o $@ $< $(CFLAGS)
@@ -30,7 +33,11 @@ $(GSSMRAYTRACERSTATICLIB).$(LIB_VERSION): $(OBJECTS)
 	ln -f -s $(GSSMRAYTRACERLIBBASENAME).$(LIB_VERSION).a $(GSSMRAYTRACERSTATICSIMLIB)
 	mv $(GSSMRAYTRACERSTATICSIMLIB) lib/$(GSSMRAYTRACERSTATICSIMLIB)
 
+docs:
+	cd docs;doxygen Doxyfile
 clean:
 	rm -fr $(OBJECTS)
 	rm -fr $(GSSMRAYTRACERSTATICLIB)
 	rm -fr lib
+	rm -fr docs/html
+	rm -fr docs/latex

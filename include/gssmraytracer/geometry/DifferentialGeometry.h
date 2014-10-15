@@ -9,7 +9,14 @@ namespace gssmraytracer {
   namespace geometry {
     class Shape;
     struct DifferentialGeometry {
-
+      /*! \brief Object for holding information for shading
+       *
+       * P is the hit point,
+       * dpdu, and dpdv are the partial derivatives along u and v
+       * dndu and dndv are the partial derivatives of the Normal
+       * u and v are the u v coordinates
+       * sh holds a pointer to a shape
+       */
       DifferentialGeometry(
             const Point &P,
             const math::Vector &dpdu, const math::Vector &dpdv,
@@ -18,6 +25,8 @@ namespace gssmraytracer {
             const float v,
             const Shape *sh
       );
+
+      //! Copy constructor.  Performs shallow copy of *sh
       DifferentialGeometry(const DifferentialGeometry &dg);
       Point p;
       Normal nn;
@@ -26,7 +35,8 @@ namespace gssmraytracer {
       Normal dndu, dndv;
       const Shape *shape;
     private:
-      DifferentialGeometry& operator=(const DifferentialGeometry dg); 
+      //! Assignment operator forbidden.
+      DifferentialGeometry& operator=(const DifferentialGeometry dg);
     };
   }
 }

@@ -8,15 +8,37 @@ namespace gssmraytracer {
   namespace utils {
     class Ray {
     public:
-      Ray(); // default constructor
+      /* \brief Initializes a ray with a point and direction vector
+       *
+       * The point (origin) and direction is initialized to (0,0,0)
+       */
+      Ray();
+
+      //!brief Initialize a ray with a given point and direction
       Ray(const geometry::Point &origin, const math::Vector &direction);
+
+      //! returns the origin
       const geometry::Point origin() const;
+
+      //! returns the normalized direction
       const math::Vector dir() const;
+
+      //! returns the minimum t range for the ray
       const double mint();
+
+      //! sets the minimum t range for the ray
       void setMint(const double);
+
+      //! returns the maximum t range for the ray
       const double maxt();
+
+      //! sets the maximum t range for the ray
       void setMaxt(const double);
+
+      //! returns the resulting point based on the provided t value
       const geometry::Point operator()(const float t) const;
+
+      //! output operator for printing the ray information
       friend std::ostream& operator<<(std::ostream &os, const Ray &ray);
 
     private:
