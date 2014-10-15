@@ -1,3 +1,7 @@
+#include <gssmraytracer/utils/Camera.h>
+
+using namespace gssmraytracer::utils;
+
 void main()
 {
  // Create a default camera
@@ -8,4 +12,6 @@ void main()
 
  // Set the aspect ratio
  cam.setAspectRatio(16./9.);
+
+
 }
