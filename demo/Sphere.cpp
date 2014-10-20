@@ -54,6 +54,7 @@ namespace gssmraytracer {
     Sphere::~Sphere() {}
 
     bool Sphere::hit(const utils::Ray &ws_ray, float *thit) const {
+
       float phi;
       Point phit;
 
@@ -233,6 +234,16 @@ namespace gssmraytracer {
       dg->nn = nn;
       */
        return true;
+
+    }
+    const BBox Sphere::objectBB() const {
+      return BBox(Point(-mImpl->radius, -mImpl->radius, mImpl->zmin),
+                  Point(mImpl->radius, mImpl->radius, mImpl->zmax));
+
+    }
+    const BBox Sphere::worldBB() const {
+      return BBox(mImpl->o2w(Point(-mImpl->radius, -mImpl->radius, mImpl->zmin)),
+                  mImpl->o2w(Point(mImpl->radius, mImpl->radius, mImpl->zmax)));
 
     }
 

@@ -8,6 +8,7 @@
 #include "gssmraytracer/utils/Color.h"
 #include "gssmraytracer/math/Transform.h"
 #include "DifferentialGeometry.h"
+#include "gssmraytracer/geometry/BBox.h"
 
 namespace gssmraytracer {
   namespace geometry {
@@ -40,6 +41,12 @@ namespace gssmraytracer {
        */
       virtual bool hit(const utils::Ray &ws_ray, float *tHit,
                         std::shared_ptr<DifferentialGeometry> &dg) const = 0;
+
+      //! returns the bounding box of the shape in world space
+      virtual const BBox worldBB() const = 0;
+
+      //! returns the bounding box of the shape in object space
+      virtual const BBox objectBB() const = 0;
 
       //! returns the shader of the Shape
       const std::shared_ptr<utils::Shader> getShader() const;

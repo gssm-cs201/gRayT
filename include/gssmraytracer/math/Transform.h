@@ -25,7 +25,7 @@ namespace gssmraytracer {
       Transform(const Imath::Matrix44<float> transformMatrix);
 
       //! Returns a new inverse Transform object, based on the inverse of this one.
-      Transform inverse() const;
+      const Transform inverse() const;
 
       //! Sets the translation component.
       void translate(const Vector &translate);
@@ -37,16 +37,16 @@ namespace gssmraytracer {
       void scale(const Vector &scale);
 
       //! Returns a new Ray transformed by this Transform
-      utils::Ray operator()(const utils::Ray &ray);
+      const utils::Ray operator()(const utils::Ray &ray) const;
 
       //! Returns a new Point transformed by this Transform
-      geometry::Point operator()(const geometry::Point &point);
+      const geometry::Point operator()(const geometry::Point &point) const;
 
       //! Returns a new Vector transformed by this Transform
-      math::Vector operator()(const math::Vector &vector);
+      const math::Vector operator()(const math::Vector &vector) const;
 
       //! Returns a new Normal transformed by this Transform
-      geometry::Normal operator()(const geometry::Normal &normal);
+      const geometry::Normal operator()(const geometry::Normal &normal) const;
     private:
       class Impl;
       std::shared_ptr<Impl> mImpl;

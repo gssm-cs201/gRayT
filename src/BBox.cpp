@@ -1,6 +1,7 @@
 #include <limits>
 #include "gssmraytracer/geometry/Point.h"
 #include "gssmraytracer/geometry/BBox.h"
+
 namespace gssmraytracer {
   namespace geometry {
     class BBox::Impl {
@@ -20,6 +21,97 @@ namespace gssmraytracer {
     BBox::BBox(const Point &p1, const Point &p2) : mImpl(new Impl) {
       mImpl->pMin = Point(std::min(p1.x(), p2.x()), std::min(p1.y(), p2.y()), std::min(p1.z(), p2.z()));
       mImpl->pMax = Point(std::max(p1.x(), p2.x()), std::max(p1.y(), p2.y()), std::max(p1.z(), p2.z()));
+    }
+    BBox& BBox::operator=(const BBox &other) {
+      if (this != &other) {
+        mImpl->pMin = other.mImpl->pMin;
+        mImpl->pMax = other.mImpl->pMax;
+
+      }
+      return *this;
+    }
+    const Point BBox::min() const {
+      return mImpl->pMin;
+    }
+    const Point BBox::max() const {
+      return mImpl->pMax;
+    }
+    const BBox BBox::combine(const BBox &bbox) const {
+      BBox ret = bbox;
+
+      ret.mImpl->pMin.x(std::min(mImpl->pMin.x(), bbox.mImpl->pMin.x()));
+
+      ret.mImpl->pMin.y(std::min(mImpl->pMin.y(), bbox.mImpl->pMin.y()));
+      ret.mImpl->pMin.z(std::min(mImpl->pMin.z(), bbox.mImpl->pMin.z()));
+
+      ret.mImpl->pMax.x(std::max(mImpl->pMax.x(), bbox.mImpl->pMax.x()));
+      ret.mImpl->pMax.y(std::max(mImpl->pMax.y(), bbox.mImpl->pMax.y()));
+      ret.mImpl->pMax.z(std::max(mImpl->pMax.z(), bbox.mImpl->pMax.z()));
+    return ret;
+    }
+
+
+    bool BBox::intersect(const utils::Ray &ray, float *hitt0, float *hitt1) const {
+
+      float t0 = ray.mint(), t1 = ray.maxt();
+      for (int i = 0; i < 3; ++i) {
+        float invRayDir = 1.f/ray.dir()[i];
+        float tNear = (mImpl->pMin[i] - ray.origin()[i]) * invRayDir;
+        float tFar = (mImpl->pMax[i] - ray.origin()[i]) * invRayDir;
+        if (tNear > tFar) std::swap(tNear, tFar);
+        t0 = tNear > t0 ? tNear: t0;
+        t1 = tFar < t1 ? tFar : t1;
+        if (t0 > t1) return false;
+      }
+      if (hitt0) *hitt0 = t0;
+      if (hitt1) *hitt1 = t1;
+      return true;
+      /*
+      math::Vector tmin, tmax;
+      float t0 = ray.mint();
+      float t1 = ray.maxt();
+      float divx = 1/ray.dir().x();
+      if (divx >= 0) {
+        tmin.x((mImpl->pMin.x() - ray.origin().x()) * divx);
+        tmax.x((mImpl->pMax.x() - ray.origin().x()) * divx);
+      }
+      else {
+        tmin.x((mImpl->pMax.x() - ray.origin().x()) * divx);
+        tmax.x((mImpl->pMin.x() - ray.origin().x()) * divx);
+      }
+      float divy = 1/ray.dir().y();
+      if (divy >= 0) {
+        tmin.y((mImpl->pMin.y() - ray.origin().y()) * divy);
+        tmax.y((mImpl->pMax.y() - ray.origin().y()) * divy);
+      }
+      else {
+        tmin.y((mImpl->pMax.y() - ray.origin().y()) * divy);
+        tmax.y((mImpl->pMin.y() - ray.origin().y()) * divy);
+      }
+      if ((tmin.x() > tmax.y()) || (tmin.y() > tmax.x()))
+        return false;
+      if (tmin.y() > tmin.x())
+        tmin.x(tmin.y());
+      if (tmax.y() < tmax.x())
+        tmax.x(tmax.y());
+      float divz = 1/ray.dir().z();
+      if (divz >= 0) {
+        tmin.z((mImpl->pMin.z() - ray.origin().z()) * divz);
+        tmax.z((mImpl->pMax.z() - ray.origin().z()) * divz);
+      }
+      else {
+        tmin.z((mImpl->pMax.z() - ray.origin().z()) * divz);
+        tmax.z((mImpl->pMin.z() - ray.origin().z()) * divz);
+      }
+      if ((tmin.x() > tmax.z()) || (tmin.z() > tmax.z()))
+        return false;
+      if (tmin.z() > tmin.x())
+        tmin.x(tmin.z());
+      if (tmax.z() < tmax.x())
+        tmax.x(tmax.z());
+
+      return ((tmin.x() < t1) && (tmax.x() > t0));
+      */
     }
   }
 }

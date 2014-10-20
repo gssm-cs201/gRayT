@@ -24,13 +24,13 @@ namespace gssmraytracer {
       const math::Vector dir() const;
 
       //! returns the minimum t range for the ray
-      const double mint();
+      const double mint() const;
 
       //! sets the minimum t range for the ray
       void setMint(const double);
 
       //! returns the maximum t range for the ray
-      const double maxt();
+      const double maxt() const;
 
       //! sets the maximum t range for the ray
       void setMaxt(const double);

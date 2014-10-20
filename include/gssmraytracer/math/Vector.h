@@ -3,6 +3,13 @@
 #include <memory>
 
 namespace gssmraytracer {
+  namespace geometry {
+    class Normal;
+  }
+}
+
+namespace gssmraytracer {
+
   namespace math {
     class Vector {
     public:
@@ -35,11 +42,17 @@ namespace gssmraytracer {
       //! Scales this Vector by a scalar
       Vector& operator*=(const float s);
 
+      //! get x, y or z based on index
+      const float operator[](const float index) const;
+
       //! Cross product.  Returns a new Vector
       Vector cross(const Vector &other) const;
 
       //! Dot product.  Returns a float
       const float dot(const Vector &other) const;
+
+      //! Dot product.  Returns a float
+      const float dot(const geometry::Normal &other) const;
 
       //! Returns the length of the Vector
       const float length() const;
@@ -59,11 +72,20 @@ namespace gssmraytracer {
       //! returns the x value
       const float x() const;
 
+      //! set the x value
+      void x(const float xx);
+
       //! returns the y value
       const float y() const;
 
+      //! set the y value
+      void y(const float yy);
+
       //! returns the z value
       const float z() const;
+
+      //! set the z value
+      void z(const float zz);
     private:
       class Impl;
       std::shared_ptr<Impl> mImpl;

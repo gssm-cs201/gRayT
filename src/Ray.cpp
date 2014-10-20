@@ -30,13 +30,13 @@ namespace gssmraytracer {
       return mImpl->direction.normalized();
     }
 
-    const double Ray::mint() {
+    const double Ray::mint() const {
       return mImpl->mint;
     }
     void Ray::setMint(const double mint) {
       mImpl->mint = mint;
     }
-    const double Ray::maxt() {
+    const double Ray::maxt() const {
       return mImpl->maxt;
     }
     void Ray::setMaxt(const double maxt) {

@@ -12,6 +12,8 @@ namespace gssmraytracer {
       bool hit(const utils::Ray &ws_ray, float *tHit) const;
       bool hit(const utils::Ray &ws_ray, float *tHit,
                std::shared_ptr<DifferentialGeometry> &dg) const;
+      const BBox worldBB() const;
+      const BBox objectBB() const;
       const utils::Color getShade(const utils::Ray &ws_ray) const;
       virtual ~Sphere();
     private:

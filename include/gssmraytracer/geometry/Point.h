@@ -28,9 +28,14 @@ namespace gssmraytracer {
       //! Returns a new Point which is the sum of a Vector and this point
       Point operator+(const math::Vector &vec) const;
 
+      //! Returns a new Vector which is the difference of two points
+      const math::Vector operator-(const Point &) const;
+
       //! Allows for printing on Point in std::cout
       friend std::ostream& operator<<(std::ostream &os, const Point &point);
 
+      //! get x, y or z based on the index
+      const float operator[](const float index) const;
       //! returns the x component of a Point
       const float x() const;
 

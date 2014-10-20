@@ -44,10 +44,18 @@ namespace gssmraytracer {
     }
     bool RenderGlobals::hit(const Ray &ws_ray, float &thit,
             std::shared_ptr<DifferentialGeometry> &dg) {
+
               float t = std::numeric_limits<float>::infinity();
               Shape *target_shape = nullptr;
+              BBox bbox;
+              for (std::vector<Shape*>::iterator iter = mImpl->shapes.begin();
+                  iter != mImpl->shapes.end(); ++iter) {
+                    bbox = bbox.combine((*iter)->worldBB());
+                  }
+      if (bbox.intersect(ws_ray)) {
       for (std::vector<Shape*>::iterator iter = mImpl->shapes.begin();
           iter != mImpl->shapes.end(); ++iter) {
+
             if ((*iter)->hit(ws_ray, &thit)) {
               if (thit < t) {
                 target_shape = *iter;
@@ -59,6 +67,7 @@ namespace gssmraytracer {
               return true;
             }
           }
+        }
           return false;
     }
 

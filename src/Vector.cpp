@@ -1,4 +1,5 @@
 #include "gssmraytracer/math/Vector.h"
+#include "gssmraytracer/geometry/Normal.h"
 #include <OpenEXR/ImathVec.h>
 namespace gssmraytracer {
   namespace math {
@@ -64,6 +65,9 @@ namespace gssmraytracer {
       return *this;
 
     }
+    const float Vector::operator[](const float index) const {
+      return mImpl->vec[index];
+    }
     Vector Vector::cross(const Vector &other) const {
       Vector newVector;
       newVector.mImpl->vec = mImpl->vec.cross(other.mImpl->vec);
@@ -73,14 +77,22 @@ namespace gssmraytracer {
     const float Vector::dot(const Vector &other) const {
       return mImpl->vec.dot(other.mImpl->vec);
     }
+
+    const float Vector::dot(const geometry::Normal &other) const {
+      return dot(Vector(other.x(), other.y(), other.z()));
+    }
+
     const float Vector::length() const {return mImpl->vec.length();}
     const Vector Vector::direction() const { Imath::Vec3<float> temp = mImpl->vec.normalized();
                                               return Vector(temp.x, temp.y, temp.z);}
 
 
     const float Vector::x() const { return mImpl->vec.x;}
+    void Vector::x(const float xx) { mImpl->vec.x = xx;}
     const float Vector::y() const { return mImpl->vec.y;}
+    void Vector::y(const float yy) { mImpl->vec.y = yy;}
     const float Vector::z() const { return mImpl->vec.z;}
+    void Vector::z(const float zz) { mImpl->vec.z = zz;}
 
     void Vector::normalize() { mImpl->vec.normalize();}
     const Vector Vector::normalized() const {
