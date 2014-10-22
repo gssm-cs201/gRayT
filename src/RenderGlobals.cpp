@@ -71,18 +71,7 @@ namespace gssmraytracer {
           return false;
     }
 
-    const Color RenderGlobals::shade(const Ray &ws_ray) const {
-      Color color;
-      float thit;
-      std::shared_ptr<DifferentialGeometry> dg;
-      for (std::vector<Shape*>::iterator iter = mImpl->shapes.begin();
-          iter != mImpl->shapes.end(); ++iter) {
-            if ((*iter)->hit(ws_ray, thit, dg)) {
-              return (*iter)->getShade(ws_ray);
-            }
-          }
-          return color;
-    }
+
 
 
 

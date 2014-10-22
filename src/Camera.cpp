@@ -97,9 +97,10 @@ void Camera::render(const Scene &scene, Image &image) const {
       Ray ray(mImpl->eye, direction);
       float thit;
       std::shared_ptr<DifferentialGeometry> dg;
-      if (scene.hit(ray, thit, dg)) {
+      std::shared_ptr<Primitive> prim;
+      if (scene.hit(ray, thit, dg, prim)) {
         // possibly pass in scene data too for lighting and reflections
-        color = dg->shape->getShade(ray);
+        color = prim->shade(dg);
       }
       else
         color = Color(0,0,0,1);

@@ -39,8 +39,7 @@ namespace gssmraytracer {
     };
 
     Sphere::Sphere(const Transform &transform,
-                 const std::shared_ptr<Shader> shader,
-                 const float radius, float z0, float z1, float pm) : Shape(transform, shader), mImpl(new Impl) {
+                 const float radius, float z0, float z1, float pm) : Shape(transform), mImpl(new Impl) {
                    mImpl->radius = radius;
                    mImpl->zmin = Clamp(fmin(z0,z1), -radius, radius);
                    mImpl->zmax = Clamp(fmax(z0,z1), -radius, radius);
@@ -222,17 +221,6 @@ namespace gssmraytracer {
                                 u, v, this));
       dg = dg_temp;
 
-/*
-      dg->p = mImpl->o2w(os_ray(*thit));
-      dg->dpdu = mImpl->o2w(dpdu);
-      dg->dpdv = mImpl->o2w(dpdv);
-      dg->dndu = mImpl->o2w(dndu);
-      dg->dndv = mImpl->o2w(dndv);
-      dg->u = u;
-      dg->v = v;
-      Normal nn = Normal(dg->dpdu.cross(dg->dpdv).normalized());
-      dg->nn = nn;
-      */
        return true;
 
     }
@@ -247,18 +235,6 @@ namespace gssmraytracer {
 
     }
 
-    const utils::Color Sphere::getShade(const Ray &ws_ray) const {
-      float thit;
-      utils::Color color;
-      std::shared_ptr<DifferentialGeometry> dg;
-
-      if (hit(ws_ray, thit, dg))
-        color =  (getShader())->shade(*dg);
-
-      return color;
-
-
-    }
 
   }
 }

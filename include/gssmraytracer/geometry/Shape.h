@@ -3,9 +3,7 @@
 
 #include <memory>
 #include <OpenEXR/ImathVec.h>
-#include "gssmraytracer/utils/Shader.h"
 #include "gssmraytracer/utils/Ray.h"
-#include "gssmraytracer/utils/Color.h"
 #include "gssmraytracer/math/Transform.h"
 #include "DifferentialGeometry.h"
 #include "gssmraytracer/geometry/BBox.h"
@@ -17,7 +15,7 @@ namespace gssmraytracer {
     class Shape {
     public:
       //! Initializes all derived Shapes with a Transform and a Shader
-      Shape(const math::Transform &transform, const std::shared_ptr<utils::Shader> shader);
+      Shape(const math::Transform &transform);
 
       //! Copy Constructor
       Shape(const Shape&);
@@ -47,12 +45,6 @@ namespace gssmraytracer {
 
       //! returns the bounding box of the shape in object space
       virtual const BBox objectBB() const = 0;
-
-      //! returns the shader of the Shape
-      const std::shared_ptr<utils::Shader> getShader() const;
-
-      //! virtual function for returning the shade color of a shape
-      virtual const utils::Color getShade(const utils::Ray &ws_ray) const = 0;
 
       //! converts ray from world to object space
       const utils::Ray worldToObjectSpace(const utils::Ray &ws_ray) const;

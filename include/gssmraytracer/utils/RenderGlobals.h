@@ -31,9 +31,7 @@ namespace gssmraytracer {
       bool hit(const Ray &ws_ray, float &thit,
                       std::shared_ptr<geometry::DifferentialGeometry> &dg);
 
-      //! Returns a color based on the ray hit position from shading.
-      const Color shade(const Ray &ws_ray) const;
-
+    
     private:
       RenderGlobals(); // default constructor
       RenderGlobals(const RenderGlobals&); // copy constructor
