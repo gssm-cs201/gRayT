@@ -101,6 +101,8 @@ void Camera::render(const Scene &scene, Image &image) const {
       if (scene.hit(ray, thit, dg, prim)) {
         // possibly pass in scene data too for lighting and reflections
         color = prim->shade(dg);
+        // TODO: check to see if we can hit a point light
+
       }
       else
         color = Color(0,0,0,1);
