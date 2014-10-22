@@ -32,14 +32,14 @@ namespace gssmraytracer {
        * tHit to the hit distance from the ray's origin.  Returns false otherwise.
        * All derived shapes must implement hit.
        */
-      virtual bool hit(const utils::Ray &ws_ray, float *tHit) const = 0;
+      virtual bool hit(const utils::Ray &ws_ray, float &tHit) const = 0;
 
       /* \brief virtual function for hit with DifferentialGeometry
        *
        * Does what the hit above describes plus also returns a smart pointer
        * to a DifferentialGeometry object
        */
-      virtual bool hit(const utils::Ray &ws_ray, float *tHit,
+      virtual bool hit(const utils::Ray &ws_ray, float &tHit,
                         std::shared_ptr<DifferentialGeometry> &dg) const = 0;
 
       //! returns the bounding box of the shape in world space

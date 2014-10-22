@@ -53,7 +53,7 @@ namespace gssmraytracer {
     }
     Sphere::~Sphere() {}
 
-    bool Sphere::hit(const utils::Ray &ws_ray, float *thit) const {
+    bool Sphere::hit(const utils::Ray &ws_ray, float &thit) const {
 
       float phi;
       Point phit;
@@ -83,15 +83,15 @@ namespace gssmraytracer {
       if (t0 > os_ray.maxt() || t1 < os_ray.mint())
         return false;
 
-      thit = &t0;
+      thit = t0;
       if (t0 < os_ray.mint()) {
-        thit = &t1;
-        if (*thit > os_ray.maxt()) return false;
+        thit = t1;
+        if (thit > os_ray.maxt()) return false;
       }
 
 
       // Compute sphere hit position and phi
-      phit = os_ray(*thit);
+      phit = os_ray(thit);
 
       if (phit.x() == 0.f && phit.y() == 0.f) phit.x(1e-5f * mImpl->radius);
 
@@ -103,8 +103,8 @@ namespace gssmraytracer {
       if ((mImpl->zmin > -mImpl->radius && phit.z() < mImpl->zmin) ||
         (mImpl->zmax < mImpl->radius && phit.z() > mImpl->zmax) ||
          phi > mImpl->phiMax) {
-           if (*thit == t1) return false;
-           *thit = t1;
+           if (thit == t1) return false;
+           thit = t1;
 
            if ((mImpl->zmin > -mImpl->radius && phit.z() < mImpl->zmin) ||
              (mImpl->zmax < mImpl->radius && phit.z() > mImpl->zmax) ||
@@ -116,7 +116,7 @@ namespace gssmraytracer {
       return true;
 
     }
-    bool Sphere::hit(const Ray &ws_ray, float *thit,
+    bool Sphere::hit(const Ray &ws_ray, float &thit,
                       std::shared_ptr<DifferentialGeometry> &dg) const {
       float phi;
       Point phit;
@@ -148,15 +148,15 @@ namespace gssmraytracer {
       if (t0 > os_ray.maxt() || t1 < os_ray.mint())
         return false;
 
-      thit = &t0;
+      thit = t0;
       if (t0 < os_ray.mint()) {
-        thit = &t1;
-        if (*thit > os_ray.maxt()) return false;
+        thit = t1;
+        if (thit > os_ray.maxt()) return false;
       }
 
 
       // Compute sphere hit position and phi
-      phit = os_ray(*thit);
+      phit = os_ray(thit);
 
       if (phit.x() == 0.f && phit.y() == 0.f) phit.x(1e-5f * mImpl->radius);
 
@@ -168,8 +168,8 @@ namespace gssmraytracer {
       if ((mImpl->zmin > -mImpl->radius && phit.z() < mImpl->zmin) ||
         (mImpl->zmax < mImpl->radius && phit.z() > mImpl->zmax) ||
          phi > mImpl->phiMax) {
-           if (*thit == t1) return false;
-           *thit = t1;
+           if (thit == t1) return false;
+           thit = t1;
 
            if ((mImpl->zmin > -mImpl->radius && phit.z() < mImpl->zmin) ||
              (mImpl->zmax < mImpl->radius && phit.z() > mImpl->zmax) ||
@@ -214,7 +214,7 @@ namespace gssmraytracer {
 
 
       // if the ray intersects the sphere return true
-      std::shared_ptr<DifferentialGeometry> dg_temp(new DifferentialGeometry(mImpl->o2w(os_ray(*thit)),
+      std::shared_ptr<DifferentialGeometry> dg_temp(new DifferentialGeometry(mImpl->o2w(os_ray(thit)),
                                 mImpl->o2w(dpdu),
                                 mImpl->o2w(dpdv),
                                 mImpl->o2w(dndu),
@@ -252,7 +252,7 @@ namespace gssmraytracer {
       utils::Color color;
       std::shared_ptr<DifferentialGeometry> dg;
 
-      if (hit(ws_ray, &thit, dg))
+      if (hit(ws_ray, thit, dg))
         color =  (getShader())->shade(*dg);
 
       return color;

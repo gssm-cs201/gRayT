@@ -86,9 +86,8 @@ Camera::~Camera() {
 
 }
 
-void Camera::render(RenderGlobals &renderGlobals) const {
+void Camera::render(const Scene &scene, Image &image) const {
   // try to get image from render globals
-  Image image = renderGlobals.getImage();
 
 //  const Scene scene = renderGlobals.getScene();
   for (int r =0; r< image.getHeight(); ++r) {
@@ -98,8 +97,9 @@ void Camera::render(RenderGlobals &renderGlobals) const {
       Ray ray(mImpl->eye, direction);
       float thit;
       std::shared_ptr<DifferentialGeometry> dg;
-      if (renderGlobals.hit(ray, thit, dg)) {
-        color = renderGlobals.shade(ray);
+      if (scene.hit(ray, thit, dg)) {
+        // possibly pass in scene data too for lighting and reflections
+        color = dg->shape->getShade(ray);
       }
       else
         color = Color(0,0,0,1);
@@ -108,7 +108,6 @@ void Camera::render(RenderGlobals &renderGlobals) const {
 
     }
   }
-  renderGlobals.setImage(image);
 
 
 }

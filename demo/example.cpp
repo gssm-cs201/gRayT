@@ -18,11 +18,13 @@
 #include <gssmraytracer/utils/Image.h>
 #include <gssmraytracer/utils/RenderGlobals.h>
 #include <gssmraytracer/utils/Color.h>
+#include <gssmraytracer/utils/Scene.h>
 #include <iostream>
 
 #include "ConstantShader.h"
 #include "NormalShader.h"
 #include "ImageShader.h"
+#include "NoiseShader.h"
 
 using namespace gssmraytracer::utils;
 using namespace gssmraytracer::geometry;
@@ -113,17 +115,10 @@ int main(int argc, char* argv[]) {
     int width = 1280;
     int height = 720;
     Image image(width, height);
-    //Camera camera(Point(-5,0,-40),Vector(0,0,1),Vector(0,1,0));
     Camera camera(Point(-5,0,40),Vector(0,0,-1),Vector(0,1,0));
-    camera.setAspectRatio(16./9.);
-    checker(image, 10, Color(0,0,1,1), Color(1,1,1,1));
-    image.write("checker.png");
-    stripes(image, 9, Color(1,0,0,1), Color(1,1,1,1));
-    image.write("stripes.png");
-    image.read("checker.png");
-    image.read("stripes.png");
-    Image image2;
-    image2.read("fractal3.png");
+
+    Image image2("fractal3.png");
+    Scene &scene = Scene::getInstance();
     Transform transform1, transform2;
     Vector position(0.0,0.0,0.0);
     Vector position2(10.,0.0,0.0);
@@ -132,15 +127,18 @@ int main(int argc, char* argv[]) {
 
 
     std::shared_ptr<Shader> shader(new ImageShader(image2));
-    std::shared_ptr<Shader> shader2(new NormalShader());
-    Sphere *sphere = new Sphere(transform1, shader, 10.0f, -10.0f, 10.0f, 360.0f);
-    Sphere *sphere2 = new Sphere(transform2, shader2, 10.0f, -10.0f, 10.0f, 360.0f);
+    std::shared_ptr<Shader> shader2(new NoiseShader());
+    BBox bbox;
+    std::shared_ptr<Sphere> sphere(new Sphere(transform1, shader, 10.0f, -10.0f, 10.0f, 360.0f));
+
+    std::shared_ptr<Sphere> sphere2(new Sphere(transform2, shader2, 10.0f, -10.0f, 10.0f, 360.0f));
+
+
+    scene.addShape(sphere);
+    scene.addShape(sphere2);
+    camera.render(scene, image);
     RenderGlobals::getInstance().setImage(image);
-    RenderGlobals::getInstance().addShape(sphere);
-    RenderGlobals::getInstance().addShape(sphere2);
-    camera.render(RenderGlobals::getInstance());
-    Image image3 = RenderGlobals::getInstance().getImage();
-    image3.write("normalAndImageShader.png");
+    image.write("normalAndImageShader.png");
 
 
     // start up the glut utilities

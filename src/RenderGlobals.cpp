@@ -56,14 +56,14 @@ namespace gssmraytracer {
       for (std::vector<Shape*>::iterator iter = mImpl->shapes.begin();
           iter != mImpl->shapes.end(); ++iter) {
 
-            if ((*iter)->hit(ws_ray, &thit)) {
+            if ((*iter)->hit(ws_ray, thit)) {
               if (thit < t) {
                 target_shape = *iter;
                 t = thit;
               }
             }
             if (target_shape != nullptr) {
-              target_shape->hit(ws_ray, &thit, dg);
+              target_shape->hit(ws_ray, thit, dg);
               return true;
             }
           }
@@ -77,7 +77,7 @@ namespace gssmraytracer {
       std::shared_ptr<DifferentialGeometry> dg;
       for (std::vector<Shape*>::iterator iter = mImpl->shapes.begin();
           iter != mImpl->shapes.end(); ++iter) {
-            if ((*iter)->hit(ws_ray, &thit, dg)) {
+            if ((*iter)->hit(ws_ray, thit, dg)) {
               return (*iter)->getShade(ws_ray);
             }
           }

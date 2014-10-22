@@ -1,5 +1,7 @@
 #include "gssmraytracer/geometry/Point.h"
 #include "gssmraytracer/math/Vector.h"
+#include "gssmraytracer/utils/Scene.h"
+#include "gssmraytracer/utils/Image.h"
 #include <limits>
 #include <memory>
 
@@ -46,7 +48,7 @@ namespace utils {
     void setAspectRatio(const float aspect_ratio);
 
     //! Renders the scene using information from renderGlobals
-    void render(RenderGlobals &renderGlobals) const;
+    void render(const Scene &scene, Image &image) const;
 
     private:
     class Impl;

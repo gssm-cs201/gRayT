@@ -3,13 +3,17 @@
 #include <memory>
 #include <vector>
 #include "gssmraytracer/geometry/Shape.h"
+#include "gssmraytracer/geometry/DifferentialGeometry.h"
 
 namespace gssmraytracer {
   namespace utils {
     class Scene {
     public:
-      static Scene * Instance();
-      void addShape(const geometry::Shape *);
+      static Scene& getInstance();
+      void addShape(const std::shared_ptr<geometry::Shape> &);
+      bool hit(const Ray &ws_ray) const;
+      bool hit(const Ray &ws_ray, float &hit_time) const;
+      bool hit(const Ray &ws_ray, float &hit_time, std::shared_ptr<geometry::DifferentialGeometry> & dg) const;
       ~Scene();
     private:
       Scene();
