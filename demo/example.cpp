@@ -126,20 +126,20 @@ int main(int argc, char* argv[]) {
     transform2.translate(position2);
 
 
-    std::shared_ptr<Shader> shader(new ImageShader(image2));
-    std::shared_ptr<Shader> shader2(new NoiseShader());
+    std::shared_ptr<Shader> shader(new NormalShader());
+  //  std::shared_ptr<Shader> shader2(new NoiseShader());
     BBox bbox;
     std::shared_ptr<Sphere> sphere(new Sphere(transform1,10.0f, -10.0f, 10.0f, 360.0f));
 
-    std::shared_ptr<Sphere> sphere2(new Sphere(transform2, 10.0f, -10.0f, 10.0f, 360.0f));
+  //  std::shared_ptr<Sphere> sphere2(new Sphere(transform2, 10.0f, -10.0f, 10.0f, 360.0f));
 
     std::shared_ptr<Primitive> prim(new Primitive(sphere, shader));
-    std::shared_ptr<Primitive> prim2(new Primitive(sphere2, shader2));
+  //  std::shared_ptr<Primitive> prim2(new Primitive(sphere2, shader2));
     scene.addPrimitive(prim);
-    scene.addPrimitive(prim2);
+  //  scene.addPrimitive(prim2);
     camera.render(scene, image);
-    RenderGlobals::getInstance().setImage(image);
     image.write("normalAndImageShader.png");
+    RenderGlobals::getInstance().setImage(image);
 
 
     // start up the glut utilities

@@ -1,11 +1,13 @@
 #include "gssmraytracer/utils/Image.h"
 #include <OpenImageIO/imageio.h>
+#include <OpenImageIO/imagebuf.h>
+#include <OpenImageIO/imagebufalgo.h>
 
 namespace gssmraytracer {
 namespace utils {
 class Image::Impl {
 public:
-  Impl() : width(0), height(0), nchannels(0), pixels() {}
+  Impl() : width(0), height(0), nchannels(4), pixels() {}
   int width;
   int height;
   int nchannels;
@@ -13,7 +15,6 @@ public:
 };
 
 Image::Image() : mImpl(new Impl) {
-  mImpl->width = mImpl->height = 0;
 
 }
 
@@ -71,23 +72,39 @@ void Image::read(const char *imagename) {
 }
 
 void Image::write(const char *imagename) {
-  OpenImageIO::ImageOutput *out = OpenImageIO::ImageOutput::create(imagename);
-  if (!out) {
-    std::cout << "Unable to write image " << imagename << std::endl;
-    return;
-  }
+//  OpenImageIO::ImageOutput *out = OpenImageIO::ImageOutput::create(imagename);
+//  if (!out) {
+//    std::cout << "Unable to write image " << imagename << std::endl;
+//    return;
+//  }
 
   OpenImageIO::ImageSpec spec(mImpl->width, mImpl->height,
                               mImpl->nchannels, OpenImageIO::TypeDesc::FLOAT);
-  out->open(imagename, spec);
-  int scanlinesize = mImpl->width * mImpl->nchannels * sizeof(float);
-  out->write_image(OpenImageIO::TypeDesc::FLOAT,
-                  mImpl->pixels.data(),
-                  OpenImageIO::AutoStride,
-                  -scanlinesize,
-                  OpenImageIO::AutoStride);
-  out->close();
-  delete out;
+
+
+
+  float *buffer = mImpl->pixels.data();
+  OpenImageIO::ImageBuf buf(spec, buffer);
+  OpenImageIO::ImageBuf out;
+  OpenImageIO::ImageBufAlgo::flip(out, buf);
+  out.write(std::string(imagename));
+
+//  out->open(imagename, spec);
+//  int scanlinesize = mImpl->width * mImpl->nchannels * sizeof(buffer[0]);
+  //out->write_image(OpenImageIO::TypeDesc::FLOAT,
+  //                mImpl->pixels.data(),
+  //                OpenImageIO::AutoStride,
+  //                -scanlinesize,
+  //                OpenImageIO::AutoStride);
+
+
+//  out->write_image(OpenImageIO::TypeDesc::FLOAT,
+//          (float*)buffer + (mImpl->height - 1)*scanlinesize,
+//                  OpenImageIO::AutoStride,
+//                  -scanlinesize,
+//                  OpenImageIO::AutoStride);
+//  out->close();
+//  delete out;
 
 }
 const float* Image::getPixelBuffer() const {
