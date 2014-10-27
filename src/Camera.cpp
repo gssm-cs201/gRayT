@@ -103,9 +103,9 @@ void Camera::render(const Scene &scene, Image &image) const {
         color = prim->shade(dg);
         // TODO: check to see if we can hit a point light
         Point light_pos(0,50, 0);
-        math::Vector light_vec = light_pos - dg->p;
+        math::Vector light_vec = light_pos - ray(thit - 0.0005);
 
-        Ray light_ray(ray(thit - 0.0005), light_pos - ray(thit - 0.0005));
+        Ray light_ray(ray(thit - 0.0005), light_vec.normalized());
         color.red *= 0.2f;
         color.green *= 0.2f;
         color.blue *= 0.2f;
@@ -115,6 +115,7 @@ void Camera::render(const Scene &scene, Image &image) const {
             color.green += color.green*factor;
             color.blue += color.blue*factor;
         }
+
 
       }
       else

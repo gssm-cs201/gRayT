@@ -115,28 +115,28 @@ int main(int argc, char* argv[]) {
     int width = 1280;
     int height = 720;
     Image image(width, height);
-    Camera camera(Point(-5,0,40),Vector(0,0,-1),Vector(0,1,0));
+    Camera camera(Point(0,0,40),Vector(0,0,-1),Vector(0,1,0));
 
     Image image2("fractal3.png");
     Scene &scene = Scene::getInstance();
     Transform transform1, transform2;
-    Vector position(0.0,0.0,0.0);
-    Vector position2(10.,0.0,0.0);
+    Vector position(-5.0,0.0,0.0);
+    Vector position2(5.,0.0,0.0);
     transform1.translate(position);
     transform2.translate(position2);
 
 
-    std::shared_ptr<Shader> shader(new NormalShader());
-  //  std::shared_ptr<Shader> shader2(new NoiseShader());
+    std::shared_ptr<Shader> shader(new ConstantShader(Color(0,1,0,1)));
+    std::shared_ptr<Shader> shader2(new ConstantShader(Color(0,1,0,1)));
     BBox bbox;
-    std::shared_ptr<Sphere> sphere(new Sphere(transform1,10.0f, -10.0f, 10.0f, 360.0f));
+    std::shared_ptr<Sphere> sphere(new Sphere(transform1,5.0f, -10.0f, 10.0f, 360.0f));
 
-  //  std::shared_ptr<Sphere> sphere2(new Sphere(transform2, 10.0f, -10.0f, 10.0f, 360.0f));
+    std::shared_ptr<Sphere> sphere2(new Sphere(transform2, 5.0f, -10.0f, 10.0f, 360.0f));
 
     std::shared_ptr<Primitive> prim(new Primitive(sphere, shader));
-  //  std::shared_ptr<Primitive> prim2(new Primitive(sphere2, shader2));
+    std::shared_ptr<Primitive> prim2(new Primitive(sphere2, shader2));
     scene.addPrimitive(prim);
-  //  scene.addPrimitive(prim2);
+    scene.addPrimitive(prim2);
     camera.render(scene, image);
     image.write("normalAndImageShader.png");
     RenderGlobals::getInstance().setImage(image);
