@@ -17,6 +17,9 @@ namespace gssmraytracer {
       //!brief Initialize a ray with a given point and direction
       Ray(const geometry::Point &origin, const math::Vector &direction);
 
+      //! copy constructor
+      Ray& operator=(const Ray &);
+
       //! returns the origin
       const geometry::Point origin() const;
 
@@ -24,17 +27,22 @@ namespace gssmraytracer {
       const math::Vector dir() const;
 
       //! returns the minimum t range for the ray
-      const double mint() const;
+      const float mint() const;
 
       //! sets the minimum t range for the ray
-      void setMint(const double);
+      void setMint(const float);
 
       //! returns the maximum t range for the ray
-      const double maxt() const;
+      const float maxt() const;
 
       //! sets the maximum t range for the ray
-      void setMaxt(const double);
+      void setMaxt(const float);
 
+      //! returns the ray epsilon value
+      const float epsilon() const;
+
+      //! sets the ray epsilon value
+      void epsilon(const float);
       //! returns the resulting point based on the provided t value
       const geometry::Point operator()(const float t) const;
 

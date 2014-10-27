@@ -95,32 +95,16 @@ void Camera::render(const Scene &scene, Image &image) const {
       math::Vector direction = view((float)c/image.getWidth(), (float)r/image.getHeight());
       Color color;
       Ray ray(mImpl->eye, direction);
+      ray.epsilon(0.0005);
       float thit;
       std::shared_ptr<DifferentialGeometry> dg;
       std::shared_ptr<Primitive> prim;
       if (scene.hit(ray, thit, dg, prim)) {
         // possibly pass in scene data too for lighting and reflections
         color = prim->shade(dg);
-        // TODO: check to see if we can hit a point light
-        Point light_pos(0,50, 0);
-        math::Vector light_vec = light_pos - ray(thit - 0.0005);
-
-        Ray light_ray(ray(thit - 0.0005), light_vec.normalized());
-        color.red *= 0.2f;
-        color.green *= 0.2f;
-        color.blue *= 0.2f;
-        if (!scene.hit(light_ray)) { // if no objects in the way, do lighting
-            float factor = light_vec.normalized().dot(dg->nn)*5000 * 1.f/(light_vec.length() * light_vec.length());
-            color.red += color.red*factor;
-            color.green += color.green*factor;
-            color.blue += color.blue*factor;
-        }
-
-
       }
       else
         color = Color(0,0,0,1);
-//      color = scene.getShade(ray);
       image.setPixel(r,c,color);
 
     }

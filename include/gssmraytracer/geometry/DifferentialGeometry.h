@@ -5,6 +5,7 @@
 #include "gssmraytracer/geometry/Normal.h"
 #include <memory>
 #include "gssmraytracer/geometry/Point.h"
+#include "gssmraytracer/utils/Ray.h"
 namespace gssmraytracer {
   namespace geometry {
     class Shape;
@@ -23,6 +24,7 @@ namespace gssmraytracer {
             const Normal &dndu, const Normal &dndv,
             const float u,
             const float v,
+            const utils::Ray &view,
             const Shape *sh
       );
 
@@ -32,6 +34,7 @@ namespace gssmraytracer {
       Normal nn;
       float u, v;
       math::Vector dpdu, dpdv;
+      utils::Ray view;
       Normal dndu, dndv;
       const Shape *shape;
     private:

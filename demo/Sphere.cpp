@@ -213,12 +213,12 @@ namespace gssmraytracer {
 
 
       // if the ray intersects the sphere return true
-      std::shared_ptr<DifferentialGeometry> dg_temp(new DifferentialGeometry(mImpl->o2w(os_ray(thit)),
+      std::shared_ptr<DifferentialGeometry> dg_temp(new DifferentialGeometry(ws_ray(thit),
                                 mImpl->o2w(dpdu),
                                 mImpl->o2w(dpdv),
                                 mImpl->o2w(dndu),
                                 mImpl->o2w(dndv),
-                                u, v, this));
+                                u, v, ws_ray, this));
       dg = dg_temp;
 
        return true;
