@@ -128,7 +128,7 @@ int main(int argc, char* argv[]) {
     transform2.translate(position2);
 
 
-    std::shared_ptr<Shader> shader(new LambertianShader(Color(0,1,0,1)));
+    std::shared_ptr<Shader> shader(new PhongShader(Color(0,1,0,1)));
     std::shared_ptr<Shader> shader2(new LambertianShader(Color(1,0,0,1)));
     BBox bbox;
     std::shared_ptr<Sphere> sphere(new Sphere(transform1,5.0f, -10.0f, 10.0f, 360.0f));
@@ -140,7 +140,7 @@ int main(int argc, char* argv[]) {
     scene.addPrimitive(prim);
     scene.addPrimitive(prim2);
     camera.render(scene, image);
-    image.write("lambertianShader.png");
+    image.write("lambertianShader.exr");
     RenderGlobals::getInstance().setImage(image);
 
 
