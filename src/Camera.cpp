@@ -90,8 +90,31 @@ void Camera::render(const Scene &scene, Image &image) const {
   // try to get image from render globals
 
 //  const Scene scene = renderGlobals.getScene();
+int num_width_samples = 4;
+int num_height_samples = 4;
   for (int r =0; r< image.getHeight(); ++r) {
     for (int c = 0; c < image.getWidth(); ++c) {
+      Color color;
+      // for number of samples
+      for (int w = 0; w < num_width_samples; ++w) {
+        for (int h = 0; h < num_height_samples; ++h) {
+          math::Vector direction = view(((float)c + (float)w/num_width_samples)/image.getWidth(), ((float)r + (float)h/num_height_samples)/image.getHeight());
+
+          Ray ray(mImpl->eye, direction);
+          ray.epsilon(0.0005);
+          float thit;
+          std::shared_ptr<DifferentialGeometry> dg;
+          std::shared_ptr<Primitive> prim;
+          if (scene.hit(ray, thit, dg, prim)) {
+            // possibly pass in scene data too for lighting and reflections
+            color += prim->shade(dg);
+          }
+          else
+            color += Color(0,0,0,1);
+
+        }
+      }
+      /*
       math::Vector direction = view((float)c/image.getWidth(), (float)r/image.getHeight());
       Color color;
       Ray ray(mImpl->eye, direction);
@@ -105,6 +128,9 @@ void Camera::render(const Scene &scene, Image &image) const {
       }
       else
         color = Color(0,0,0,1);
+
+      */
+      color *= 1.0/(num_width_samples * num_height_samples);
       image.setPixel(r,c,color);
 
     }

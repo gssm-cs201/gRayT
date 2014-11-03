@@ -20,11 +20,15 @@ namespace gssmraytracer {
     //! scale a color by a scalar
     const Color operator*(const float s) const;
 
+    Color& operator*=(const float s);
+
     //! multiply two colors together
     const Color operator*(const Color &c) const;
 
     //! add two colors together
     const Color operator+(const Color &c) const;
+
+    Color& operator+=(const Color &c);
 
     float red;
     float green;

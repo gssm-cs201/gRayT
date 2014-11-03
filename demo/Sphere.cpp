@@ -19,6 +19,8 @@ namespace gssmraytracer {
       float thetaMin, thetaMax;
       Transform o2w;
       Transform w2o;
+      BBox obbox;
+      BBox wbbox;
 
       inline bool Quadratic(const float A, const float B,
                             const float C, float *t0, float *t1) {
@@ -48,11 +50,14 @@ namespace gssmraytracer {
                    mImpl->phiMax = Radians(Clamp(pm, 0.0f, 360.0f));
                    mImpl->w2o = transform;
                    mImpl->o2w = transform.inverse();
+                   mImpl->obbox = objectBB();
+                   mImpl->wbbox = worldBB();
 
     }
     Sphere::~Sphere() {}
 
     bool Sphere::hit(const utils::Ray &ws_ray, float &thit) const {
+      if (!mImpl->wbbox.intersect(ws_ray)) return false;
 
       float phi;
       Point phit;
@@ -117,6 +122,7 @@ namespace gssmraytracer {
     }
     bool Sphere::hit(const Ray &ws_ray, float &thit,
                       std::shared_ptr<DifferentialGeometry> &dg) const {
+      if (!mImpl->wbbox.intersect(ws_ray)) return false;
       float phi;
       Point phit;
 

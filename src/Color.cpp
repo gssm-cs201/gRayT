@@ -22,10 +22,23 @@ namespace gssmraytracer {
       return Color(red + c.red, green + c.green, blue + c.blue, alpha + c.alpha);
     }
 
+    Color& Color::operator+=(const Color &c) {
+      red = red + c.red;
+      green = green + c.green;
+      blue = blue + c.blue;
+      alpha = alpha + c.alpha;
+      return *this;
+    }
+
     const Color Color::operator*(const float s) const {
       return Color(red * s, green * s, blue * s, alpha);
     }
-
+    Color& Color::operator*=(const float s) {
+      red *= s;
+      green *=s;
+      blue *=s;
+      return *this;
+    }
     const Color Color::operator*(const Color &c) const {
       return Color(red * c.red, green * c.green, blue * c.blue, alpha * c.alpha);
     }
