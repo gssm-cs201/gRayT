@@ -15,8 +15,12 @@ namespace gssmraytracer {
       BBox& operator=(const BBox &other);
       const Point min() const;
       const Point max() const;
+      const Point centroid() const;
       bool intersect(const utils::Ray &ray, float *hitt0=nullptr, float *hitt1=nullptr) const;
       const BBox combine(const BBox &bbox) const;
+      const int maximumExtent() const;
+      const geometry::Point &operator[](int i) const;
+      geometry::Point &operator[](int i);
 
     private:
       class Impl;

@@ -17,6 +17,7 @@ namespace gssmraytracer {
       bool hit(const utils::Ray &ws_ray, float &hit_time,
                 std::shared_ptr<DifferentialGeometry> &dg) const;
       const utils::Color shade(const std::shared_ptr<DifferentialGeometry> &dg) const;
+      const BBox worldBound() const;
 
     private:
       class Impl;

@@ -1,13 +1,15 @@
 #include <vector>
 #include "gssmraytracer/utils/Scene.h"
+#include "gssmraytracer/utils/BVHAccel.h"
 #include <limits>
 
 namespace gssmraytracer {
   namespace utils {
     class Scene::Impl {
     public:
-
+      Impl() : primitives(), bvh() {}
       std::vector<std::shared_ptr<geometry::Primitive> > primitives;
+      std::shared_ptr<BVHAccel> bvh;
 
 
     };
@@ -25,6 +27,8 @@ namespace gssmraytracer {
     void Scene::addPrimitive(const std::shared_ptr<geometry::Primitive> &primitive) {
 
       mImpl->primitives.push_back(primitive);
+      std::shared_ptr<BVHAccel> bvh(new BVHAccel(mImpl->primitives, 2));
+      mImpl->bvh = bvh;
     }
 
     bool Scene::hit(const Ray &ws_ray) const {
@@ -70,8 +74,11 @@ namespace gssmraytracer {
     }
     bool Scene::hit(const Ray &ws_ray, float &hit_time, std::shared_ptr<geometry::DifferentialGeometry> & dg,
       std::shared_ptr<geometry::Primitive> &prim) const {
-        float closest_t = std::numeric_limits<float>::infinity();
-        std::shared_ptr<geometry::Primitive> candidate_prim;
+//        float closest_t = std::numeric_limits<float>::infinity();
+//        std::shared_ptr<geometry::Primitive> candidate_prim;
+
+        return mImpl->bvh->intersect(ws_ray, hit_time, dg, prim);
+/*
         for (std::vector<std::shared_ptr<geometry::Primitive> >::const_iterator iter =
           mImpl->primitives.begin(); iter != mImpl->primitives.end(); ++iter) {
             float thit = std::numeric_limits<float>::infinity();
@@ -91,7 +98,7 @@ namespace gssmraytracer {
             return true;
           }
           return false;
-
+*/
       }
 
 

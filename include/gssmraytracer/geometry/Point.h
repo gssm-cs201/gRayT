@@ -28,8 +28,14 @@ namespace gssmraytracer {
       //! Returns a new Point which is the sum of a Vector and this point
       Point operator+(const math::Vector &vec) const;
 
+      //! Returns a new Point which is the sum of a Vector and this point
+      Point operator+(const geometry::Point &point) const;
+
       //! Returns a new Vector which is the difference of two points
       const math::Vector operator-(const Point &) const;
+
+      //! Return a new scaled point
+      Point operator*(const float s) const;
 
       //! Allows for printing on Point in std::cout
       friend std::ostream& operator<<(std::ostream &os, const Point &point);
@@ -58,6 +64,7 @@ namespace gssmraytracer {
       std::shared_ptr<Impl> mImpl;
 
     };
+    Point operator*(const float s, const Point &p);
   }
 }
 #endif //__POINT_H__

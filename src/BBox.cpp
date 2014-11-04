@@ -22,6 +22,20 @@ namespace gssmraytracer {
       mImpl->pMin = Point(std::min(p1.x(), p2.x()), std::min(p1.y(), p2.y()), std::min(p1.z(), p2.z()));
       mImpl->pMax = Point(std::max(p1.x(), p2.x()), std::max(p1.y(), p2.y()), std::max(p1.z(), p2.z()));
     }
+    const Point BBox::centroid() const {
+      return (mImpl->pMin + mImpl->pMax)*0.5;
+
+    }
+    const int BBox::maximumExtent() const {
+      math::Vector diag = mImpl->pMax - mImpl->pMin;
+      if (diag.x() > diag.y() && diag.x() > diag.z())
+        return 0;
+      else if (diag.y() > diag.z())
+        return 1;
+      else
+        return 2;
+
+    }
     BBox& BBox::operator=(const BBox &other) {
       if (this != &other) {
         mImpl->pMin = other.mImpl->pMin;
@@ -48,6 +62,16 @@ namespace gssmraytracer {
       ret.mImpl->pMax.y(std::max(mImpl->pMax.y(), bbox.mImpl->pMax.y()));
       ret.mImpl->pMax.z(std::max(mImpl->pMax.z(), bbox.mImpl->pMax.z()));
     return ret;
+    }
+
+    const geometry::Point& BBox::operator[](int i) const {
+      if (i == 0) return mImpl->pMin;
+      return mImpl->pMax;
+    }
+    geometry::Point& BBox::operator[](int i) {
+      if (i == 0) return mImpl->pMin;
+      return mImpl->pMax;
+
     }
 
 

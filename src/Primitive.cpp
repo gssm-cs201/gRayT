@@ -30,5 +30,9 @@ namespace gssmraytracer {
     const utils::Color Primitive::shade(const std::shared_ptr<DifferentialGeometry> &dg) const {
       return mImpl->shader->shade(*dg);
     }
+
+    const BBox Primitive::worldBound() const {
+      return mImpl->shape->worldBB();
+    }
   }
 }

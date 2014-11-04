@@ -114,16 +114,16 @@ void gradient(Image &image) {
 int main(int argc, char* argv[]) {
     // Use the default constructor
 
-    int width = 1280;
-    int height = 720;
+    int width = 640;
+    int height = 360;
     Image image(width, height);
     Camera camera(Point(0,0,40),Vector(0,0,-1),Vector(0,1,0));
 
     Image image2("fractal3.png");
     Scene &scene = Scene::getInstance();
     Transform transform1, transform2;
-    Vector position(-5.0,0.0,0.0);
-    Vector position2(5.,0.0,0.0);
+    Vector position(-7.0,0.0,0.0);
+    Vector position2(7.,0.0,0.0);
     transform1.translate(position);
     transform2.translate(position2);
 

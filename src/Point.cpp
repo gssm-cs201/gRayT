@@ -36,8 +36,20 @@ namespace gssmraytracer {
       return Point(vec.x() + mImpl->vec.x, vec.y() + mImpl->vec.y, vec.z() + mImpl->vec.z);
     }
 
+    Point Point::operator+(const geometry::Point &other) const {
+      return Point(x() + other.x(), y() + other.y(), z() + other.z());
+
+    }
+
     const math::Vector Point::operator-(const Point &other) const {
       return math::Vector(x() - other.x(), y() - other.y(), z() - other.z());
+    }
+
+    Point Point::operator*(const float s) const {
+      return Point(x() *s, y() * s, z() *s);
+    }
+    Point operator*(const float s, const Point &p) {
+      return Point(p.x() *s, p.y() * s, p.z() *s);
     }
 
     std::ostream& operator<<(std::ostream &os, const Point &point) {
