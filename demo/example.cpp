@@ -121,24 +121,31 @@ int main(int argc, char* argv[]) {
 
     Image image2("fractal3.png");
     Scene &scene = Scene::getInstance();
-    Transform transform1, transform2;
-    Vector position(-7.0,0.0,0.0);
-    Vector position2(7.,0.0,0.0);
+    Transform transform1, transform2, transform3;
+    Vector position(7.0,0.0,6.0);
+    Vector position2(-7.0,4.0,0.0);
+    Vector position3(-8.0,0.0,0.0);
     transform1.translate(position);
     transform2.translate(position2);
+    transform3.translate(position3);
 
 
     std::shared_ptr<Shader> shader(new PhongShader(Color(0,1,0,1)));
     std::shared_ptr<Shader> shader2(new LambertianShader(Color(1,0,0,1)));
+    std::shared_ptr<Shader> shader3(new LambertianShader(Color(1,1,0,1)));
     BBox bbox;
     std::shared_ptr<Sphere> sphere(new Sphere(transform1,5.0f, -10.0f, 10.0f, 360.0f));
 
     std::shared_ptr<Sphere> sphere2(new Sphere(transform2, 5.0f, -10.0f, 10.0f, 360.0f));
+    std::shared_ptr<Sphere> sphere3(new Sphere(transform3, 5.0f, -10.0f, 10.0f, 360.0f));
 
     std::shared_ptr<Primitive> prim(new Primitive(sphere, shader));
     std::shared_ptr<Primitive> prim2(new Primitive(sphere2, shader2));
+    std::shared_ptr<Primitive> prim3(new Primitive(sphere3, shader3));
+
     scene.addPrimitive(prim);
     scene.addPrimitive(prim2);
+    scene.addPrimitive(prim3);
     camera.render(scene, image);
     image.write("lambertianShader.exr");
     RenderGlobals::getInstance().setImage(image);

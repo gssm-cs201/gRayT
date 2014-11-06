@@ -6,32 +6,31 @@ namespace gssmraytracer {
   namespace geometry {
     class Shape::Impl {
     public:
-      math::Transform transform;
+      math::Transform o2w;
+      math::Transform w2o;
     };
     Shape::Shape(const math::Transform &transform) :
       mImpl(new Impl) {
-        mImpl->transform = transform;
+        mImpl->o2w = transform;
+        mImpl->w2o = transform.inverse();
     }
 
 
     Shape::Shape(const Shape& shape) : mImpl(new Impl) {
-      mImpl->transform = shape.mImpl->transform;
+      mImpl->o2w = shape.mImpl->o2w;
+      mImpl->w2o = shape.mImpl->w2o;
     }
     Shape::~Shape() {
 
     }
 
-    const utils::Ray Shape::worldToObjectSpace(const utils::Ray &ws_ray) const{
-      utils::Ray os_ray = mImpl->transform(ws_ray);
+    const math::Transform Shape::worldToObjectSpace() const{
+      return mImpl->w2o;
 
-      return os_ray;
 
     }
-    const utils::Ray Shape::objectToWorldSpace(const utils::Ray &os_ray) const{
-      utils::Ray ws_ray = mImpl->transform.inverse()(os_ray);
-
-      return ws_ray;
-
+    const math::Transform Shape::objectToWorldSpace() const{
+      return mImpl->o2w;
     }
 
 

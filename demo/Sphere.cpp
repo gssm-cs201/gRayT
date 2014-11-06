@@ -4,7 +4,6 @@
 #include <gssmraytracer/utils/gssmraytracer.h>
 #include "Sphere.h"
 #include <algorithm>
-#include <iostream>
 
 using namespace gssmraytracer::math;
 using namespace gssmraytracer::utils;
@@ -17,8 +16,6 @@ namespace gssmraytracer {
       float phiMax;
       float zmin, zmax;
       float thetaMin, thetaMax;
-      Transform o2w;
-      Transform w2o;
       BBox obbox;
       BBox wbbox;
 
@@ -48,8 +45,6 @@ namespace gssmraytracer {
                    mImpl->thetaMin = acosf(Clamp(mImpl->zmin/radius, -1.f, 1.f));
                    mImpl->thetaMax = acosf(Clamp(mImpl->zmax/radius, -1.f, 1.f));
                    mImpl->phiMax = Radians(Clamp(pm, 0.0f, 360.0f));
-                   mImpl->w2o = transform;
-                   mImpl->o2w = transform.inverse();
                    mImpl->obbox = objectBB();
                    mImpl->wbbox = worldBB();
 
@@ -63,7 +58,7 @@ namespace gssmraytracer {
       Point phit;
 
       // Transform the ray into object space
-      Ray os_ray = worldToObjectSpace(ws_ray);
+      Ray os_ray = worldToObjectSpace()(ws_ray);
 
       // Do ray-sphere intersection in object space
       // Compute quadratic sphere coefficients
@@ -127,7 +122,7 @@ namespace gssmraytracer {
       Point phit;
 
       // Transform the ray into object space
-      Ray os_ray = worldToObjectSpace(ws_ray);
+      Ray os_ray = worldToObjectSpace()(ws_ray);
 
 
 
@@ -220,10 +215,10 @@ namespace gssmraytracer {
 
       // if the ray intersects the sphere return true
       std::shared_ptr<DifferentialGeometry> dg_temp(new DifferentialGeometry(ws_ray(thit),
-                                mImpl->o2w(dpdu),
-                                mImpl->o2w(dpdv),
-                                mImpl->o2w(dndu),
-                                mImpl->o2w(dndv),
+                                objectToWorldSpace()(dpdu),
+                                objectToWorldSpace()(dpdv),
+                                objectToWorldSpace()(dndu),
+                                objectToWorldSpace()(dndv),
                                 u, v, ws_ray, this));
       dg = dg_temp;
 
@@ -236,8 +231,8 @@ namespace gssmraytracer {
 
     }
     const BBox Sphere::worldBB() const {
-      return BBox(mImpl->o2w(Point(-mImpl->radius, -mImpl->radius, mImpl->zmin)),
-                  mImpl->o2w(Point(mImpl->radius, mImpl->radius, mImpl->zmax)));
+      return BBox(objectToWorldSpace()(Point(-mImpl->radius, -mImpl->radius, mImpl->zmin)),
+                  objectToWorldSpace()(Point(mImpl->radius, mImpl->radius, mImpl->zmax)));
 
     }
 

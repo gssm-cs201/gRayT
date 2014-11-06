@@ -3,6 +3,7 @@ namespace gssmraytracer {
   namespace geometry {
     class Point::Impl {
     public:
+      Impl(): vec(0.f,0.f,0.f) {}
       Imath::Vec3<float> vec;
     };
 
@@ -21,7 +22,7 @@ namespace gssmraytracer {
     Point::Point(const Point &p) : mImpl(new Impl) {
       mImpl->vec = p.mImpl->vec;
     }
-    Point::Point(const math::Vector &vec) {
+    Point::Point(const math::Vector &vec): mImpl(new Impl) {
       mImpl->vec = Imath::Vec3<float>(vec.x(),vec.y(),vec.z());
 
     }
@@ -53,7 +54,7 @@ namespace gssmraytracer {
     }
 
     std::ostream& operator<<(std::ostream &os, const Point &point) {
-      os << "(" << point.mImpl->vec << ")" << std::endl;
+      os << "(" << point.mImpl->vec << ")";
       return os;
     }
 

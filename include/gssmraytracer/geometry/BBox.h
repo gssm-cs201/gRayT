@@ -6,7 +6,6 @@
 
 namespace gssmraytracer {
   namespace geometry {
-    class Point; // forward declaration
     class BBox {
     public:
       BBox();
@@ -18,14 +17,17 @@ namespace gssmraytracer {
       const Point centroid() const;
       bool intersect(const utils::Ray &ray, float *hitt0=nullptr, float *hitt1=nullptr) const;
       const BBox combine(const BBox &bbox) const;
+      const float surfaceArea() const;
       const int maximumExtent() const;
       const geometry::Point &operator[](int i) const;
       geometry::Point &operator[](int i);
+
 
     private:
       class Impl;
       std::shared_ptr<Impl> mImpl;
     };
+    std::ostream& operator<<(std::ostream &os, const BBox &bbox);
   }
 }
 #endif // __BBOX_H__
