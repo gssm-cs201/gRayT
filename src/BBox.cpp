@@ -59,7 +59,7 @@ namespace gssmraytracer {
       return mImpl->pMax;
     }
     const BBox BBox::combine(const BBox &bbox) const {
-      BBox ret = bbox;
+      BBox ret;
 
       ret.mImpl->pMin.x(std::min(mImpl->pMin.x(), bbox.mImpl->pMin.x()));
 

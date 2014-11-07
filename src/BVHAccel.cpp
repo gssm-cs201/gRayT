@@ -3,8 +3,11 @@
 #include "gssmraytracer/geometry/Point.h"
 #include "gssmraytracer/memory/Memory.h"
 #include <algorithm>
+
 #define SPLIT_MIDDLE 111
 #define SPLIT_SAH 222
+#define SPLIT_EQUAL_COUNTS 333
+
 
 using namespace gssmraytracer::memory;
 namespace gssmraytracer {
@@ -36,28 +39,24 @@ namespace gssmraytracer {
     struct BVHBuildNode {
       BVHBuildNode() { children[0] = children[1] = NULL;}
 
-      void initLeaf(int first, int n, const geometry::BBox &b) {
+      void initLeaf(uint32_t first, uint32_t n, const geometry::BBox &b) {
         firstPrimOffset = first;
         nPrimitives = n;
         bounds = b;
       }
 
 
-      void initInterior(int axis, BVHBuildNode *c0, BVHBuildNode *c1) {
+      void initInterior(uint32_t axis, BVHBuildNode *c0, BVHBuildNode *c1) {
         children[0] = c0;
         children[1] = c1;
-        bounds = combine(c0, c1);
+        bounds = c0->bounds.combine(c1->bounds);
         splitAxis = axis;
         nPrimitives = 0;
       }
 
-      const geometry::BBox combine(BVHBuildNode *c0, BVHBuildNode *c1) const {
-        return c0->bounds.combine(c1->bounds);
-      }
-
       geometry::BBox bounds;
       BVHBuildNode *children[2];
-      int splitAxis, firstPrimOffset, nPrimitives;
+      uint32_t splitAxis, firstPrimOffset, nPrimitives;
     };
 
     struct CompareToMid {
@@ -90,9 +89,9 @@ namespace gssmraytracer {
       int maxPrimsInNodes;
       LinearBVHNode *nodes;
 
-      BVHBuildNode *recursiveBuild(std::vector<BVHPrimitiveInfo> &buildData,
-              int start, int end, int *totalNodes, std::vector<std::shared_ptr<geometry::Primitive> > &orderedPrims);
-      int flattenBVHTree(BVHBuildNode *node, int *offset);
+      BVHBuildNode *recursiveBuild(MemoryArena &buildArena, std::vector<BVHPrimitiveInfo> &buildData,
+              int start, int end, uint32_t *totalNodes, std::vector<std::shared_ptr<geometry::Primitive> > &orderedPrims);
+      uint32_t flattenBVHTree(BVHBuildNode *node, uint32_t *offset);
 
     };
 
@@ -108,10 +107,11 @@ namespace gssmraytracer {
     }
 
 
-    BVHAccel::BVHAccel(const std::vector<std::shared_ptr<geometry::Primitive> > &prims, const int maxPrimsInNodes): mImpl(new Impl) {
+    BVHAccel::BVHAccel(const std::vector<std::shared_ptr<geometry::Primitive> > &prims,
+                       const uint32_t maxPrimsInNodes): mImpl(new Impl) {
 
       mImpl->primitives = prims;
-      mImpl->maxPrimsInNodes = maxPrimsInNodes;
+      mImpl->maxPrimsInNodes = std::min(255u,maxPrimsInNodes);
 
       if (prims.size() == 0) {
         mImpl->nodes = NULL;
@@ -122,7 +122,7 @@ namespace gssmraytracer {
       std::vector<BVHPrimitiveInfo> buildData;
       buildData.reserve(mImpl->primitives.size());
 
-      for (int i = 0; i < mImpl->primitives.size(); ++i) {
+      for (uint32_t i = 0; i < mImpl->primitives.size(); ++i) {
         geometry::BBox bbox = prims[i]->worldBound();
         buildData.push_back(BVHPrimitiveInfo(i, bbox));
       }
@@ -130,31 +130,34 @@ namespace gssmraytracer {
 
 
       // Recursively build BVH tree for primitives
-      int totalNodes = 0;
+      MemoryArena buildArena;
+      uint32_t totalNodes = 0;
       std::vector<std::shared_ptr<geometry::Primitive> > orderedPrims;
       orderedPrims.reserve(mImpl->primitives.size());
-      BVHBuildNode *root = mImpl->recursiveBuild(buildData, 0, mImpl->primitives.size(), &totalNodes, orderedPrims);
+      BVHBuildNode *root = mImpl->recursiveBuild(buildArena, buildData, 0, mImpl->primitives.size(), &totalNodes, orderedPrims);
       mImpl->primitives.swap(orderedPrims);
 
       // compute representation of depth-first traversal of BVH tree
       mImpl->nodes = AllocAligned<LinearBVHNode>(totalNodes);
 
-      for (int i = 0; i < totalNodes; ++i) {
+      for (uint32_t i = 0; i < totalNodes; ++i) {
         new(&mImpl->nodes[i]) LinearBVHNode;
       }
-      int offset = 0;
+      uint32_t offset = 0;
       mImpl->flattenBVHTree(root, &offset);
 
       std::cout << "offset = " << offset << " totalNodes = " << totalNodes << std::endl;
+      for (int i = 0; i < totalNodes; ++i) {
+        std::cout << mImpl->nodes[i].bounds << std::endl;
+      }
 
     }
 
-    int BVHAccel::Impl::flattenBVHTree(BVHBuildNode *node, int *offset) {
-      LinearBVHNode *linearNode = NULL;
-      linearNode = &nodes[*offset];
+    uint32_t BVHAccel::Impl::flattenBVHTree(BVHBuildNode *node, uint32_t *offset) {
+      LinearBVHNode *linearNode = &nodes[*offset];
 
       linearNode->bounds = node->bounds;
-      int myOffset = (*offset)++;
+      uint32_t myOffset = (*offset)++;
 
       if (node->nPrimitives > 0) {
         linearNode->primitivesOffset = node->firstPrimOffset;
@@ -171,24 +174,29 @@ namespace gssmraytracer {
     }
 
     BVHBuildNode *BVHAccel::Impl::recursiveBuild(
+            MemoryArena &buildArena,
             std::vector<BVHPrimitiveInfo> &buildData,
-            int start, int end, int *totalNodes,
+            int start, int end, uint32_t *totalNodes,
             std::vector<std::shared_ptr<geometry::Primitive> > &orderedPrims) {
               (*totalNodes)++;
-              BVHBuildNode *node = new BVHBuildNode();
+              BVHBuildNode *node = buildArena.Alloc<BVHBuildNode>();
 
               // compute bounds for all primitives in BVH node
               geometry::BBox bbox;
-              for (int i = start; i < end; ++i) {
-                bbox = bbox.combine(buildData[i].bounds);
-              }
+              for (uint32_t i = start; i < end; ++i) {
+                std::cout << "buildData[" << i << "] = " << buildData[i].bounds << std::endl;
 
-              int nPrimitives = end - start;
+                bbox = bbox.combine(buildData[i].bounds);
+                std::cout << "bbox = " << bbox << std::endl;
+              }
+              std::cout << std::endl;
+
+              uint32_t nPrimitives = end - start;
               if (nPrimitives == 1) {
                 // create leaf BVHBuildNode
-                int firstPrimOffset = orderedPrims.size();
-                for (int i = start; i < end; ++i) {
-                  int primNum = buildData[i].primitiveNumber;
+                uint32_t firstPrimOffset = orderedPrims.size();
+                for (uint32_t i = start; i < end; ++i) {
+                  uint32_t primNum = buildData[i].primitiveNumber;
                   orderedPrims.push_back(primitives[primNum]);
                 }
                 node->initLeaf(firstPrimOffset, nPrimitives, bbox);
@@ -196,23 +204,33 @@ namespace gssmraytracer {
               else {
                 // compute bound of primitive centroids, choose split dimension
                 geometry::BBox centroidBounds;
-                for (int i = start; i < end; ++i) {
+                for (uint32_t i = start; i < end; ++i) {
                   centroidBounds = centroidBounds.combine(buildData[i].centroid);
                 }
                 int dim = centroidBounds.maximumExtent();
-                int splitMethod = SPLIT_SAH;
+                int splitMethod = SPLIT_MIDDLE;
 
                       // partition primitives into two sets and build children
-                      int mid = (start + end)/2;
+                      uint32_t mid = (start + end)/2;
                       if (centroidBounds.max()[dim] == centroidBounds.min()[dim]) {
                         // create leaf bvhbuildnode
-                        int firstPrimOffset = orderedPrims.size();
-                        for (int i = start; i < end; ++i) {
-                          int primNum = buildData[i].primitiveNumber;
-                          orderedPrims.push_back(primitives[primNum]);
+                        if (nPrimitives <= maxPrimsInNodes) {
+                          uint32_t firstPrimOffset = orderedPrims.size();
+                          for (uint32_t i = start; i < end; ++i) {
+                            uint32_t primNum = buildData[i].primitiveNumber;
+                            orderedPrims.push_back(primitives[primNum]);
+                          }
+                          node->initLeaf(firstPrimOffset, nPrimitives, bbox);
+                          return node;
                         }
-                        node->initLeaf(firstPrimOffset, nPrimitives, bbox);
-                        return node;
+                        else {
+                          node->initInterior(dim,
+                                    recursiveBuild(buildArena,buildData, start, mid,
+                                        totalNodes, orderedPrims),
+                                    recursiveBuild(buildArena, buildData, mid, end,
+                                        totalNodes, orderedPrims));
+                          return node;
+                        }
                       }
                       switch(splitMethod) {
                         case SPLIT_MIDDLE: {
@@ -224,7 +242,14 @@ namespace gssmraytracer {
                                                                 &buildData[end-1] + 1,
                                                                 CompareToMid(dim, pmid));
                       mid = midPtr - &buildData[0];
-                      break;
+                      if (mid != start && mid != end)
+                        break;
+                  }
+                  case SPLIT_EQUAL_COUNTS: {
+                    mid = (start + end)/2;
+                    std::nth_element(&buildData[start], &buildData[mid],
+                                      &buildData[end-1] + 1, ComparePoints(dim));
+                    break;
                   }
                   case SPLIT_SAH: default: {
                 //////////////////////////////////////////////////////////////////////
@@ -248,7 +273,7 @@ namespace gssmraytracer {
                   BucketInfo buckets[nBuckets];
 
                   //init bucketinfo for SAH partition buckets
-                  for (int i = start; i < end; ++i) {
+                  for (uint32_t i = start; i < end; ++i) {
                     int b = nBuckets *
                       ((buildData[i].centroid[dim] - centroidBounds.min()[dim])/
                       (centroidBounds.max()[dim] - centroidBounds.min()[dim]));
@@ -275,7 +300,7 @@ namespace gssmraytracer {
                   }
                   // find bucket to split at that minimizes SAH metric
                   float minCost = cost[0];
-                  int minCostSplit = 0;
+                  uint32_t minCostSplit = 0;
                   for (int i = 1;i < nBuckets-1; ++i) {
                     if (cost[i] < minCost) {
                       minCost = cost[i];
@@ -291,12 +316,13 @@ namespace gssmraytracer {
                         mid = pmid - &buildData[0];
                   }
                   else {
-                    int firstPrimOffset = orderedPrims.size();
-                    for (int i = start; i < end; ++i) {
-                      int primNum = buildData[i].primitiveNumber;
+                    uint32_t firstPrimOffset = orderedPrims.size();
+                    for (uint32_t i = start; i < end; ++i) {
+                      uint32_t primNum = buildData[i].primitiveNumber;
                       orderedPrims.push_back(primitives[primNum]);
                     }
                     node->initLeaf(firstPrimOffset, nPrimitives, bbox);
+                    return node;
                   }
                 }
                 //////////////////////////////////////////////////////////
@@ -305,17 +331,17 @@ namespace gssmraytracer {
             }
 
             node->initInterior(dim,
-                        recursiveBuild(buildData, start, mid, totalNodes, orderedPrims),
-                        recursiveBuild(buildData,   mid, end, totalNodes, orderedPrims));
+                        recursiveBuild(buildArena, buildData, start, mid, totalNodes, orderedPrims),
+                        recursiveBuild(buildArena, buildData,   mid, end, totalNodes, orderedPrims));
             }
             return node;
 
 
             }
     static inline bool IntersectP(const geometry::BBox &bounds, const Ray &ray,
-        const math::Vector &invDir, const int dirIsNeg[3]) {
+        const math::Vector &invDir, const uint32_t dirIsNeg[3]) {
           //!FIXME!
-          return true; // fix!
+      //    return true; // fix!
           // check for ray intersection against x and y slabs
           float txmin = (bounds[  dirIsNeg[0]].x() - ray.origin().x()) * invDir.x();
 
@@ -325,8 +351,10 @@ namespace gssmraytracer {
 
           float tymax = (bounds[1-dirIsNeg[1]].y() - ray.origin().y()) * invDir.y();
 
+        //  std::cout << "bounds = " << bounds << std::endl;
           if ((txmin > tymax) || (tymin > txmax))
             return false;
+
           if (tymin > txmin) txmin = tymin;
           if (tymax < txmax) txmax = tymax;
 
@@ -337,8 +365,11 @@ namespace gssmraytracer {
 
           if ((txmin > tzmax) || (tzmin > txmax))
             return false;
-          if (tzmin > txmin) txmin = tzmin;
-          if (tzmax < txmax) txmax = tzmax;
+
+          if (tzmin > txmin)
+              txmin = tzmin;
+          if (tzmax < txmax)
+              txmax = tzmax;
 
           return (txmin < ray.maxt()) && (txmax > ray.mint());
         }
@@ -351,21 +382,21 @@ namespace gssmraytracer {
         if (!mImpl->nodes) return false;
         bool hit = false;
 
-        geometry::Point origin = ws_ray(ws_ray.mint());
+
+      //  geometry::Point origin = ws_ray(ws_ray.mint());
         math::Vector invDir(1.f/ws_ray.dir().x(), 1.f/ws_ray.dir().y(), 1.f/ws_ray.dir().z());
-        int dirIsNeg[3] = { invDir.x() < 0, invDir.y() < 0, invDir.z() < 0 };
+        uint32_t dirIsNeg[3] = { invDir.x() < 0, invDir.y() < 0, invDir.z() < 0 };
         // follow ray through BVH nodes to find primitive intersections
-        int todoOffset = 0, nodeNum = 0;
-        int todo[64];
+        uint32_t todoOffset = 0, nodeNum = 0;
+        uint32_t todo[64];
 
         while(true) {
           const LinearBVHNode *node = &mImpl->nodes[nodeNum];
-
           // check ray against BVH node
           if (IntersectP(node->bounds, ws_ray, invDir, dirIsNeg)) {
             if (node->nPrimitives > 0) {
               // Intersect ray with primitives in leaf BVH node
-              for (int i = 0; i < node->nPrimitives; ++i) {
+              for (uint32_t i = 0; i < node->nPrimitives; ++i) {
                 if (mImpl->primitives[node->primitivesOffset+i]->hit(ws_ray, hit_time, dg)) {
                   prim = mImpl->primitives[node->primitivesOffset+i];
                   hit = true;
@@ -396,6 +427,7 @@ namespace gssmraytracer {
         return hit;
 
     }
+
 
   }
 }

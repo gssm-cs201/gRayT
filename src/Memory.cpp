@@ -1,5 +1,6 @@
 #include "gssmraytracer/memory/Memory.h"
 #include <malloc.h>
+#include <vector>
 
 namespace gssmraytracer {
   namespace memory {
@@ -36,5 +37,29 @@ namespace gssmraytracer {
         free(ptr);
     #endif
     }
+
+/*
+    class MemoryArena::Impl {
+    public:
+      uint32_t curBlockPos, blockSize;
+      char *currentBlock;
+      std::vector<char *> usedBlocks, availableBlocks;
+    };
+
+    MemoryArena::MemoryArena(uint32_t bs) : mImpl(new Impl) {
+      mImpl->blockSize = bs;
+      mImpl->curBlockPos = 0;
+      mImpl->currentBlock = AllocAligned<char>(mImpl->blockSize);
+    }
+
+
+    void MemoryArena::FreeAll() {
+      mImpl->curBlockPos = 0;
+      while (mImpl->usedBlocks.size()) {
+        mImpl->availableBlocks.push_back(mImpl->usedBlocks.back());
+        mImpl->usedBlocks.pop_back();
+      }
+    }
+    */
   }
 }
