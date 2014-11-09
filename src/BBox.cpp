@@ -22,6 +22,10 @@ namespace gssmraytracer {
       mImpl->pMin = p;
       mImpl->pMax = p;
     }
+    BBox::BBox(const BBox &b) : mImpl(new Impl) {
+      mImpl->pMin = b.mImpl->pMin;
+      mImpl->pMax = b.mImpl->pMax;
+    }
     BBox::BBox(const Point &p1, const Point &p2) : mImpl(new Impl) {
       mImpl->pMin = Point(std::min(p1.x(), p2.x()), std::min(p1.y(), p2.y()), std::min(p1.z(), p2.z()));
       mImpl->pMax = Point(std::max(p1.x(), p2.x()), std::max(p1.y(), p2.y()), std::max(p1.z(), p2.z()));
@@ -69,6 +73,19 @@ namespace gssmraytracer {
       ret.mImpl->pMax.x(std::max(mImpl->pMax.x(), bbox.mImpl->pMax.x()));
       ret.mImpl->pMax.y(std::max(mImpl->pMax.y(), bbox.mImpl->pMax.y()));
       ret.mImpl->pMax.z(std::max(mImpl->pMax.z(), bbox.mImpl->pMax.z()));
+    return ret;
+    }
+    const BBox BBox::combine(const Point &p) const {
+      BBox ret;
+
+      ret.mImpl->pMin.x(std::min(mImpl->pMin.x(), p.x()));
+
+      ret.mImpl->pMin.y(std::min(mImpl->pMin.y(), p.y()));
+      ret.mImpl->pMin.z(std::min(mImpl->pMin.z(), p.z()));
+
+      ret.mImpl->pMax.x(std::max(mImpl->pMax.x(), p.x()));
+      ret.mImpl->pMax.y(std::max(mImpl->pMax.y(), p.y()));
+      ret.mImpl->pMax.z(std::max(mImpl->pMax.z(), p.z()));
     return ret;
     }
     const float BBox::surfaceArea() const {

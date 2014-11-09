@@ -124,7 +124,7 @@ int main(int argc, char* argv[]) {
     Transform transform1, transform2, transform3;
     Vector position(-7.0,0.0,6.0);
     Vector position2(7.0,4.0,0.0);
-    Vector position3(8.0,0.0,0.0);
+    Vector position3(1.0,0.0,1.0);
     transform1.translate(position);
     transform2.translate(position2);
     transform3.translate(position3);

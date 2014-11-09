@@ -15,14 +15,11 @@ namespace gssmraytracer {
 
 
     struct BVHPrimitiveInfo {
-      BVHPrimitiveInfo(const int pn, const geometry::BBox &b) : primitiveNumber(pn), bounds(b) {
-        centroid = b.centroid();
-        std::cout << "bbox = " << b << std::endl;
-        std::cout << "centroid = " << centroid << std::endl;
-      }
+      BVHPrimitiveInfo(const int pn, const geometry::BBox &b) :
+        primitiveNumber(pn), bounds(b), centroid(bounds.centroid()) {}
       int primitiveNumber;
-      geometry::Point centroid;
       geometry::BBox bounds;
+      geometry::Point centroid;
     };
 
     struct LinearBVHNode {
@@ -90,7 +87,7 @@ namespace gssmraytracer {
       LinearBVHNode *nodes;
 
       BVHBuildNode *recursiveBuild(MemoryArena &buildArena, std::vector<BVHPrimitiveInfo> &buildData,
-              int start, int end, uint32_t *totalNodes, std::vector<std::shared_ptr<geometry::Primitive> > &orderedPrims);
+              uint32_t start, uint32_t end, uint32_t *totalNodes, std::vector<std::shared_ptr<geometry::Primitive> > &orderedPrims);
       uint32_t flattenBVHTree(BVHBuildNode *node, uint32_t *offset);
 
     };
@@ -145,12 +142,6 @@ namespace gssmraytracer {
       }
       uint32_t offset = 0;
       mImpl->flattenBVHTree(root, &offset);
-
-      std::cout << "offset = " << offset << " totalNodes = " << totalNodes << std::endl;
-      for (int i = 0; i < totalNodes; ++i) {
-        std::cout << mImpl->nodes[i].bounds << std::endl;
-      }
-
     }
 
     uint32_t BVHAccel::Impl::flattenBVHTree(BVHBuildNode *node, uint32_t *offset) {
@@ -176,7 +167,7 @@ namespace gssmraytracer {
     BVHBuildNode *BVHAccel::Impl::recursiveBuild(
             MemoryArena &buildArena,
             std::vector<BVHPrimitiveInfo> &buildData,
-            int start, int end, uint32_t *totalNodes,
+            uint32_t start, uint32_t end, uint32_t *totalNodes,
             std::vector<std::shared_ptr<geometry::Primitive> > &orderedPrims) {
               (*totalNodes)++;
               BVHBuildNode *node = buildArena.Alloc<BVHBuildNode>();
@@ -184,12 +175,8 @@ namespace gssmraytracer {
               // compute bounds for all primitives in BVH node
               geometry::BBox bbox;
               for (uint32_t i = start; i < end; ++i) {
-                std::cout << "buildData[" << i << "] = " << buildData[i].bounds << std::endl;
-
                 bbox = bbox.combine(buildData[i].bounds);
-                std::cout << "bbox = " << bbox << std::endl;
               }
-              std::cout << std::endl;
 
               uint32_t nPrimitives = end - start;
               if (nPrimitives == 1) {
@@ -208,7 +195,7 @@ namespace gssmraytracer {
                   centroidBounds = centroidBounds.combine(buildData[i].centroid);
                 }
                 int dim = centroidBounds.maximumExtent();
-                int splitMethod = SPLIT_MIDDLE;
+                int splitMethod = SPLIT_SAH;
 
                       // partition primitives into two sets and build children
                       uint32_t mid = (start + end)/2;
@@ -247,8 +234,11 @@ namespace gssmraytracer {
                   }
                   case SPLIT_EQUAL_COUNTS: {
                     mid = (start + end)/2;
-                    std::nth_element(&buildData[start], &buildData[mid],
-                                      &buildData[end-1] + 1, ComparePoints(dim));
+
+                    std::nth_element(&buildData[start],
+                                     &buildData[mid],
+                                     &buildData[end-1] + 1,
+                                     ComparePoints(dim));
                     break;
                   }
                   case SPLIT_SAH: default: {
@@ -259,8 +249,11 @@ namespace gssmraytracer {
                 if (nPrimitives <= 4) {
                   // partition primitives into equally-sized subsets
                   mid = (start + end)/2;
-                  std::nth_element(&buildData[start], &buildData[mid],
-                                   &buildData[end-1]+1, ComparePoints(dim));
+
+                  std::nth_element(&buildData[start],
+                                   &buildData[mid],
+                                   &buildData[end-1]+1,
+                                   ComparePoints(dim));
                 }
                 else {
                   // allocate bucketinfo for SAH partition buckets
