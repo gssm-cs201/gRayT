@@ -122,9 +122,9 @@ int main(int argc, char* argv[]) {
     Image image2("fractal3.png");
     Scene &scene = Scene::getInstance();
     Transform transform1, transform2, transform3;
-    Vector position(-7.0,0.0,6.0);
-    Vector position2(7.0,4.0,0.0);
-    Vector position3(1.0,0.0,1.0);
+    Vector position(7.0,0.0,0.0);
+    Vector position2(-5.0,-3.0,20.0);
+    Vector position3(-1.0,5.0,-10.0);
     transform1.translate(position);
     transform2.translate(position2);
     transform3.translate(position3);
@@ -134,10 +134,10 @@ int main(int argc, char* argv[]) {
     std::shared_ptr<Shader> shader2(new LambertianShader(Color(1,0,0,1)));
     std::shared_ptr<Shader> shader3(new LambertianShader(Color(1,1,0,1)));
     BBox bbox;
-    std::shared_ptr<Sphere> sphere(new Sphere(transform1,5.0f, -10.0f, 10.0f, 360.0f));
+    std::shared_ptr<Sphere> sphere(new Sphere(transform1,2.0f, -10.0f, 10.0f, 360.0f));
 
-    std::shared_ptr<Sphere> sphere2(new Sphere(transform2, 5.0f, -10.0f, 10.0f, 360.0f));
-    std::shared_ptr<Sphere> sphere3(new Sphere(transform3, 5.0f, -10.0f, 10.0f, 360.0f));
+    std::shared_ptr<Sphere> sphere2(new Sphere(transform2, 4.0f, -10.0f, 10.0f, 360.0f));
+    std::shared_ptr<Sphere> sphere3(new Sphere(transform3, 3.0f, -10.0f, 10.0f, 360.0f));
 
     std::shared_ptr<Primitive> prim(new Primitive(sphere, shader));
     std::shared_ptr<Primitive> prim2(new Primitive(sphere2, shader2));

@@ -46,13 +46,13 @@ namespace gssmraytracer {
     const float Ray::mint() const {
       return mImpl->mint;
     }
-    void Ray::setMint(const float mint) {
+    void Ray::mint(const float mint) {
       mImpl->mint = mint;
     }
     const float Ray::maxt() const {
       return mImpl->maxt;
     }
-    void Ray::setMaxt(const float maxt) {
+    void Ray::maxt(const float maxt) {
       mImpl->maxt = maxt;
     }
 

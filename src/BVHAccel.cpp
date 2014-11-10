@@ -333,8 +333,6 @@ namespace gssmraytracer {
             }
     static inline bool IntersectP(const geometry::BBox &bounds, const Ray &ray,
         const math::Vector &invDir, const uint32_t dirIsNeg[3]) {
-          //!FIXME!
-      //    return true; // fix!
           // check for ray intersection against x and y slabs
           float txmin = (bounds[  dirIsNeg[0]].x() - ray.origin().x()) * invDir.x();
 
@@ -383,16 +381,29 @@ namespace gssmraytracer {
         uint32_t todoOffset = 0, nodeNum = 0;
         uint32_t todo[64];
 
+        std::shared_ptr<geometry::Primitive> potential_prim = nullptr;
+        float potential_hit_time = std::numeric_limits<float>::infinity();
+        uint32_t index;
+
         while(true) {
+
           const LinearBVHNode *node = &mImpl->nodes[nodeNum];
           // check ray against BVH node
           if (IntersectP(node->bounds, ws_ray, invDir, dirIsNeg)) {
             if (node->nPrimitives > 0) {
+
               // Intersect ray with primitives in leaf BVH node
               for (uint32_t i = 0; i < node->nPrimitives; ++i) {
-                if (mImpl->primitives[node->primitivesOffset+i]->hit(ws_ray, hit_time, dg)) {
-                  prim = mImpl->primitives[node->primitivesOffset+i];
-                  hit = true;
+
+                float t_hit_time = std::numeric_limits<float>::infinity();
+
+                if (mImpl->primitives[node->primitivesOffset+i]->hit(ws_ray, t_hit_time, dg)) {
+                  if (t_hit_time < potential_hit_time) {
+                    potential_prim = mImpl->primitives[node->primitivesOffset+i];
+                    potential_hit_time = t_hit_time;
+                    index = node->primitivesOffset+i;
+                    hit = true;
+                  }
                 }
               }
               if (todoOffset == 0) break;
@@ -417,6 +428,9 @@ namespace gssmraytracer {
           }
 
         }
+        prim = potential_prim;
+        hit_time = potential_hit_time;
+
         return hit;
 
     }

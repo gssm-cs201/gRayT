@@ -31,6 +31,11 @@ namespace gssmraytracer {
     }
 
     bool Scene::hit(const Ray &ws_ray) const {
+      std::shared_ptr<geometry::DifferentialGeometry> dg;
+      std::shared_ptr<geometry::Primitive> prim;
+      float hit_time;
+      return hit(ws_ray, hit_time, dg, prim);
+/*
       float thit = std::numeric_limits<float>::infinity();
       for (std::vector<std::shared_ptr<geometry::Primitive> >::const_iterator iter =
         mImpl->primitives.begin(); iter != mImpl->primitives.end(); ++iter) {
@@ -41,10 +46,15 @@ namespace gssmraytracer {
         }
 
         return false;
-
+*/
     }
 
     bool Scene::hit(const Ray &ws_ray, float &hit_time) const {
+      std::shared_ptr<geometry::DifferentialGeometry> dg;
+      std::shared_ptr<geometry::Primitive> prim;
+
+      return hit(ws_ray, hit_time, dg, prim);
+      /*
       float closest_t = std::numeric_limits<float>::infinity();
       std::shared_ptr<geometry::Primitive> candidate_prim;
       for (std::vector<std::shared_ptr<geometry::Primitive> >::const_iterator iter =
@@ -65,12 +75,14 @@ namespace gssmraytracer {
           return true;
         }
         return false;
+        */
 
     }
     bool Scene::hit(const Ray &ws_ray, float &hit_time, std::shared_ptr<geometry::DifferentialGeometry> & dg) const {
       std::shared_ptr<geometry::Primitive> prim;
       return hit(ws_ray, hit_time, dg, prim);
     }
+
     bool Scene::hit(const Ray &ws_ray, float &hit_time, std::shared_ptr<geometry::DifferentialGeometry> & dg,
       std::shared_ptr<geometry::Primitive> &prim) const {
         // lazy instantiation
@@ -84,8 +96,9 @@ namespace gssmraytracer {
 
 //        float closest_t = std::numeric_limits<float>::infinity();
 //        std::shared_ptr<geometry::Primitive> candidate_prim;
+        bool result = mImpl->bvh->intersect(ws_ray, hit_time, dg, prim);
 
-        return mImpl->bvh->intersect(ws_ray, hit_time, dg, prim);
+        return result;
 /*
         for (std::vector<std::shared_ptr<geometry::Primitive> >::const_iterator iter =
           mImpl->primitives.begin(); iter != mImpl->primitives.end(); ++iter) {

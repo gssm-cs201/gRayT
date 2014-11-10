@@ -33,7 +33,7 @@ namespace gssmraytracer {
       /************************************************************************/
       // hardcoded light info in the shader
       // this implementation should be done in the light object
-      Point light_pos(0,10, 0);
+      Point light_pos(0,20, 0);
       float intensity = 1.f;
 
       math::Vector light_vec = light_pos - dg.p;

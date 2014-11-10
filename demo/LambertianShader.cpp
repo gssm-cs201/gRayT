@@ -45,7 +45,7 @@ namespace gssmraytracer {
       /************************************************************************/
       // hardcoded light info in the shader
       // this implementation should be done in the light object
-      Point light_pos(0,10, 0);
+      Point light_pos(0,20, 0);
       float intensity = 1.f;
 
       math::Vector light_vec = light_pos - dg.p;
@@ -60,20 +60,25 @@ namespace gssmraytracer {
 //      float distanceVal_quadratic = (light_vec.length() * light_vec.length());
 
       Ray light_ray(dg.p, light_vec.normalized());
+      light_ray.maxt(light_vec.length());
       /************************************************************************/
 
 
       // ambient lighting - faking global illumination with constant
       // low color value
+
       shadeColor.red = mImpl->color.red * 0.1f;
       shadeColor.green = mImpl->color.green * 0.1f;
       shadeColor.blue = mImpl->color.blue * 0.1f;
+      shadeColor.alpha = 1.0f;
 
       // This implementation uses the singleton of the scene to see if we
       // hit any objects.  Note that we do not need to pass in the Scene as
       // an argument since a singleton is in the global namespace,
       // essentially, a global class where there is only one instance)
-      if (!Scene::getInstance().hit(light_ray)) { // if no objects in the way, do lighting
+      float hit_time = 0;
+      if (!Scene::getInstance().hit(light_ray, hit_time)) { // if no objects in the way, do lighting
+
 
         // this computes the cosine of the angle between the light vector
         // and the geometry normal
@@ -90,6 +95,8 @@ namespace gssmraytracer {
 
           }
       }
+
+
 
        return shadeColor;
     }
