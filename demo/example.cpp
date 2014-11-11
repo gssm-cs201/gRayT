@@ -117,35 +117,47 @@ int main(int argc, char* argv[]) {
     int width = 640;
     int height = 360;
     Image image(width, height);
-    Camera camera(Point(0,0,45),Vector(0,0,-1),Vector(0,1,0));
+    Camera camera(Point(-5,2.5,25),Vector(0,0,-1),Vector(0,1,0));
 
     Image image2("fractal3.png");
     Scene &scene = Scene::getInstance();
-    Transform transform1, transform2, transform3;
-    Vector position(7.0,0.0,0.0);
-    Vector position2(-5.0,-3.0,-1.0);
+    Transform transform1, transform2, transform3, transform4, transform5;
+    Vector position(-13.0,2.0,0.0);
+    Vector position2(-7.0,-3.0,-1.0);
     Vector position3(-1.0,5.0,-1.0);
+    Vector position4(0.0,-1.0,0.0);
+    Vector position5(1.0,4.0,8.0);
     transform1.translate(position);
     transform2.translate(position2);
     transform3.translate(position3);
+    transform4.translate(position4);
+    transform5.translate(position5);
 
 
     std::shared_ptr<Shader> shader(new PhongShader(Color(0,1,0,1)));
     std::shared_ptr<Shader> shader2(new LambertianShader(Color(1,0,0,1)));
     std::shared_ptr<Shader> shader3(new LambertianShader(Color(1,1,0,1)));
+    std::shared_ptr<Shader> shader4(new LambertianShader(Color(0,0,1,1)));
+    std::shared_ptr<Shader> shader5(new LambertianShader(Color(0,1,0,1)));
     BBox bbox;
-    std::shared_ptr<Sphere> sphere(new Sphere(transform1,5.0f, -10.0f, 10.0f, 360.0f));
+    std::shared_ptr<Sphere> sphere(new Sphere(transform1,4.0f, -10.0f, 10.0f, 360.0f));
 
-    std::shared_ptr<Sphere> sphere2(new Sphere(transform2, 7.0f, -10.0f, 10.0f, 360.0f));
-    std::shared_ptr<Sphere> sphere3(new Sphere(transform3, 5.0f, -10.0f, 10.0f, 360.0f));
+    std::shared_ptr<Sphere> sphere2(new Sphere(transform2, 2.0f, -10.0f, 10.0f, 360.0f));
+    std::shared_ptr<Sphere> sphere3(new Sphere(transform3, 2.0f, -10.0f, 10.0f, 360.0f));
+    std::shared_ptr<Sphere> sphere4(new Sphere(transform4, 3.0f, -10.0f, 10.0f, 360.0f));
+    std::shared_ptr<Sphere> sphere5(new Sphere(transform5, 2.0f, -10.0f, 10.0f, 360.0f));
 
     std::shared_ptr<Primitive> prim (new Primitive(sphere, shader));
     std::shared_ptr<Primitive> prim2(new Primitive(sphere2, shader2));
     std::shared_ptr<Primitive> prim3(new Primitive(sphere3, shader3));
+    std::shared_ptr<Primitive> prim4(new Primitive(sphere4, shader4));
+    std::shared_ptr<Primitive> prim5(new Primitive(sphere5, shader5));
 
     scene.addPrimitive(prim);
     scene.addPrimitive(prim2);
     scene.addPrimitive(prim3);
+    scene.addPrimitive(prim4);
+    scene.addPrimitive(prim5);
     camera.render(scene, image);
     image.write("lambertianShader.exr");
     RenderGlobals::getInstance().setImage(image);
