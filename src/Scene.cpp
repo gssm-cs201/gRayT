@@ -88,7 +88,7 @@ namespace gssmraytracer {
         // lazy instantiation
 
         if (!mImpl->bvh) {
-          uint32_t var = 2;
+          uint32_t var = 1;
             std::shared_ptr<BVHAccel> bvh(new BVHAccel(mImpl->primitives, var));
             mImpl->bvh = bvh;
 

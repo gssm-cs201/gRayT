@@ -334,28 +334,29 @@ namespace gssmraytracer {
     static inline bool IntersectP(const geometry::BBox &bounds, const Ray &ray,
         const math::Vector &invDir, const uint32_t dirIsNeg[3]) {
           // check for ray intersection against x and y slabs
-          float txmin = (bounds[  dirIsNeg[0]].x() - ray.origin().x()) * invDir.x();
+          float txmin = (bounds[  dirIsNeg[0]].x() - ray.origin().x()) * invDir.x() - 0.05;
 
-          float txmax = (bounds[1-dirIsNeg[0]].x() - ray.origin().x()) * invDir.x();
+          float txmax = (bounds[1-dirIsNeg[0]].x() - ray.origin().x()) * invDir.x() + 0.05;
 
-          float tymin = (bounds[  dirIsNeg[1]].y() - ray.origin().y()) * invDir.y();
+          float tymin = (bounds[  dirIsNeg[1]].y() - ray.origin().y()) * invDir.y() - 0.05;
 
-          float tymax = (bounds[1-dirIsNeg[1]].y() - ray.origin().y()) * invDir.y();
+          float tymax = (bounds[1-dirIsNeg[1]].y() - ray.origin().y()) * invDir.y() + 0.05;
 
-        //  std::cout << "bounds = " << bounds << std::endl;
-          if ((txmin > tymax) || (tymin > txmax))
+          if ((txmin > tymax) || (tymin > txmax)) {
             return false;
+          }
 
           if (tymin > txmin) txmin = tymin;
           if (tymax < txmax) txmax = tymax;
 
           // check for ray intersection against z slab
-          float tzmin = (bounds[  dirIsNeg[2]].z() - ray.origin().z()) * invDir.z();
-          float tzmax = (bounds[1-dirIsNeg[2]].z() - ray.origin().z()) * invDir.z();
+          float tzmin = (bounds[  dirIsNeg[2]].z() - ray.origin().z()) * invDir.z() - 0.05;
+          float tzmax = (bounds[1-dirIsNeg[2]].z() - ray.origin().z()) * invDir.z() + 0.05;
 
 
-          if ((txmin > tzmax) || (tzmin > txmax))
+          if ((txmin > tzmax) || (tzmin > txmax)) {
             return false;
+          }
 
           if (tzmin > txmin)
               txmin = tzmin;
@@ -383,6 +384,7 @@ namespace gssmraytracer {
 
         std::shared_ptr<geometry::Primitive> potential_prim = nullptr;
         float potential_hit_time = std::numeric_limits<float>::infinity();
+        std::shared_ptr<geometry::DifferentialGeometry> potential_dg = nullptr;
         uint32_t index;
 
         while(true) {
@@ -399,8 +401,10 @@ namespace gssmraytracer {
 
                 if (mImpl->primitives[node->primitivesOffset+i]->hit(ws_ray, t_hit_time, dg)) {
                   if (t_hit_time < potential_hit_time) {
+
                     potential_prim = mImpl->primitives[node->primitivesOffset+i];
                     potential_hit_time = t_hit_time;
+                    potential_dg = dg;
                     index = node->primitivesOffset+i;
                     hit = true;
                   }
@@ -430,6 +434,7 @@ namespace gssmraytracer {
         }
         prim = potential_prim;
         hit_time = potential_hit_time;
+        dg = potential_dg;
 
         return hit;
 

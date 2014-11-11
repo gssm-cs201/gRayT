@@ -93,7 +93,9 @@ void Camera::render(const Scene &scene, Image &image) const {
 int num_width_samples = 1;//4;
 int num_height_samples = 1;//4;
   for (int r =0; r< image.getHeight(); ++r) {
+    #pragma omp parallel for
     for (int c = 0; c < image.getWidth(); ++c) {
+
       Color color;
       // for number of samples
       for (int w = 0; w < num_width_samples; ++w) {
@@ -103,10 +105,11 @@ int num_height_samples = 1;//4;
           Ray ray(mImpl->eye, direction);
           ray.epsilon(0.0005);
           float thit;
-          std::shared_ptr<DifferentialGeometry> dg;
-          std::shared_ptr<Primitive> prim;
+          std::shared_ptr<DifferentialGeometry> dg = nullptr;
+          std::shared_ptr<Primitive> prim = nullptr;
           if (scene.hit(ray, thit, dg, prim)) {
             // possibly pass in scene data too for lighting and reflections
+
             color += prim->shade(dg);
           }
           else
