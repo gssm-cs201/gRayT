@@ -66,6 +66,12 @@ namespace gssmraytracer {
       //! Returns a new Normalized Vector based on this
       const Vector normalized() const;
 
+      //! Returns true if vectors are equivalent
+      const bool operator==(const Vector& v) const;
+
+      //! Returns true if vectors are not equivalent
+      const bool operator!=(const Vector& v) const;
+
       //! Allows printing of the vector to std::cout
       friend std::ostream& operator<<(std::ostream &os, const Vector &vec);
 

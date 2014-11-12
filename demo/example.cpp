@@ -19,6 +19,7 @@
 #include <gssmraytracer/utils/RenderGlobals.h>
 #include <gssmraytracer/utils/Color.h>
 #include <gssmraytracer/utils/Scene.h>
+#include <gssmraytracer/utils/CmdLineFind.h>
 #include <iostream>
 
 #include "ConstantShader.h"
@@ -113,9 +114,14 @@ void gradient(Image &image) {
 
 int main(int argc, char* argv[]) {
     // Use the default constructor
+    CmdLineFind clf(argc, argv);
 
-    int width = 640;
-    int height = 360;
+    int width  = clf.find( "-NX", 640, "Image width");
+    int height = clf.find( "-NY", 360, "Image height");
+    std::string filename = clf.find( "-name", "demo.exr", "Name of output image file" );
+
+    clf.usage("-h");
+
     Image image(width, height);
     Camera camera(Point(-5,2.5,25),Vector(0,0,-1),Vector(0,1,0));
 

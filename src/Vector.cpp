@@ -66,6 +66,13 @@ namespace gssmraytracer {
       return *this;
 
     }
+    const bool Vector::operator==(const Vector& v) const
+       { return ( mImpl->vec[0]==v.mImpl->vec[0] && mImpl->vec[1]==v.mImpl->vec[1] && mImpl->vec[2]==v.mImpl->vec[2] ); }
+
+    const bool Vector::operator!=(const Vector& v) const
+       { return ( mImpl->vec[0]!=v.mImpl->vec[0] && mImpl->vec[1]!=v.mImpl->vec[1] && mImpl->vec[2]!=v.mImpl->vec[2] ); }
+
+
     const float Vector::operator[](const float index) const {
       return mImpl->vec[index];
     }
