@@ -100,7 +100,7 @@ int num_height_samples = 4;
       // for number of samples
       for (int w = 0; w < num_width_samples; ++w) {
         for (int h = 0; h < num_height_samples; ++h) {
-          math::Vector direction = view(((float)c + (float)w/num_width_samples)/image.getWidth(), ((float)r + (float)h/num_height_samples)/image.getHeight());
+          math::Vector direction = view(((float)c + 0.5 + (float)w/num_width_samples)/image.getWidth(), ((float)r + 0.5 + (float)h/num_height_samples)/image.getHeight());
 
           Ray ray(mImpl->eye, direction);
           ray.epsilon(0.0005);

@@ -6,6 +6,7 @@ namespace gssmraytracer {
   namespace geometry {
     class Normal {
     public:
+      Normal();
       explicit Normal(const math::Vector &vec);
       Normal(const float x, const float y, const float z);
       Normal(const Normal &normal);

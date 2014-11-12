@@ -64,7 +64,7 @@ namespace gssmraytracer {
       std::shared_ptr<Impl> mImpl;
 
     };
-    Point operator*(const float s, const Point &p);
+//    Point operator*(const float s, const Point &p);
   }
 }
 #endif //__POINT_H__
