@@ -93,20 +93,23 @@ void Camera::render(const Scene &scene, Image &image) const {
 int num_width_samples = 1;
 int num_height_samples = 1;
   for (int r =0; r< image.getHeight(); ++r) {
+    #pragma omp parallel for
     for (int c = 0; c < image.getWidth(); ++c) {
+
       Color color;
       // for number of samples
       for (int w = 0; w < num_width_samples; ++w) {
         for (int h = 0; h < num_height_samples; ++h) {
-          math::Vector direction = view(((float)c + (float)w/num_width_samples)/image.getWidth(), ((float)r + (float)h/num_height_samples)/image.getHeight());
+          math::Vector direction = view(((float)c + 0.5 + (float)w/num_width_samples)/image.getWidth(), ((float)r + 0.5 + (float)h/num_height_samples)/image.getHeight());
 
           Ray ray(mImpl->eye, direction);
           ray.epsilon(0.0005);
           float thit;
-          std::shared_ptr<DifferentialGeometry> dg;
-          std::shared_ptr<Primitive> prim;
+          std::shared_ptr<DifferentialGeometry> dg = nullptr;
+          std::shared_ptr<Primitive> prim = nullptr;
           if (scene.hit(ray, thit, dg, prim)) {
             // possibly pass in scene data too for lighting and reflections
+
             color += prim->shade(dg);
           }
           else

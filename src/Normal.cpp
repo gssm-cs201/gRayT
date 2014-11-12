@@ -5,9 +5,12 @@ namespace gssmraytracer {
   namespace geometry {
     class Normal::Impl {
     public:
+      Impl(): vec(0,0,0) {}
       Imath::Vec3<float> vec;
 
     };
+
+    Normal::Normal() : mImpl(new Impl){}
 
     Normal::Normal(const math::Vector &vec) : mImpl(new Impl) {
       mImpl->vec.x = vec.x();

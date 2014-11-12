@@ -15,6 +15,7 @@ namespace gssmraytracer {
     };
 
     Ray::Ray() : mImpl(new Impl) {}
+
     Ray::Ray(const geometry::Point &origin,
              const math::Vector &direction) : mImpl(new Impl) {
                mImpl->origin = origin;
@@ -33,7 +34,8 @@ namespace gssmraytracer {
       return *this;
     }
     std::ostream& operator<<(std::ostream &os, const Ray &ray) {
-      os << "(" << ray.origin() << ", " << ray.dir() << ")" << std::endl;
+      os << "((" << ray.origin() << ", " << ray.dir() << ")" << std::endl;
+      os << "mint = " << ray.mint() << " maxt = " << ray.maxt() << ")" << std::endl;
       return os;
     }
     const geometry::Point Ray::origin() const {
@@ -46,13 +48,13 @@ namespace gssmraytracer {
     const float Ray::mint() const {
       return mImpl->mint;
     }
-    void Ray::setMint(const float mint) {
+    void Ray::mint(const float mint) {
       mImpl->mint = mint;
     }
     const float Ray::maxt() const {
       return mImpl->maxt;
     }
-    void Ray::setMaxt(const float maxt) {
+    void Ray::maxt(const float maxt) {
       mImpl->maxt = maxt;
     }
 

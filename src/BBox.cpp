@@ -6,17 +6,25 @@ namespace gssmraytracer {
   namespace geometry {
     class BBox::Impl {
     public:
+      Impl(): pMin(Point(std::numeric_limits<float>::infinity(),
+                         std::numeric_limits<float>::infinity(),
+                         std::numeric_limits<float>::infinity())),
+              pMax(Point(-std::numeric_limits<float>::infinity(),
+                         -std::numeric_limits<float>::infinity(),
+                         -std::numeric_limits<float>::infinity()))
+              {}
       Point pMin;
       Point pMax;
     };
-    BBox::BBox() : mImpl(new Impl){
-      mImpl->pMin = Point(std::numeric_limits<float>::infinity(), std::numeric_limits<float>::infinity(), std::numeric_limits<float>::infinity());
-      mImpl->pMax = Point(-std::numeric_limits<float>::infinity(), -std::numeric_limits<float>::infinity(), -std::numeric_limits<float>::infinity());
-    }
+    BBox::BBox() : mImpl(new Impl){}
 
     BBox::BBox(const Point &p) : mImpl(new Impl) {
       mImpl->pMin = p;
       mImpl->pMax = p;
+    }
+    BBox::BBox(const BBox &b) : mImpl(new Impl) {
+      mImpl->pMin = b.mImpl->pMin;
+      mImpl->pMax = b.mImpl->pMax;
     }
     BBox::BBox(const Point &p1, const Point &p2) : mImpl(new Impl) {
       mImpl->pMin = Point(std::min(p1.x(), p2.x()), std::min(p1.y(), p2.y()), std::min(p1.z(), p2.z()));
@@ -34,15 +42,19 @@ namespace gssmraytracer {
         return 1;
       else
         return 2;
-
     }
     BBox& BBox::operator=(const BBox &other) {
       if (this != &other) {
+
         mImpl->pMin = other.mImpl->pMin;
         mImpl->pMax = other.mImpl->pMax;
 
       }
       return *this;
+    }
+    std::ostream& operator<<(std::ostream &os, const BBox &bbox) {
+      os << "min = " << bbox.min() << " max = " << bbox.max();
+      return os;
     }
     const Point BBox::min() const {
       return mImpl->pMin;
@@ -51,7 +63,7 @@ namespace gssmraytracer {
       return mImpl->pMax;
     }
     const BBox BBox::combine(const BBox &bbox) const {
-      BBox ret = bbox;
+      BBox ret;
 
       ret.mImpl->pMin.x(std::min(mImpl->pMin.x(), bbox.mImpl->pMin.x()));
 
@@ -63,14 +75,32 @@ namespace gssmraytracer {
       ret.mImpl->pMax.z(std::max(mImpl->pMax.z(), bbox.mImpl->pMax.z()));
     return ret;
     }
+    const BBox BBox::combine(const Point &p) const {
+      BBox ret;
+
+      ret.mImpl->pMin.x(std::min(mImpl->pMin.x(), p.x()));
+
+      ret.mImpl->pMin.y(std::min(mImpl->pMin.y(), p.y()));
+      ret.mImpl->pMin.z(std::min(mImpl->pMin.z(), p.z()));
+
+      ret.mImpl->pMax.x(std::max(mImpl->pMax.x(), p.x()));
+      ret.mImpl->pMax.y(std::max(mImpl->pMax.y(), p.y()));
+      ret.mImpl->pMax.z(std::max(mImpl->pMax.z(), p.z()));
+    return ret;
+    }
+    const float BBox::surfaceArea() const {
+      math::Vector d = mImpl->pMax - mImpl->pMin;
+      return 2.f * (d.x()*d.y() + d.x()*d.z()+d.y()*d.z());
+
+    }
 
     const geometry::Point& BBox::operator[](int i) const {
       if (i == 0) return mImpl->pMin;
-      return mImpl->pMax;
+      else return mImpl->pMax;
     }
     geometry::Point& BBox::operator[](int i) {
-      if (i == 0) return mImpl->pMin;
-      return mImpl->pMax;
+  if (i == 0) return mImpl->pMin;
+      else return mImpl->pMax;
 
     }
 
@@ -90,52 +120,7 @@ namespace gssmraytracer {
       if (hitt0) *hitt0 = t0;
       if (hitt1) *hitt1 = t1;
       return true;
-      /*
-      math::Vector tmin, tmax;
-      float t0 = ray.mint();
-      float t1 = ray.maxt();
-      float divx = 1/ray.dir().x();
-      if (divx >= 0) {
-        tmin.x((mImpl->pMin.x() - ray.origin().x()) * divx);
-        tmax.x((mImpl->pMax.x() - ray.origin().x()) * divx);
-      }
-      else {
-        tmin.x((mImpl->pMax.x() - ray.origin().x()) * divx);
-        tmax.x((mImpl->pMin.x() - ray.origin().x()) * divx);
-      }
-      float divy = 1/ray.dir().y();
-      if (divy >= 0) {
-        tmin.y((mImpl->pMin.y() - ray.origin().y()) * divy);
-        tmax.y((mImpl->pMax.y() - ray.origin().y()) * divy);
-      }
-      else {
-        tmin.y((mImpl->pMax.y() - ray.origin().y()) * divy);
-        tmax.y((mImpl->pMin.y() - ray.origin().y()) * divy);
-      }
-      if ((tmin.x() > tmax.y()) || (tmin.y() > tmax.x()))
-        return false;
-      if (tmin.y() > tmin.x())
-        tmin.x(tmin.y());
-      if (tmax.y() < tmax.x())
-        tmax.x(tmax.y());
-      float divz = 1/ray.dir().z();
-      if (divz >= 0) {
-        tmin.z((mImpl->pMin.z() - ray.origin().z()) * divz);
-        tmax.z((mImpl->pMax.z() - ray.origin().z()) * divz);
-      }
-      else {
-        tmin.z((mImpl->pMax.z() - ray.origin().z()) * divz);
-        tmax.z((mImpl->pMin.z() - ray.origin().z()) * divz);
-      }
-      if ((tmin.x() > tmax.z()) || (tmin.z() > tmax.z()))
-        return false;
-      if (tmin.z() > tmin.x())
-        tmin.x(tmin.z());
-      if (tmax.z() < tmax.x())
-        tmax.x(tmax.z());
 
-      return ((tmin.x() < t1) && (tmax.x() > t0));
-      */
     }
   }
 }

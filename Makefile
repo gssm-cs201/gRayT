@@ -1,7 +1,7 @@
 CC=clang++
 CFLAGS = -std=c++11 -c -Wall -fPIC -g
 LDFLAGS =
-LIBS = -L /usr/local/lib -lImath -lIex -L/usr/local/dist/linux64/lib -lOpenImageIO
+LIBS = -L /usr/local/lib -lImath -lIex -L/usr/local/dist/linux64/lib -lOpenImageIO -fopenmp
 SOURCES=$(wildcard src/*.cpp)
 BOOST_INC = /usr/include
 BOOST_LIB = /usr/lib
@@ -19,7 +19,7 @@ MKDIR_P = mkdir -p
 
 all: makelib makedocs $(SOURCES) $(OBJECTS) $(GSSMRAYTRACERSTATICLIB).$(LIB_VERSION)
 
-makelib: 
+makelib:
 	mkdir -p lib
 
 makedocs:

@@ -45,10 +45,11 @@ namespace gssmraytracer {
       /************************************************************************/
       // hardcoded light info in the shader
       // this implementation should be done in the light object
-      Point light_pos(0,10, 0);
+      Point light_pos(0.,20., 0.);
       float intensity = 1.f;
 
       math::Vector light_vec = light_pos - dg.p;
+      //math::Vector light_vec = dg.p - light_pos;
 
       // no light falloff based on distance (defaulted to no falloff)
       float distanceVal_no_falloff = 1.0f;
@@ -60,20 +61,27 @@ namespace gssmraytracer {
 //      float distanceVal_quadratic = (light_vec.length() * light_vec.length());
 
       Ray light_ray(dg.p, light_vec.normalized());
+      light_ray.maxt(light_vec.length());
       /************************************************************************/
 
 
       // ambient lighting - faking global illumination with constant
       // low color value
+
       shadeColor.red = mImpl->color.red * 0.1f;
       shadeColor.green = mImpl->color.green * 0.1f;
       shadeColor.blue = mImpl->color.blue * 0.1f;
+      shadeColor.alpha = 1.0f;
 
       // This implementation uses the singleton of the scene to see if we
       // hit any objects.  Note that we do not need to pass in the Scene as
       // an argument since a singleton is in the global namespace,
       // essentially, a global class where there is only one instance)
-      if (!Scene::getInstance().hit(light_ray)) { // if no objects in the way, do lighting
+      float hit_time = 0;
+      std::shared_ptr<DifferentialGeometry> dg_temp = nullptr;
+      std::shared_ptr<Primitive> prim = nullptr;
+
+      if (!Scene::getInstance().hit(light_ray, hit_time, dg_temp, prim)) { // if no objects in the way, do lighting
 
         // this computes the cosine of the angle between the light vector
         // and the geometry normal
@@ -81,6 +89,7 @@ namespace gssmraytracer {
           // if the angle is greater than 0, do the lambertian shading
 
           if (shadeAngle > 0) {
+
             // add the diffuse (matte) lighting to the ambient lighting based on
             // the intensity and the falloff factor based on the distance
             float factor = shadeAngle*intensity/distanceVal_no_falloff;
@@ -89,7 +98,9 @@ namespace gssmraytracer {
             shadeColor.blue += mImpl->color.blue*factor;
 
           }
-      }
+      } 
+
+
 
        return shadeColor;
     }

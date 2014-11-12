@@ -37,7 +37,7 @@ namespace gssmraytracer {
   };
 
   //! scale a color by a scalar
-  const Color operator*(const float s, const Color &color);
+//  const Color operator*(const float s, const Color &color);
   }
 }
 #endif // __COLOR_H__

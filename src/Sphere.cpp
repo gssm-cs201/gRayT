@@ -1,8 +1,8 @@
-#include <gssmraytracer/utils/Ray.h>
-#include <gssmraytracer/math/Transform.h>
-#include <gssmraytracer/utils/Color.h>
-#include <gssmraytracer/utils/gssmraytracer.h>
-#include "Sphere.h"
+#include "gssmraytracer/utils/Ray.h"
+#include "gssmraytracer/math/Transform.h"
+#include "gssmraytracer/utils/Color.h"
+#include "gssmraytracer/utils/gssmraytracer.h"
+#include "gssmraytracer/geometry/Sphere.h"
 #include <algorithm>
 
 using namespace gssmraytracer::math;
@@ -36,6 +36,19 @@ namespace gssmraytracer {
                             }
 
     };
+
+    Sphere::Sphere(const Transform &transform,
+                 const float radius) : Shape(transform), mImpl(new Impl) {
+                   mImpl->radius = radius;
+                   mImpl->zmin = -radius;
+                   mImpl->zmax = radius;
+                   mImpl->thetaMin = -1.f;
+                   mImpl->thetaMax = 1.f;
+                   mImpl->phiMax = 360.0f;
+                   mImpl->obbox = objectBB();
+                   mImpl->wbbox = worldBB();
+
+    }
 
     Sphere::Sphere(const Transform &transform,
                  const float radius, float z0, float z1, float pm) : Shape(transform), mImpl(new Impl) {

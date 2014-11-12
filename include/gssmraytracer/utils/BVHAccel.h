@@ -4,11 +4,15 @@
 #include <memory>
 #include <vector>
 
+
 namespace gssmraytracer {
   namespace utils {
     class BVHAccel {
     public:
-      BVHAccel(const std::vector<std::shared_ptr<geometry::Primitive> > &prims, const int maxPrimsInLeafNode);
+      //! BVHAccel takes a vector of primitive smart pointers and the maximum
+      //! number of primitives in a leaf node
+      BVHAccel(const std::vector<std::shared_ptr<geometry::Primitive> > &prims, const uint32_t maxPrimsInLeafNode);
+      ~BVHAccel();
 
       const bool intersect(const Ray &ws_ray, float &hit_time, std::shared_ptr<geometry::DifferentialGeometry> & dg,
         std::shared_ptr<geometry::Primitive> &prim) const;

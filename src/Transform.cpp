@@ -31,14 +31,15 @@ namespace gssmraytracer {
     }
 
     void Transform::translate(const Vector &translation) {
-      Imath::Vec3<float> temp;
+      Imath::Vec3<float> temp(0,0,0);
+
       temp.x = translation.x();
       temp.y = translation.y();
       temp.z = translation.z();
       mImpl->mat.translate(temp);
     }
     void Transform::rotate(const Vector &rotation) {
-      Imath::Vec3<float> temp;
+      Imath::Vec3<float> temp(0,0,0);
       temp.x = rotation.x();
       temp.y = rotation.y();
       temp.z = rotation.z();

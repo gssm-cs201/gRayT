@@ -30,13 +30,13 @@ namespace gssmraytracer {
       const float mint() const;
 
       //! sets the minimum t range for the ray
-      void setMint(const float);
+      void mint(const float);
 
       //! returns the maximum t range for the ray
       const float maxt() const;
 
       //! sets the maximum t range for the ray
-      void setMaxt(const float);
+      void maxt(const float);
 
       //! returns the ray epsilon value
       const float epsilon() const;

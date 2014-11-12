@@ -5,6 +5,7 @@ namespace gssmraytracer {
   namespace math {
     class Vector::Impl {
     public:
+      Impl() : vec(0,0,0) {}
       Imath::Vec3<float> vec;
     };
 

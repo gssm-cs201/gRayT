@@ -47,10 +47,10 @@ namespace gssmraytracer {
       virtual const BBox objectBB() const = 0;
 
       //! converts ray from world to object space
-      const utils::Ray worldToObjectSpace(const utils::Ray &ws_ray) const;
+      const math::Transform worldToObjectSpace() const;
 
       //! converts ray from object to world space
-      const utils::Ray objectToWorldSpace(const utils::Ray &os_ray) const;
+      const math::Transform objectToWorldSpace() const;
 
     private:
       class Impl;
