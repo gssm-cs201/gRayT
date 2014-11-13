@@ -28,7 +28,7 @@ namespace gssmraytracer {
         int primitivesOffset; // leaf
         int secondChildOffset; // interior
       };
-      int nPrimitives;
+      uint32_t nPrimitives;
       int axis;
       int pad[2];
     };
@@ -83,7 +83,7 @@ namespace gssmraytracer {
     class BVHAccel::Impl {
     public:
       std::vector<std::shared_ptr<geometry::Primitive> > primitives;
-      int maxPrimsInNodes;
+      uint32_t maxPrimsInNodes;
       LinearBVHNode *nodes;
 
       BVHBuildNode *recursiveBuild(MemoryArena &buildArena, std::vector<BVHPrimitiveInfo> &buildData,
@@ -385,7 +385,7 @@ namespace gssmraytracer {
         std::shared_ptr<geometry::Primitive> potential_prim = nullptr;
         float potential_hit_time = std::numeric_limits<float>::infinity();
         std::shared_ptr<geometry::DifferentialGeometry> potential_dg = nullptr;
-        uint32_t index;
+
 
         while(true) {
 
@@ -402,11 +402,19 @@ namespace gssmraytracer {
                 if (mImpl->primitives[node->primitivesOffset+i]->hit(ws_ray, t_hit_time, dg)) {
                   if (t_hit_time < potential_hit_time) {
 
+
                     potential_prim = mImpl->primitives[node->primitivesOffset+i];
                     potential_hit_time = t_hit_time;
                     potential_dg = dg;
-                    index = node->primitivesOffset+i;
+
                     hit = true;
+
+                    // experiment
+                    prim = potential_prim;
+                    hit_time = potential_hit_time;
+                    dg = potential_dg;
+
+                    return hit;
                   }
                 }
               }

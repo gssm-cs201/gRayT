@@ -19,12 +19,12 @@ namespace gssmraytracer {
   namespace utils {
     class LambertianShader::Impl {
     public:
+      Impl() : color(0,0,0,0) {}
+      Impl(const Color &c) : color(c) {}
       Color color;
     };
 
-    LambertianShader::LambertianShader(const Color &color) : mImpl(new Impl) {
-      mImpl->color = color;
-    }
+    LambertianShader::LambertianShader(const Color &color) : mImpl(new Impl(color)) {}
     LambertianShader::LambertianShader(const LambertianShader &other) :
                                             Shader(),
                                             mImpl(new Impl) {
@@ -98,7 +98,7 @@ namespace gssmraytracer {
             shadeColor.blue += mImpl->color.blue*factor;
 
           }
-      } 
+      }
 
 
 

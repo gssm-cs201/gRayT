@@ -1,12 +1,12 @@
-CC=clang++
-CFLAGS = -std=c++11 -c -Wall -fPIC -g
+CC=g++
+CFLAGS = -std=c++11 -c -Wall -fPIC -g -fopenmp
 LDFLAGS =
 LIBS = -L /usr/local/lib -lImath -lIex -L/usr/local/dist/linux64/lib -lOpenImageIO -fopenmp
 SOURCES=$(wildcard src/*.cpp)
 BOOST_INC = /usr/include
 BOOST_LIB = /usr/lib
 OPENEXR_INC = /usr/local/include
-INCLUDES = -I ./include -I $(OPENEXR_INC) -I/usr/local/dist/linux64/include -I/usr/local/include
+INCLUDES = -I ./include -I $(OPENEXR_INC) -I/usr/local/dist/linux64/include -I/usr/local/include 
 LIB_VERSION = 0.1.0
 OBJECTS=$(SOURCES:.cpp=.o)
 GSSMRAYTRACERLIBBASENAME=libgssmraytracer
@@ -26,7 +26,7 @@ makedocs:
 	mkdir -p docs
 
 %.o: %.cpp
-	$(CC) $(INCLUDES)  -o $@ $< $(CFLAGS)
+	$(CC) $(INCLUDES) -o $@ $< $(CFLAGS)
 
 $(GSSMRAYTRACERSTATICLIB).$(LIB_VERSION): $(OBJECTS)
 	ar rvs $(GSSMRAYTRACERSTATICLIB) $(OBJECTS)

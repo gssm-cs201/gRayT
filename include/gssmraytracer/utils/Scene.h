@@ -11,6 +11,7 @@ namespace gssmraytracer {
     public:
       static Scene& getInstance();
       void addPrimitive(const std::shared_ptr<geometry::Primitive> &);
+      void init();
       bool hit(const Ray &ws_ray) const;
       bool hit(const Ray &ws_ray, float &hit_time) const;
       bool hit(const Ray &ws_ray, float &hit_time, std::shared_ptr<geometry::DifferentialGeometry> & dg) const;

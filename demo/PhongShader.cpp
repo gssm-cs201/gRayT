@@ -7,12 +7,12 @@ namespace gssmraytracer {
   namespace utils {
     class PhongShader::Impl {
     public:
+      Impl() : color(0,0,0,0) {}
+      Impl(const Color &c) : color(c) {}
       Color color;
     };
 
-    PhongShader::PhongShader(const Color &color) : mImpl(new Impl) {
-      mImpl->color = color;
-    }
+    PhongShader::PhongShader(const Color &color) : mImpl(new Impl(color)) {}
     PhongShader::PhongShader(const PhongShader &other) :
                                             Shader(),
                                             mImpl(new Impl) {

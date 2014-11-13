@@ -4,7 +4,8 @@
 #include <gssmraytracer/utils/Shader.h>
 #include <gssmraytracer/math/Vector.h>
 #include <memory>
-#include "Sphere.h"
+#include <gssmraytracer/geometry/Sphere.h>
+#include <omp.h>
 
 
 
@@ -119,9 +120,10 @@ int main(int argc, char* argv[]) {
     int width  = clf.find( "-NX", 640, "Image width");
     int height = clf.find( "-NY", 360, "Image height");
     std::string filename = clf.find( "-name", "demo.exr", "Name of output image file" );
+    int num_threads = clf.find("-threads", omp_get_max_threads(), "Max number of threads");
 
     clf.usage("-h");
-
+    omp_set_num_threads(num_threads);
     Image image(width, height);
     Camera camera(Point(-5,2.5,25),Vector(0,0,-1),Vector(0,1,0));
 
@@ -129,7 +131,7 @@ int main(int argc, char* argv[]) {
     Scene &scene = Scene::getInstance();
     Transform transform1, transform2, transform3, transform4, transform5;
     Vector position(-13.0,2.0,0.0);
-    Vector position2(-7.0,-3.0,-1.0);
+    Vector position2(-3.0,-3.0,-1.0);
     Vector position3(-1.0,5.0,-1.0);
     Vector position4(0.0,-1.0,0.0);
     Vector position5(1.0,4.0,8.0);
@@ -164,8 +166,9 @@ int main(int argc, char* argv[]) {
     scene.addPrimitive(prim3);
     scene.addPrimitive(prim4);
     scene.addPrimitive(prim5);
+    scene.init();
     camera.render(scene, image);
-    image.write("lambertianShader.exr");
+    image.write(filename.c_str());
     RenderGlobals::getInstance().setImage(image);
 
 

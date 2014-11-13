@@ -10,6 +10,8 @@ namespace gssmraytracer {
   namespace utils {
 	class NoiseShader::Impl {
 	public:
+    Impl() : noise() {}
+    Impl(const PerlinNoise &n) : noise(n) {}
 	 PerlinNoise noise;
 	};
 

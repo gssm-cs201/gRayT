@@ -26,7 +26,7 @@ namespace gssmraytracer{
 class CmdLineFind
 {
   public:
-   CmdLineFind( int argC, char** argV )
+   CmdLineFind( int argC, char** argV ) : items(), cmdLineList(), cmdLineDefaultsList(), cmdLineValuesList(), cmdLineHelpList()
    {
       for( int i=0;i<argC;i++ )
       {

@@ -30,6 +30,16 @@ namespace gssmraytracer {
 
     }
 
+    void Scene::init() {
+      if (!mImpl->bvh) {
+        uint32_t var = 1;
+          std::shared_ptr<BVHAccel> bvh(new BVHAccel(mImpl->primitives, var));
+          mImpl->bvh = bvh;
+
+      }
+
+    }
+
     bool Scene::hit(const Ray &ws_ray) const {
       std::shared_ptr<geometry::DifferentialGeometry> dg;
       std::shared_ptr<geometry::Primitive> prim;
@@ -87,12 +97,6 @@ namespace gssmraytracer {
       std::shared_ptr<geometry::Primitive> &prim) const {
         // lazy instantiation
 
-        if (!mImpl->bvh) {
-          uint32_t var = 1;
-            std::shared_ptr<BVHAccel> bvh(new BVHAccel(mImpl->primitives, var));
-            mImpl->bvh = bvh;
-
-        }
 
 //        float closest_t = std::numeric_limits<float>::infinity();
 //        std::shared_ptr<geometry::Primitive> candidate_prim;

@@ -6,10 +6,12 @@ namespace gssmraytracer {
   namespace utils {
     class ConstantShader::Impl {
     public:
+      Impl() : color(0,0,0,0) {}
+      Impl(const Color &c) : color(c) {}
       Color color;
     };
 
-    ConstantShader::ConstantShader(const Color &color) : mImpl(new Impl) {
+    ConstantShader::ConstantShader(const Color &color) : mImpl(new Impl(color)) {
       mImpl->color = color;
     }
     ConstantShader::ConstantShader(const ConstantShader &other) : Shader(), mImpl(new Impl) {
