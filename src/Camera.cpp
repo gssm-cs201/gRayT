@@ -3,7 +3,10 @@
 #include "gssmraytracer/utils/Color.h"
 #include "gssmraytracer/utils/Ray.h"
 #include "gssmraytracer/geometry/Shape.h"
+#include "gssmraytracer/utils/ProgressMeter.h"
+#ifdef _OPENMP
 #include <omp.h>
+#endif
 
 using namespace gssmraytracer::geometry;
 
@@ -89,13 +92,14 @@ Camera::~Camera() {
 
 void Camera::render(const Scene &scene, Image &image) const {
   // try to get image from render globals
-
+ ProgressMeter meter(image.getHeight(), "Render Time");
 //  const Scene scene = renderGlobals.getScene();
   int num_width_samples = 4;
   int num_height_samples = 4;
 
   for (int r =0; r< image.getHeight(); ++r) {
-    #pragma omp parallel for
+    meter.update();
+    #pragma omp parallel for    
     for (int c = 0; c < image.getWidth(); ++c) {
 
       Color color;

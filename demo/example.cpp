@@ -5,8 +5,9 @@
 #include <gssmraytracer/math/Vector.h>
 #include <memory>
 #include <gssmraytracer/geometry/Sphere.h>
-#include <omp.h>
-
+#ifdef _OPENMP
+#  include <omp.h>
+#endif
 
 
 #ifdef __APPLE__
@@ -121,9 +122,9 @@ int main(int argc, char* argv[]) {
     int height = clf.find( "-NY", 360, "Image height");
     std::string filename = clf.find( "-name", "demo.exr", "Name of output image file" );
     int num_threads = clf.find("-threads", omp_get_max_threads(), "Max number of threads");
-
+    clf.printFinds();
     clf.usage("-h");
-    omp_set_num_threads(num_threads);
+    omp_set_num_threads((num_threads > 0) ? num_threads : 1 );
     Image image(width, height);
     Camera camera(Point(-5,2.5,25),Vector(0,0,-1),Vector(0,1,0));
 
