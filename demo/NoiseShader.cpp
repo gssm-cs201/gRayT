@@ -19,7 +19,7 @@ namespace gssmraytracer {
     NoiseShader::NoiseShader() : Shader(), mImpl(new Impl) {
     }
 
-    Color NoiseShader::shade(const geometry::DifferentialGeometry &dg) {
+    Color NoiseShader::shade(const geometry::DifferentialGeometry &dg, const int bounce_count) const {
 
 		     return Color(Clamp(fabs(mImpl->noise.eval(dg.p.x())), 0., 1.), Clamp(mImpl->noise.eval(dg.p.y()), 0., 1.), Clamp(mImpl->noise.eval(dg.p.z()), 0., 1.), 1.f);
 

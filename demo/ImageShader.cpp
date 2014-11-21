@@ -14,7 +14,7 @@ namespace gssmraytracer {
 
     ImageShader::ImageShader(const Image &image) : Shader(), mImpl(new Impl(image)){}
 
-    Color ImageShader::shade(const geometry::DifferentialGeometry &dg) {
+    Color ImageShader::shade(const geometry::DifferentialGeometry &dg, const int bounce_count) const {
                      return mImpl->image.getPixel(floor(dg.u * mImpl->image.getHeight()), floor(dg.v * mImpl->image.getWidth()));
                    }
   }

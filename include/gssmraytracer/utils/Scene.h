@@ -18,6 +18,8 @@ namespace gssmraytracer {
       bool hit(const Ray &ws_ray, float &hit_time, std::shared_ptr<geometry::DifferentialGeometry> & dg,
         std::shared_ptr<geometry::Primitive> &prim) const;
       ~Scene();
+      const int maxBounceCount() const;
+      void maxBounceCount(const int);
     private:
       Scene();
       Scene(const Scene&);

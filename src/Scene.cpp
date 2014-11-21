@@ -7,9 +7,10 @@ namespace gssmraytracer {
   namespace utils {
     class Scene::Impl {
     public:
-      Impl() : primitives(), bvh() {}
+      Impl() : primitives(), bvh(), max_bounce_count(0) {}
       std::vector<std::shared_ptr<geometry::Primitive> > primitives;
       std::shared_ptr<BVHAccel> bvh;
+      int max_bounce_count;
 
 
     };
@@ -124,6 +125,13 @@ namespace gssmraytracer {
           }
           return false;
 */
+      }
+
+      const int Scene::maxBounceCount() const {
+        return mImpl->max_bounce_count;
+      }
+      void Scene::maxBounceCount(const int max_bounce_count) {
+        mImpl->max_bounce_count = max_bounce_count;
       }
 
 

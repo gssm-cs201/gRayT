@@ -11,7 +11,7 @@ namespace gssmraytracer {
       Color color;
     };
 
-    ConstantShader::ConstantShader(const Color &color) : mImpl(new Impl(color)) {
+    ConstantShader::ConstantShader(const Color &color) : Shader(), mImpl(new Impl(color)) {
       mImpl->color = color;
     }
     ConstantShader::ConstantShader(const ConstantShader &other) : Shader(), mImpl(new Impl) {
@@ -24,7 +24,7 @@ namespace gssmraytracer {
       }
       return *this;
     }
-    Color ConstantShader::shade(const geometry::DifferentialGeometry &dg) {
+    Color ConstantShader::shade(const geometry::DifferentialGeometry &dg, const int bounce_count) const{
                      return mImpl->color;
                    }
   }

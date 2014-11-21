@@ -1,6 +1,8 @@
 #include "PhongShader.h"
 #include <gssmraytracer/utils/Color.h>
 #include <gssmraytracer/utils/Scene.h>
+#include <gssmraytracer/math/Vector.h>
+#include <limits>
 
 using namespace gssmraytracer::geometry;
 namespace gssmraytracer {
@@ -12,7 +14,7 @@ namespace gssmraytracer {
       Color color;
     };
 
-    PhongShader::PhongShader(const Color &color) : mImpl(new Impl(color)) {}
+    PhongShader::PhongShader(const Color &color) : Shader(), mImpl(new Impl(color)) {}
     PhongShader::PhongShader(const PhongShader &other) :
                                             Shader(),
                                             mImpl(new Impl) {
@@ -25,11 +27,11 @@ namespace gssmraytracer {
       }
       return *this;
     }
-    Color PhongShader::shade(const geometry::DifferentialGeometry &dg) {
+    Color PhongShader::shade(const geometry::DifferentialGeometry &dg, const int bounce_count) const {
 
       // initialize the return color for the shader to black
       Color shadeColor(0,0,0,1);
-
+      if (bounce_count < Scene::getInstance().maxBounceCount()) {
       /************************************************************************/
       // hardcoded light info in the shader
       // this implementation should be done in the light object
@@ -86,8 +88,26 @@ namespace gssmraytracer {
             shadeColor.green += spec;
             shadeColor.blue += spec;
 
+            if (reflectivity() > 0) {
+              // calculate reflection ray
+              math::Vector v = dg.view.dir();
+              math::Vector n = math::Vector(dg.nn.x(), dg.nn.y(), dg.nn.z()).normalized();
+              math::Vector reflect_dir = v - 2 * (v.dot(n)) * n;
+              utils::Ray reflect_ray(dg.p, reflect_dir);
+              std::shared_ptr<DifferentialGeometry> reflect_dg = nullptr;
+              std::shared_ptr<Primitive> reflect_prim = nullptr;
+              float reflect_hit_time = std::numeric_limits<float>::infinity();
+              // check if the reflection ray hits an object in the scene
+              if (Scene::getInstance().hit(reflect_ray, reflect_hit_time, reflect_dg, reflect_prim)) {
+                  // if so add to the shade color
+                  shadeColor += reflect_prim->shade(reflect_dg, bounce_count + 1);
+                  shadeColor *= reflectivity();
+              }
+            }
+
           }
       }
+    }
 
        return shadeColor;
     }

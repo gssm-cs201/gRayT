@@ -7,7 +7,7 @@ namespace gssmraytracer {
     public:
       NoiseShader();
       NoiseShader& operator=(const NoiseShader &);
-      Color shade(const geometry::DifferentialGeometry &dg);
+      Color shade(const geometry::DifferentialGeometry &dg, const int bounce_count = 0) const;
 
     private:
       class Impl;

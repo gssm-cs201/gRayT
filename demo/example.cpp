@@ -130,10 +130,11 @@ int main(int argc, char* argv[]) {
 
     Image image2("fractal3.png");
     Scene &scene = Scene::getInstance();
+    scene.maxBounceCount(5);
     Transform transform1, transform2, transform3, transform4, transform5;
     Vector position(-13.0,2.0,0.0);
     Vector position2(-3.0,-3.0,-1.0);
-    Vector position3(-1.0,5.0,-1.0);
+    Vector position3(-1.0,5.0,-3.0);
     Vector position4(0.0,-1.0,0.0);
     Vector position5(1.0,4.0,8.0);
     transform1.translate(position);
@@ -144,10 +145,15 @@ int main(int argc, char* argv[]) {
 
 
     std::shared_ptr<Shader> shader(new PhongShader(Color(0,1,0,1)));
-    std::shared_ptr<Shader> shader2(new LambertianShader(Color(1,0,0,1)));
-    std::shared_ptr<Shader> shader3(new LambertianShader(Color(1,1,0,1)));
-    std::shared_ptr<Shader> shader4(new LambertianShader(Color(0,0,1,1)));
-    std::shared_ptr<Shader> shader5(new LambertianShader(Color(0,1,0,1)));
+    shader->reflectivity(0.5);
+    std::shared_ptr<Shader> shader2(new PhongShader(Color(1,0,0,1)));
+    shader2->reflectivity(0.5);
+    std::shared_ptr<Shader> shader3(new PhongShader(Color(1,1,0,1)));
+    shader3->reflectivity(0.5);
+    std::shared_ptr<Shader> shader4(new PhongShader(Color(0,0,1,1)));
+    shader->reflectivity(0.5);
+    std::shared_ptr<Shader> shader5(new PhongShader(Color(0,1,0,1)));
+    shader->reflectivity(0.5);
     BBox bbox;
     std::shared_ptr<Sphere> sphere(new Sphere(transform1,4.0f, -10.0f, 10.0f, 360.0f));
 

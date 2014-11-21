@@ -9,7 +9,8 @@ namespace gssmraytracer {
       PhongShader(const Color &color);
       PhongShader(const PhongShader &);
       PhongShader& operator=(const PhongShader &);
-      Color shade(const geometry::DifferentialGeometry &dg);
+      Color shade(const geometry::DifferentialGeometry &dg, const int bounce_count = 0) const;
+
 
     private:
       class Impl;
