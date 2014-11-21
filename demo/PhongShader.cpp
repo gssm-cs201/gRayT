@@ -27,7 +27,7 @@ namespace gssmraytracer {
       }
       return *this;
     }
-    Color PhongShader::shade(const geometry::DifferentialGeometry &dg, const int bounce_count) const {
+    Color PhongShader::shade(const Ray &view, const geometry::DifferentialGeometry &dg, const int bounce_count) const {
 
       // initialize the return color for the shader to black
       Color shadeColor(0,0,0,1);
@@ -83,14 +83,14 @@ namespace gssmraytracer {
             math::Vector R = light_vec.normalized() - 2*shadeAngle*math::Vector(dg.nn.x(), dg.nn.y(), dg.nn.z());
             R.normalize();
 
-            float spec = pow(R.dot(dg.view.dir()), 400);
+            float spec = pow(R.dot(view.dir()), 400);
             shadeColor.red += spec;
             shadeColor.green += spec;
             shadeColor.blue += spec;
 
             if (reflectivity() > 0) {
               // calculate reflection ray
-              math::Vector v = dg.view.dir();
+              math::Vector v = view.dir();
               math::Vector n = math::Vector(dg.nn.x(), dg.nn.y(), dg.nn.z()).normalized();
               math::Vector reflect_dir = v - 2 * (v.dot(n)) * n;
               utils::Ray reflect_ray(dg.p, reflect_dir);
@@ -100,7 +100,7 @@ namespace gssmraytracer {
               // check if the reflection ray hits an object in the scene
               if (Scene::getInstance().hit(reflect_ray, reflect_hit_time, reflect_dg, reflect_prim)) {
                   // if so add to the shade color
-                  shadeColor += reflect_prim->shade(reflect_dg, bounce_count + 1);
+                  shadeColor += reflect_prim->shade(view, reflect_dg, bounce_count + 1);
                   shadeColor *= reflectivity();
               }
             }

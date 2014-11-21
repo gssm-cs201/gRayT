@@ -24,7 +24,7 @@ namespace gssmraytracer {
       }
       return *this;
     }
-    Color ConstantShader::shade(const geometry::DifferentialGeometry &dg, const int bounce_count) const{
+    Color ConstantShader::shade(const Ray &view, const geometry::DifferentialGeometry &dg, const int bounce_count) const{
                      return mImpl->color;
                    }
   }

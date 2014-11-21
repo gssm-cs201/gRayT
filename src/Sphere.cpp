@@ -232,7 +232,7 @@ namespace gssmraytracer {
                                 objectToWorldSpace()(dpdv),
                                 objectToWorldSpace()(dndu),
                                 objectToWorldSpace()(dndv),
-                                u, v, ws_ray, this));
+                                u, v, this));
       dg = dg_temp;
 
        return true;

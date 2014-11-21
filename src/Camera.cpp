@@ -99,7 +99,7 @@ void Camera::render(const Scene &scene, Image &image) const {
 
   for (int r =0; r< image.getHeight(); ++r) {
     meter.update();
-    #pragma omp parallel for    
+    #pragma omp parallel for
     for (int c = 0; c < image.getWidth(); ++c) {
 
       Color color;
@@ -116,7 +116,7 @@ void Camera::render(const Scene &scene, Image &image) const {
           if (scene.hit(ray, thit, dg, prim)) {
             // possibly pass in scene data too for lighting and reflections
 
-            color += prim->shade(dg);
+            color += prim->shade(ray, dg);
           }
           else
             color += Color(0,0,0,1);

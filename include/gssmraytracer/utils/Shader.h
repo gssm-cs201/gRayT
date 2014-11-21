@@ -11,7 +11,7 @@ namespace gssmraytracer {
     class Shader {
     public:
       Shader();
-      virtual Color shade(const geometry::DifferentialGeometry &dg, const int bounce_count) const = 0;
+      virtual Color shade(const Ray &view, const geometry::DifferentialGeometry &dg, const int bounce_count) const = 0;
       const float reflectivity() const;
       void reflectivity(const float reflectivity);
     private:

@@ -37,7 +37,7 @@ namespace gssmraytracer {
       }
       return *this;
     }
-    Color LambertianShader::shade(const geometry::DifferentialGeometry &dg, const int bounce_count) const {
+    Color LambertianShader::shade(const Ray &view, const geometry::DifferentialGeometry &dg, const int bounce_count) const {
 
       // initialize the return color for the shader to black
       Color shadeColor(0,0,0,1);
