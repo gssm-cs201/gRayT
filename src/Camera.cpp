@@ -90,12 +90,11 @@ Camera::~Camera() {
 
 }
 
-void Camera::render(const Scene &scene, Image &image) const {
+void Camera::render(const Scene &scene, Image &image, const int num_width_samples, const int num_height_samples) const {
   // try to get image from render globals
  ProgressMeter meter(image.getHeight(), "Render Time");
 //  const Scene scene = renderGlobals.getScene();
-  int num_width_samples = 4;
-  int num_height_samples = 4;
+
 
   for (int r =0; r< image.getHeight(); ++r) {
     meter.update();

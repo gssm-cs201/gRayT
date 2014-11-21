@@ -120,6 +120,8 @@ int main(int argc, char* argv[]) {
 
     int width  = clf.find( "-NX", 640, "Image width");
     int height = clf.find( "-NY", 360, "Image height");
+    int num_width_samples = clf.find("-SX", 1, "Width Samples");
+    int num_height_samples = clf.find("-SY", 1, "Height Samples");
     std::string filename = clf.find( "-name", "demo.exr", "Name of output image file" );
     int num_threads = clf.find("-threads", omp_get_max_threads(), "Max number of threads");
     clf.printFinds();
@@ -174,7 +176,7 @@ int main(int argc, char* argv[]) {
     scene.addPrimitive(prim4);
     scene.addPrimitive(prim5);
     scene.init();
-    camera.render(scene, image);
+    camera.render(scene, image, num_width_samples, num_height_samples);
     image.write(filename.c_str());
     RenderGlobals::getInstance().setImage(image);
 

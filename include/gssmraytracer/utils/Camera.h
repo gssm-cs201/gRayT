@@ -48,7 +48,7 @@ namespace utils {
     void setAspectRatio(const float aspect_ratio);
 
     //! Renders the scene using information from renderGlobals
-    void render(const Scene &scene, Image &image) const;
+    void render(const Scene &scene, Image &image,  const int num_width_samples, const int num_height_samples) const;
 
     private:
     class Impl;
