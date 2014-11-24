@@ -124,11 +124,24 @@ int main(int argc, char* argv[]) {
     int num_height_samples = clf.find("-SY", 1, "Height Samples");
     std::string filename = clf.find( "-name", "demo.exr", "Name of output image file" );
     int num_threads = clf.find("-threads", omp_get_max_threads(), "Max number of threads");
+    int num_frames = clf.find("-nframes", 200, "Maximum number of frames for turntable");
+    int frame = clf.find("-frame", 0, "Render frame");
+    float radius = clf.find("-radius", 25, "Radius distance from center"); 
+    bool display_image = clf.find("-display", 0, "Display the image");
     clf.printFinds();
     clf.usage("-h");
     omp_set_num_threads((num_threads > 0) ? num_threads : 1 );
     Image image(width, height);
-    Camera camera(Point(-5,2.5,25),Vector(0,0,-1),Vector(0,1,0));
+
+    Point center(0,2.5,0);
+    float theta = float(frame)/float(num_frames) * 2.0 * M_PI;
+    float x_pos = center.x() + radius * cos(theta);
+    float z_pos = center.z() + radius * sin(theta);
+    float x_view = -cos(theta);
+    float z_view = -sin(theta);
+
+//    Camera camera(Point(-5,2.5,25),Vector(0,0,-1),Vector(0,1,0));
+    Camera camera(Point(x_pos,center.y(),z_pos),Vector(x_view,0,z_view),Vector(0,1,0));
 
     Image image2("fractal3.png");
     Scene &scene = Scene::getInstance();
@@ -180,7 +193,7 @@ int main(int argc, char* argv[]) {
     image.write(filename.c_str());
     RenderGlobals::getInstance().setImage(image);
 
-
+    if (display_image) {
     // start up the glut utilities
     glutInit(&argc, argv);
 
@@ -197,7 +210,7 @@ int main(int argc, char* argv[]) {
     glutKeyboardFunc(handle_key);
 
     glutMainLoop();
-
+    }
 
     return 0;
 
