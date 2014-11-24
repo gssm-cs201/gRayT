@@ -147,8 +147,8 @@ int main(int argc, char* argv[]) {
     Scene &scene = Scene::getInstance();
     scene.maxBounceCount(5);
     Transform transform1, transform2, transform3, transform4, transform5;
-    Vector position(-13.0,2.0,0.0);
-    Vector position2(-3.0,-3.0,-1.0);
+    Vector position(-16.0,2.0,0.0);
+    Vector position2(-3.0,-3.0,-8.0);
     Vector position3(-1.0,5.0,-3.0);
     Vector position4(0.0,-1.0,0.0);
     Vector position5(1.0,4.0,8.0);

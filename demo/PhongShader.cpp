@@ -87,6 +87,8 @@ namespace gssmraytracer {
             shadeColor.red += spec;
             shadeColor.green += spec;
             shadeColor.blue += spec;
+          }
+       }
 
             if (reflectivity() > 0) {
               // calculate reflection ray
@@ -106,8 +108,6 @@ namespace gssmraytracer {
             }
 
           }
-      }
-    }
 
        return shadeColor;
     }
