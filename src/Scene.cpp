@@ -64,7 +64,7 @@ namespace gssmraytracer {
 
     bool Scene::hit(const Ray &ws_ray, float &hit_time, std::shared_ptr<geometry::DifferentialGeometry> & dg,
       std::shared_ptr<geometry::Primitive> &prim) const {
-
+      
         bool result = mImpl->bvh->intersect(ws_ray, hit_time, dg, prim);
 
         return result;

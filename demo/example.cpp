@@ -5,6 +5,7 @@
 #include <gssmraytracer/math/Vector.h>
 #include <memory>
 #include <gssmraytracer/geometry/Sphere.h>
+#include <gssmraytracer/geometry/TriangleMesh.h>
 #ifdef _OPENMP
 #  include <omp.h>
 #endif
@@ -30,6 +31,8 @@
 #include "NoiseShader.h"
 #include "LambertianShader.h"
 #include "PhongShader.h"
+
+#include <iostream>
 
 using namespace gssmraytracer::utils;
 using namespace gssmraytracer::geometry;
@@ -114,6 +117,10 @@ void gradient(Image &image) {
   }
 }
 
+void test(const Point *P) {
+  std::cout << P[0] << std::endl;
+}
+
 int main(int argc, char* argv[]) {
     // Use the default constructor
     CmdLineFind clf(argc, argv);
@@ -146,17 +153,80 @@ int main(int argc, char* argv[]) {
     Image image2("fractal3.png");
     Scene &scene = Scene::getInstance();
     scene.maxBounceCount(5);
-    Transform transform1, transform2, transform3, transform4, transform5;
+    Transform transform1, transform2, transform3, transform4, transform5, transform6;
     Vector position(-16.0,2.0,0.0);
     Vector position2(-3.0,-3.0,-8.0);
     Vector position3(-1.0,5.0,-3.0);
     Vector position4(0.0,-1.0,0.0);
     Vector position5(1.0,4.0,8.0);
+    Vector position6(0.0,0.0,0.0);
     transform1.translate(position);
     transform2.translate(position2);
     transform3.translate(position3);
     transform4.translate(position4);
     transform5.translate(position5);
+    transform5.translate(position6);
+
+    Point points[8];
+    int v_indices[12*3];
+    points[0] = Point(1,-1,-1);
+    points[1] = Point(1,-1,1);
+    points[2] = Point(-1,-1,1);
+    points[3] = Point(-1,-1,-1);
+    points[4] = Point(1,1,-1);
+    points[5] = Point(1,-1,1);
+    points[6] = Point(-1,1,1);
+    points[7] = Point(-1,1,-1);
+
+    v_indices[0] = 0;
+    v_indices[1] = 1;
+    v_indices[2] = 2;
+
+    v_indices[3] = 4;
+    v_indices[4] = 7;
+    v_indices[5] = 5;
+
+    v_indices[6] = 0;
+    v_indices[7] = 4;
+    v_indices[8] = 1;
+
+    v_indices[9] = 1;
+    v_indices[10] = 5;
+    v_indices[11] = 2;
+
+    v_indices[12] = 2;
+    v_indices[13] = 6;
+    v_indices[14] = 7;
+
+    v_indices[15] = 4;
+    v_indices[16] = 0;
+    v_indices[17] = 7;
+
+    v_indices[18] = 3;
+    v_indices[19] = 0;
+    v_indices[20] = 2;
+
+    v_indices[21] = 4;
+    v_indices[22] = 5;
+    v_indices[23] = 1;
+
+    v_indices[24] = 0;
+    v_indices[25] = 3;
+    v_indices[26] = 7;
+
+    v_indices[27] = 7;
+    v_indices[28] = 6;
+    v_indices[29] = 5;
+
+    v_indices[30] = 3;
+    v_indices[31] = 2;
+    v_indices[32] = 7;
+
+    v_indices[33] = 5;
+    v_indices[34] = 6;
+    v_indices[35] = 2;
+    int numTriangles = 12;
+    int numVertices = 8;
 
 
     std::shared_ptr<Shader> shader(new PhongShader(Color(0,1,0,1)));
@@ -166,9 +236,11 @@ int main(int argc, char* argv[]) {
     std::shared_ptr<Shader> shader3(new PhongShader(Color(1,1,0,1)));
     shader3->reflectivity(0.5);
     std::shared_ptr<Shader> shader4(new PhongShader(Color(0,0,1,1)));
-    shader->reflectivity(0.5);
+    shader4->reflectivity(0.5);
     std::shared_ptr<Shader> shader5(new PhongShader(Color(0,1,0,1)));
-    shader->reflectivity(0.5);
+    shader5->reflectivity(0.5);
+    std::shared_ptr<Shader> shader6(new PhongShader(Color(1,0.3,0,1)));
+    shader6->reflectivity(0.5);
     BBox bbox;
     std::shared_ptr<Sphere> sphere(new Sphere(transform1,4.0f, -10.0f, 10.0f, 360.0f));
 
@@ -177,17 +249,21 @@ int main(int argc, char* argv[]) {
     std::shared_ptr<Sphere> sphere4(new Sphere(transform4, 3.0f, -10.0f, 10.0f, 360.0f));
     std::shared_ptr<Sphere> sphere5(new Sphere(transform5, 2.0f, -10.0f, 10.0f, 360.0f));
 
+    std::shared_ptr<Shape> mesh(new TriangleMesh(transform6, numTriangles, numVertices, v_indices, points));
+
     std::shared_ptr<Primitive> prim (new Primitive(sphere, shader));
     std::shared_ptr<Primitive> prim2(new Primitive(sphere2, shader2));
     std::shared_ptr<Primitive> prim3(new Primitive(sphere3, shader3));
     std::shared_ptr<Primitive> prim4(new Primitive(sphere4, shader4));
     std::shared_ptr<Primitive> prim5(new Primitive(sphere5, shader5));
+    std::shared_ptr<Primitive> prim6(new Primitive(mesh, shader6));
 
-    scene.addPrimitive(prim);
-    scene.addPrimitive(prim2);
-    scene.addPrimitive(prim3);
-    scene.addPrimitive(prim4);
-    scene.addPrimitive(prim5);
+    //scene.addPrimitive(prim);
+    //scene.addPrimitive(prim2);
+    //scene.addPrimitive(prim3);
+    //scene.addPrimitive(prim4);
+    //scene.addPrimitive(prim5);
+    scene.addPrimitive(prim6);
     scene.init();
     camera.render(scene, image, num_width_samples, num_height_samples);
     image.write(filename.c_str());

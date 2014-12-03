@@ -107,7 +107,15 @@ namespace gssmraytracer {
     BVHAccel::BVHAccel(const std::vector<std::shared_ptr<geometry::Primitive> > &prims,
                        const uint32_t maxPrimsInNodes): mImpl(new Impl) {
 
-      mImpl->primitives = prims;
+      for (std::vector<std::shared_ptr<geometry::Primitive> >::const_iterator iter = prims.begin(); iter != prims.end(); ++iter) {
+        if ((*iter)->canIntersect()) {
+          mImpl->primitives.push_back(*iter);
+        }
+        else {
+          (*iter)->refine(mImpl->primitives);
+        }
+      }
+      //mImpl->primitives = prims;
       mImpl->maxPrimsInNodes = std::min(255u,maxPrimsInNodes);
 
       if (prims.size() == 0) {
@@ -120,8 +128,10 @@ namespace gssmraytracer {
       buildData.reserve(mImpl->primitives.size());
 
       for (uint32_t i = 0; i < mImpl->primitives.size(); ++i) {
-        geometry::BBox bbox = prims[i]->worldBound();
-        buildData.push_back(BVHPrimitiveInfo(i, bbox));
+        if (mImpl->primitives[i]->canIntersect()) {
+          geometry::BBox bbox = mImpl->primitives[(int16_t)i]->worldBound();
+          buildData.push_back(BVHPrimitiveInfo(i, bbox));
+        }
       }
 
 

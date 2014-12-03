@@ -33,6 +33,10 @@ namespace gssmraytracer {
       return mImpl->o2w;
     }
 
+    void Shape::refine(std::vector<std::shared_ptr<Shape> > &refined) const {
+      // Default implementation does nothing
+    }
+
 
 
   }

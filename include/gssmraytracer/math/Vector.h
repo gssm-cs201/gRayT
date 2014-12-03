@@ -36,8 +36,6 @@ namespace gssmraytracer {
       //! Subtract a Vector from this Vector.
       Vector& operator-=(const Vector &v);
 
-      //! Returns a new Vector which is the product of this Vector and a scalar.
-      Vector operator*(const float s) const;
 
       //! Scales this Vector by a scalar
       Vector& operator*=(const float s);
@@ -98,6 +96,7 @@ namespace gssmraytracer {
     };
     //! Allows multiplying of a scalar by a Vector (left multiply).
     Vector operator*(const float s, const Vector &vec);
+    Vector operator*(const Vector &vec, const float s);
   }
 }
 #endif // __VECTOR_H__

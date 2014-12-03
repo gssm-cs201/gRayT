@@ -249,6 +249,10 @@ namespace gssmraytracer {
 
     }
 
+    const bool Sphere::canIntersect() const {
+          return true;
+        }
+
 
   }
 }

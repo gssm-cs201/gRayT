@@ -15,6 +15,9 @@ namespace gssmraytracer {
       const BBox worldBB() const;
       const BBox objectBB() const;
       virtual ~Sphere();
+
+      const bool canIntersect() const;
+      
     private:
       class Impl;
       std::shared_ptr<Impl> mImpl;

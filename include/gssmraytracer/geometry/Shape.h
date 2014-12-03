@@ -7,6 +7,7 @@
 #include "gssmraytracer/math/Transform.h"
 #include "DifferentialGeometry.h"
 #include "gssmraytracer/geometry/BBox.h"
+#include <vector>
 
 namespace gssmraytracer {
   namespace geometry {
@@ -51,6 +52,11 @@ namespace gssmraytracer {
 
       //! converts ray from object to world space
       const math::Transform objectToWorldSpace() const;
+
+      //! returns true if the geometry can be intersected
+      virtual const bool canIntersect() const = 0;
+
+      virtual void refine(std::vector<std::shared_ptr<Shape> > &refined) const;
 
     private:
       class Impl;
