@@ -135,12 +135,15 @@ int main(int argc, char* argv[]) {
     int frame = clf.find("-frame", 0, "Render frame");
     float radius = clf.find("-radius", 25, "Radius distance from center"); 
     bool display_image = clf.find("-display", 0, "Display the image");
+    float cx = clf.find("-CX", 0.f, "Center x");
+    float cy = clf.find("-CY", 2.5f, "Center y");
+    float cz = clf.find("-CZ", 0.f,"Center z");
     clf.printFinds();
     clf.usage("-h");
     omp_set_num_threads((num_threads > 0) ? num_threads : 1 );
     Image image(width, height);
 
-    Point center(0,2.5,0);
+    Point center(cx,cy,cz);
     float theta = float(frame)/float(num_frames) * 2.0 * M_PI;
     float x_pos = center.x() + radius * cos(theta);
     float z_pos = center.z() + radius * sin(theta);
@@ -169,64 +172,114 @@ int main(int argc, char* argv[]) {
 
     Point points[8];
     int v_indices[12*3];
-    points[0] = Point(1,-1,-1);
-    points[1] = Point(1,-1,1);
-    points[2] = Point(-1,-1,1);
-    points[3] = Point(-1,-1,-1);
-    points[4] = Point(1,1,-1);
-    points[5] = Point(1,-1,1);
-    points[6] = Point(-1,1,1);
-    points[7] = Point(-1,1,-1);
+    Normal v_normals[12*3];
+    points[0] = Point(-0.5,-0.5,0.5);
+    points[1] = Point(0.5,-0.5,0.5);
+    points[2] = Point(-0.5,0.5,0.5);
+    points[3] = Point(0.5,0.5,0.5);
+    points[4] = Point(-0.5,0.5,-0.5);
+    points[5] = Point(0.5,0.5,-0.5);
+    points[6] = Point(-0.5,-0.5,-0.5);
+    points[7] = Point(0.5,-0.5,-0.5);
 
     v_indices[0] = 0;
     v_indices[1] = 1;
     v_indices[2] = 2;
 
-    v_indices[3] = 4;
-    v_indices[4] = 7;
-    v_indices[5] = 5;
+    v_indices[3] = 2;
+    v_indices[4] = 1;
+    v_indices[5] = 3;
 
-    v_indices[6] = 0;
-    v_indices[7] = 4;
-    v_indices[8] = 1;
+    v_indices[6] = 2;
+    v_indices[7] = 3;
+    v_indices[8] = 4;
 
-    v_indices[9] = 1;
-    v_indices[10] = 5;
-    v_indices[11] = 2;
+    v_indices[9] = 4;
+    v_indices[10] = 3;
+    v_indices[11] = 5;
 
-    v_indices[12] = 2;
-    v_indices[13] = 6;
-    v_indices[14] = 7;
+    v_indices[12] = 4;
+    v_indices[13] = 5;
+    v_indices[14] = 6;
 
-    v_indices[15] = 4;
-    v_indices[16] = 0;
+    v_indices[15] = 6;
+    v_indices[16] = 5;
     v_indices[17] = 7;
 
-    v_indices[18] = 3;
-    v_indices[19] = 0;
-    v_indices[20] = 2;
+    v_indices[18] = 6;
+    v_indices[19] = 7;
+    v_indices[20] = 0;
 
-    v_indices[21] = 4;
-    v_indices[22] = 5;
+    v_indices[21] = 0;
+    v_indices[22] = 7;
     v_indices[23] = 1;
 
-    v_indices[24] = 0;
-    v_indices[25] = 3;
-    v_indices[26] = 7;
+    v_indices[24] = 1;
+    v_indices[25] = 7;
+    v_indices[26] = 3;
 
-    v_indices[27] = 7;
-    v_indices[28] = 6;
+    v_indices[27] = 3;
+    v_indices[28] = 7;
     v_indices[29] = 5;
 
-    v_indices[30] = 3;
-    v_indices[31] = 2;
-    v_indices[32] = 7;
+    v_indices[30] = 6;
+    v_indices[31] = 0;
+    v_indices[32] = 4;
 
-    v_indices[33] = 5;
-    v_indices[34] = 6;
+    v_indices[33] = 4;
+    v_indices[34] = 0;
     v_indices[35] = 2;
     int numTriangles = 12;
     int numVertices = 8;
+
+    v_normals[0] = Normal(0,0,1);
+    v_normals[1] = Normal(0,0,1);
+    v_normals[2] = Normal(0,0,1);
+
+    v_normals[3] = Normal(0,0,1);
+    v_normals[4] = Normal(0,0,1);
+    v_normals[5] = Normal(0,0,1);
+
+    v_normals[6] = Normal(0,1,0);
+    v_normals[7] = Normal(0,1,0);
+    v_normals[8] = Normal(0,1,0);
+
+    v_normals[9] = Normal(0,1,0);
+    v_normals[10] = Normal(0,1,0);
+    v_normals[11] = Normal(0,1,0);
+
+    v_normals[12] = Normal(0,0,-1);
+    v_normals[13] = Normal(0,0,-1);
+    v_normals[14] = Normal(0,0,-1);
+
+    v_normals[15] = Normal(0,0,-1);
+    v_normals[16] = Normal(0,0,-1);
+    v_normals[17] = Normal(0,0,-1);
+
+    v_normals[18] = Normal(0,-1,0);
+    v_normals[19] = Normal(0,-1,0);
+    v_normals[20] = Normal(0,-1,0);
+
+    v_normals[21] = Normal(0,-1,0);
+    v_normals[22] = Normal(0,-1,0);
+    v_normals[23] = Normal(0,-1,0);
+
+    v_normals[24] = Normal(1,0,0);
+    v_normals[25] = Normal(1,0,0);
+    v_normals[26] = Normal(1,0,0);
+
+    v_normals[27] = Normal(1,0,0);
+    v_normals[28] = Normal(1,0,0);
+    v_normals[29] = Normal(1,0,0);
+
+    v_normals[30] = Normal(-1,0,0);
+    v_normals[31] = Normal(-1,0,0);
+    v_normals[32] = Normal(-1,0,0);
+
+    v_normals[33] = Normal(-1,0,0);
+    v_normals[34] = Normal(-1,0,0);
+    v_normals[35] = Normal(-1,0,0);
+
 
 
     std::shared_ptr<Shader> shader(new PhongShader(Color(0,1,0,1)));
@@ -242,14 +295,14 @@ int main(int argc, char* argv[]) {
     std::shared_ptr<Shader> shader6(new PhongShader(Color(1,0.3,0,1)));
     shader6->reflectivity(0.5);
     BBox bbox;
-    std::shared_ptr<Sphere> sphere(new Sphere(transform1,4.0f, -10.0f, 10.0f, 360.0f));
+    std::shared_ptr<Sphere> sphere(new Sphere(transform1, false, 4.0f, -10.0f, 10.0f, 360.0f));
 
-    std::shared_ptr<Sphere> sphere2(new Sphere(transform2, 2.0f, -10.0f, 10.0f, 360.0f));
-    std::shared_ptr<Sphere> sphere3(new Sphere(transform3, 2.0f, -10.0f, 10.0f, 360.0f));
-    std::shared_ptr<Sphere> sphere4(new Sphere(transform4, 3.0f, -10.0f, 10.0f, 360.0f));
-    std::shared_ptr<Sphere> sphere5(new Sphere(transform5, 2.0f, -10.0f, 10.0f, 360.0f));
+    std::shared_ptr<Sphere> sphere2(new Sphere(transform2, false, 2.0f, -10.0f, 10.0f, 360.0f));
+    std::shared_ptr<Sphere> sphere3(new Sphere(transform3, false, 2.0f, -10.0f, 10.0f, 360.0f));
+    std::shared_ptr<Sphere> sphere4(new Sphere(transform4, false, 3.0f, -10.0f, 10.0f, 360.0f));
+    std::shared_ptr<Sphere> sphere5(new Sphere(transform5, false, 2.0f, -10.0f, 10.0f, 360.0f));
 
-    std::shared_ptr<Shape> mesh(new TriangleMesh(transform6, numTriangles, numVertices, v_indices, points));
+    std::shared_ptr<Shape> mesh(new TriangleMesh(transform6, false, numTriangles, numVertices, v_indices, points, v_normals));
 
     std::shared_ptr<Primitive> prim (new Primitive(sphere, shader));
     std::shared_ptr<Primitive> prim2(new Primitive(sphere2, shader2));

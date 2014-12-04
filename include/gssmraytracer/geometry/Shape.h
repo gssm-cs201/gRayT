@@ -16,7 +16,7 @@ namespace gssmraytracer {
     class Shape {
     public:
       //! Initializes all derived Shapes with a Transform and a Shader
-      Shape(const math::Transform &transform);
+      Shape(const math::Transform &transform, const bool reverseOrientation);
 
       //! Copy Constructor
       Shape(const Shape&);

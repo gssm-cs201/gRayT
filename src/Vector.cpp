@@ -22,6 +22,12 @@ namespace gssmraytracer {
       mImpl->vec.z = vec.z();
     }
 
+    Vector::Vector(const geometry::Normal &normal) : mImpl(new Impl) {
+      mImpl->vec.x = normal.x();
+      mImpl->vec.y = normal.y();
+      mImpl->vec.z = normal.z();
+    }
+
     Vector Vector::operator+(const Vector &v) const {
       Vector newVector;
       newVector.mImpl->vec = mImpl->vec + v.mImpl->vec;
@@ -91,6 +97,14 @@ namespace gssmraytracer {
     }
 
     const float Vector::length() const {return mImpl->vec.length();}
+
+    const float Vector::lengthSquared() const {
+      return mImpl->vec.x * mImpl->vec.x +
+             mImpl->vec.y * mImpl->vec.y +
+             mImpl->vec.z * mImpl->vec.z;
+    }
+
+
     const Vector Vector::direction() const { Imath::Vec3<float> temp = mImpl->vec.normalized();
                                               return Vector(temp.x, temp.y, temp.z);}
 

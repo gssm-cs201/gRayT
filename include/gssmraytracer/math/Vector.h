@@ -21,6 +21,8 @@ namespace gssmraytracer {
       //! Copy constructor
       Vector(const Vector &vector);
 
+      explicit Vector(const geometry::Normal &normal);
+
       //! Assignment operator
       Vector& operator=(const Vector &other);
 
@@ -54,6 +56,8 @@ namespace gssmraytracer {
 
       //! Returns the length of the Vector
       const float length() const;
+
+      const float lengthSquared() const;
 
       //! Returns the direction of the Vector
       const Vector direction() const;

@@ -8,11 +8,14 @@ namespace gssmraytracer {
     public:
       math::Transform o2w;
       math::Transform w2o;
+      bool reverseOrientation;
     };
-    Shape::Shape(const math::Transform &transform) :
+    Shape::Shape(const math::Transform &transform,
+                const bool reverseOrientation) :
       mImpl(new Impl) {
         mImpl->o2w = transform;
         mImpl->w2o = transform.inverse();
+        mImpl->reverseOrientation = reverseOrientation;
     }
 
 

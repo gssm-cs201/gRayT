@@ -11,7 +11,8 @@ namespace gssmraytracer {
 	namespace geometry {
 	class TriangleMesh : public Shape {
 	public:
-		TriangleMesh(const math::Transform &t, 
+		TriangleMesh(const math::Transform &t,
+						const bool reverseOrientation, 
 						int numTriangles,
 						int numVertices,
 						const int *vertexIndices,
@@ -44,6 +45,10 @@ namespace gssmraytracer {
       const Point& getVertexPositionArray(const int n) const;
 
       const float* getUVs() const;
+
+      const Normal* n() const;
+
+      const math::Vector* s() const;
 
 	private:
 		class Impl;

@@ -12,7 +12,8 @@ namespace gssmraytracer {
 			Impl(const int numTriangles, 
 				const int numVertices, 
 				const int *vertexIndices, 
-				const Point *P) : ntris(numTriangles), nverts(numVertices), p(nullptr), n(nullptr), s(nullptr), uvs(nullptr) {
+				const Point *P,
+				const bool ro) : ntris(numTriangles), nverts(numVertices), p(nullptr), n(nullptr), s(nullptr), uvs(nullptr), reverseOrientation(ro) {
 				vertexIndex = new int[3 * ntris];
 				for (int i = 0; i < 3 * ntris; ++i) {
 					vertexIndex[i] = vertexIndices[i];
@@ -28,17 +29,19 @@ namespace gssmraytracer {
 			Normal *n;
 			Vector *s;
 			float *uvs;
+			bool reverseOrientation;
 
 		};
 
 		TriangleMesh::TriangleMesh(const Transform &transform,
+									const bool reverseOrientation,
 									const int numTriangles,
 									const int numVertices,
 									const int *vertexIndices,
 									const Point *P,
 									const Normal *N,
 									const Vector *S,
-									const float *uv) : Shape(transform), mImpl(new Impl(numTriangles, numVertices, vertexIndices, P)) {
+									const float *uv) : Shape(transform, reverseOrientation), mImpl(new Impl(numTriangles, numVertices, vertexIndices, P, reverseOrientation)) {
 
 			// copy uv, N and S vertex data if present
 
@@ -47,6 +50,19 @@ namespace gssmraytracer {
 			for (int i = 0; i < mImpl->nverts; ++i) {
 					mImpl->p[i] = objectToWorldSpace()(P[i]);
 				}
+			if (N) {
+				mImpl->n = new Normal[mImpl->nverts];
+				for (int i = 0; i < mImpl->nverts; ++i) {
+					mImpl->n[i] = objectToWorldSpace()(N[i]);
+				}
+			}
+			if (S) {
+				mImpl->s = new Vector[mImpl->nverts];
+				for (int i = 0; i < mImpl->nverts; ++i) {
+					mImpl->s[i] = objectToWorldSpace()(S[i]);
+				}
+			}
+
 		}
 
 		bool TriangleMesh::hit(const utils::Ray &ws_ray, float &tHit) const { return false;}
@@ -81,7 +97,7 @@ namespace gssmraytracer {
 
 			for (int i = 0; i < mImpl->ntris; ++i) {
 				
-				std::shared_ptr<Triangle> triangle(new Triangle(objectToWorldSpace(), this, i));
+				std::shared_ptr<Triangle> triangle(new Triangle(objectToWorldSpace(), mImpl->reverseOrientation, this, i));
 				refined.push_back(triangle);
 			}
 		}
@@ -105,7 +121,14 @@ namespace gssmraytracer {
 		const float* TriangleMesh::getUVs() const {
 			return mImpl->uvs;
 		}
-			
+
+		const Normal* TriangleMesh::n() const {
+			return mImpl->n;
+		}
+		
+		const Vector* TriangleMesh::s() const {
+			return mImpl->s;
+		}	
 			
 
 

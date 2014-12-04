@@ -24,9 +24,22 @@ namespace gssmraytracer {
 			*v3 = v1.cross(*v2);
 		}
 
-		Triangle::Triangle(const Transform &transform, 
+		bool SolveLinearSystem2x2(const float A[2][2], 
+								  const float B[2], float *x0, float *x1) {
+			float det = A[0][0] * A[1][1] - A[0][1]*A[1][0];
+			if (fabsf(det) < 1e-10f)
+				return false;
+			*x0 = (A[1][1] * B[0] - A[0][1] * B[1])/ det;
+			*x1 = (A[0][0] * B[1] - A[1][0] * B[0])/ det;
+			if (isnan(*x0) || isnan(*x1))
+				return false;
+			return true;
+		}
+
+		Triangle::Triangle(const Transform &transform,
+							const bool reverseOrientation, 
 						   const TriangleMesh *mesh, 
-						   const int n) : Shape(transform), mImpl(new Impl(mesh, n)) {}
+						   const int n) : Shape(transform, reverseOrientation), mImpl(new Impl(mesh, n)) {}
 
 		bool Triangle::hit(const utils::Ray &ws_ray, float &tHit) const {
 			std::shared_ptr<DifferentialGeometry> dg;
@@ -104,8 +117,8 @@ namespace gssmraytracer {
 	    	tHit = t;
 	    	std::shared_ptr<DifferentialGeometry> dg_temp(new DifferentialGeometry(ws_ray(t), dpdu, dpdv, Normal(0,0,0), Normal(0,0,0),
 	    		tu, tv, this));
+	    	getShadingGeometry(dg_temp, dg);
 
-	    	dg = dg_temp;
 	    	return true;
 
 	    }
@@ -153,6 +166,67 @@ namespace gssmraytracer {
 
 		    const bool Triangle::canIntersect() const {
 		    	return true;
+		    }
+
+		    void Triangle::getShadingGeometry(const std::shared_ptr<DifferentialGeometry> &dg, 
+		    								std::shared_ptr<DifferentialGeometry> &dgShading) const {
+		    	if (mImpl->mesh->n() && mImpl->mesh->s()) {
+		    		dgShading = dg;
+		    		return;
+		    	}
+		    	// initialize Triangle shading geometry with n and s
+		    	//compute barycentric coordinates for point
+		    	float b[3];
+		    	//initialize A and C matrices for barycentrics
+		    	float uv[3][2];
+		    	getUVs(uv);
+		    	float A[2][2] = 
+		    		{ { uv[1][0] - uv[0][0], uv[2][0] - uv[0][0]},
+		    		  { uv[1][1] - uv[0][1], uv[2][1] - uv[0][1]} };
+		    	float C[2] = {dg->u - uv[0][0], dg->v - uv[0][1] };
+
+		    	if (!SolveLinearSystem2x2(A, C, &b[1], &b[2])) {
+		    		//handle degenerate parametric mapping
+		    		b[0] = b[1] = b[2] = 1.f/2.f;
+		    	}
+		    	else {
+		    		b[0] = 1.f - b[1] - b[2];
+		    	}
+		    		
+
+		    	//use n and s to compute shading tangents for triangle, ss and ts
+		    	Normal ns;
+		    	Vector ss, ts;
+		    	if (mImpl->mesh->n()) ns = objectToWorldSpace()(b[0] * mImpl->mesh->n()[mImpl->v[0]] +
+		    													b[1] * mImpl->mesh->n()[mImpl->v[1]] +
+		    													b[2] * mImpl->mesh->n()[mImpl->v[2]]).normalized();
+
+		    	else ns = dg->nn;
+
+		    	if (mImpl->mesh->s()) ss = objectToWorldSpace()(b[0] * mImpl->mesh->s()[mImpl->v[0]] +
+		    													b[1] * mImpl->mesh->s()[mImpl->v[1]] +
+		    													b[2] * mImpl->mesh->s()[mImpl->v[2]]).normalized();
+
+		    	else ss = dg->dpdu.normalized();
+
+		    	ts = ss.cross((Vector)ns);
+
+		    	if (ts.lengthSquared() > 0.f) {
+		    		ts = ts.normalized();
+		    		ss = ts.cross((Vector)ns);
+		    	}
+		    	else
+		    		CoordinateSystem((Vector)ns, &ss, &ts);
+
+
+
+
+		    	Normal dndu, dndv;
+		    	//compute partial dn/du and partial dn/dv for triangle shading geometry
+		    	dgShading = std::shared_ptr<DifferentialGeometry>(new DifferentialGeometry(dg->p, ss, ts,
+		    		objectToWorldSpace()(dndu), objectToWorldSpace()(dndv),
+		    		dg->u, dg->v, dg->shape));
+
 		    }
 	}
 }

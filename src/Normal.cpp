@@ -26,6 +26,11 @@ namespace gssmraytracer {
       mImpl->vec = normal.mImpl->vec;
     }
 
+    const Normal Normal::operator+(const Normal &normal) const {
+      return Normal(x() + normal.x(), y() + normal.y(), z() + normal.z());
+
+    }
+
     Normal& Normal::operator=(const Normal &normal)  {
       if (this != &normal) {
         mImpl->vec = normal.mImpl->vec;
@@ -48,6 +53,14 @@ namespace gssmraytracer {
     std::ostream& operator<<(std::ostream &os, const Normal &normal) {
       os << "(" << normal.x() << ", " << normal.y() << ", " << normal.z() << ")" << std::endl;
       return os;
+    }
+
+    const Normal operator*(const float s, const Normal &normal) {
+      return Normal(s * normal.x(), s * normal.y(), s * normal.z());
+    }
+
+    const Normal operator*(const Normal &normal, const float s) {
+      return s * normal;
     }
 
   }

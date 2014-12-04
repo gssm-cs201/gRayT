@@ -6,6 +6,7 @@ namespace gssmraytracer {
 		class Triangle : public Shape {
 		public:
 			Triangle(const math::Transform &transform, 
+					 const bool reverseOrientation,
 						   const TriangleMesh *mesh, 
 						   const int n);
 
@@ -24,6 +25,9 @@ namespace gssmraytracer {
 		    const BBox objectBB() const;
 
 		    const bool canIntersect() const;
+
+		    void getShadingGeometry(const std::shared_ptr<DifferentialGeometry> &dg, 
+		    				std::shared_ptr<DifferentialGeometry> &dgShading) const;
 
 		private:
 			class Impl;

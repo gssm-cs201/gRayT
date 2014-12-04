@@ -38,7 +38,8 @@ namespace gssmraytracer {
     };
 
     Sphere::Sphere(const Transform &transform,
-                 const float radius) : Shape(transform), mImpl(new Impl) {
+                  const bool reverseOrientation,
+                 const float radius) : Shape(transform, reverseOrientation), mImpl(new Impl) {
                    mImpl->radius = radius;
                    mImpl->zmin = -radius;
                    mImpl->zmax = radius;
@@ -51,7 +52,8 @@ namespace gssmraytracer {
     }
 
     Sphere::Sphere(const Transform &transform,
-                 const float radius, float z0, float z1, float pm) : Shape(transform), mImpl(new Impl) {
+                  const bool reverseOrientation,
+                 const float radius, float z0, float z1, float pm) : Shape(transform, reverseOrientation), mImpl(new Impl) {
                    mImpl->radius = radius;
                    mImpl->zmin = Clamp(fmin(z0,z1), -radius, radius);
                    mImpl->zmax = Clamp(fmax(z0,z1), -radius, radius);
