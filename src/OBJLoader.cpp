@@ -1,6 +1,4 @@
 #include "gssmraytracer/utils/OBJLoader.h"
-#include "gssmraytracer/geometry/Point.h"
-#include "gssmraytracer/geometry/Normal.h"
 #include <string>
 #include <fstream>
 #include <iterator>
@@ -35,19 +33,29 @@ namespace gssmraytracer {
 				Point face_vertex(-1,-1,-1);
 				int index = 0;
 				while ((fi_pos = face_info.find(delimiter)) != std::string::npos) {
-					face_vertex[index++] = std::stof(face_info.substr(0, fi_pos)) - 1;
+					if (fi_pos != 0)
+						face_vertex[index++] = std::stof(face_info.substr(0, fi_pos)) - 1;
+					else
+						face_vertex[index++] = -1;
+
 					face_info.erase(0, fi_pos + delimiter.length());
 				}
-
-				face_vertex[index] = std::stof(face_info) - 1;
+				if (face_info.length() > 0)
+					face_vertex[index] = std::stof(face_info) - 1;
+				else
+					face_vertex[index] = -1;
 				face_vertices_info.push_back(face_vertex);
-
+				std::cout << face_vertex << std::endl;
 				s.erase(0, pos + ws_delimiter.length());
 			}
 			Point face_vertex(-1,-1,-1);
 			int index = 0;
 			while ((pos = s.find(delimiter)) != std::string::npos) {
-					face_vertex[index++] = std::stof(s.substr(0, pos)) - 1;
+					if (pos != 0)
+						face_vertex[index++] = std::stof(s.substr(0, pos)) - 1;
+					else
+						face_vertex[index++] = -1;
+
 					s.erase(0, pos + delimiter.length());
 				}
 				if (s != "")
@@ -127,5 +135,60 @@ namespace gssmraytracer {
 		return *this;
 
 	}
+
+	const int OBJLoader::numTriangles() const {
+		return mImpl->faces.size();
+	}
+
+    const int OBJLoader::numVertices() const {
+      	return mImpl->vertices.size();
+    }
+
+    const int* OBJLoader::vertexIndices() const {
+    	int *vertices = new int[mImpl->faces.size() * 3];
+    	int index = 0;
+
+    	for (std::vector<std::vector<Point> >::iterator iter = mImpl->faces.begin();
+    		 iter != mImpl->faces.end();
+    		 ++iter) {
+    		//Triangle Vertices
+    		vertices[index++] = (*iter)[0][0];
+    		vertices[index++] = (*iter)[1][0];
+    		vertices[index++] = (*iter)[2][0];
+    	}
+
+    	return vertices;
+
+    }
+
+      const Point* OBJLoader::vertices() const {
+      	Point *vertices = new Point[mImpl->vertices.size()];
+      	for (size_t i = 0; i < mImpl->vertices.size(); ++i) {
+      		vertices[i] = mImpl->vertices[i];
+      	}
+
+      	return vertices;
+      }
+
+      const Normal* OBJLoader::normals() const {
+      	if (mImpl->normals.size() == 0) {
+      		return nullptr;
+      	}
+
+      	Normal *normals = new Normal[mImpl->faces.size() * 3];
+      	int index = 0;
+
+      	for (std::vector<std::vector<Point> >::iterator iter = mImpl->faces.begin();
+    		 iter != mImpl->faces.end();
+    		 ++iter) {
+    		//Triangle Normals
+    		normals[index++] = mImpl->normals[(*iter)[0][2]];
+    		normals[index++] = mImpl->normals[(*iter)[1][2]];
+    		normals[index++] = mImpl->normals[(*iter)[2][2]];
+    	}
+
+    	return normals;
+
+      }
 	}
 }

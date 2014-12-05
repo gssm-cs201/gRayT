@@ -134,10 +134,10 @@ int main(int argc, char* argv[]) {
     int num_threads = clf.find("-threads", omp_get_max_threads(), "Max number of threads");
     int num_frames = clf.find("-nframes", 200, "Maximum number of frames for turntable");
     int frame = clf.find("-frame", 0, "Render frame");
-    float radius = clf.find("-radius", 25, "Radius distance from center"); 
+    float radius = clf.find("-radius", 5, "Radius distance from center"); 
     bool display_image = clf.find("-display", 0, "Display the image");
     float cx = clf.find("-CX", 0.f, "Center x");
-    float cy = clf.find("-CY", 2.5f, "Center y");
+    float cy = clf.find("-CY", 0.0f, "Center y");
     float cz = clf.find("-CZ", 0.f,"Center z");
     clf.printFinds();
     clf.usage("-h");
@@ -305,7 +305,8 @@ int main(int argc, char* argv[]) {
 
     std::string obj_file = "cube.obj";
     OBJLoader obj(obj_file.c_str());
-    std::shared_ptr<Shape> mesh(new TriangleMesh(transform6, false, numTriangles, numVertices, v_indices, points, v_normals));
+    std::shared_ptr<Shape> mesh(new TriangleMesh(transform6, false, obj.numTriangles(), obj.numVertices(), obj.vertexIndices(), obj.vertices(), obj.normals()));
+    //std::shared_ptr<Shape> mesh(new TriangleMesh(transform6, false, numTriangles, numVertices, v_indices, points, v_normals));
 
     std::shared_ptr<Primitive> prim (new Primitive(sphere, shader));
     std::shared_ptr<Primitive> prim2(new Primitive(sphere2, shader2));

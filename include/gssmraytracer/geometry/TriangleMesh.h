@@ -50,6 +50,8 @@ namespace gssmraytracer {
 
       const math::Vector* s() const;
 
+      
+
 	private:
 		class Impl;
 		std::shared_ptr<Impl> mImpl;

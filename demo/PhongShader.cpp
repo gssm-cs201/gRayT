@@ -55,9 +55,9 @@ namespace gssmraytracer {
 
       // ambient lighting - faking global illumination with constant
       // low color value
-      shadeColor.red = mImpl->color.red * 0.1f;
-      shadeColor.green = mImpl->color.green * 0.1f;
-      shadeColor.blue = mImpl->color.blue * 0.1f;
+      shadeColor.red = 0;//mImpl->color.red * 0.1f;
+      shadeColor.green = 0;//mImpl->color.green * 0.1f;
+      shadeColor.blue = 0;//mImpl->color.blue * 0.1f;
 
       // This implementation uses the singleton of the scene to see if we
       // hit any objects.  Note that we do not need to pass in the Scene as
