@@ -31,6 +31,7 @@
 #include "NoiseShader.h"
 #include "LambertianShader.h"
 #include "PhongShader.h"
+#include <gssmraytracer/utils/OBJLoader.h>
 
 #include <iostream>
 
@@ -302,6 +303,8 @@ int main(int argc, char* argv[]) {
     std::shared_ptr<Sphere> sphere4(new Sphere(transform4, false, 3.0f, -10.0f, 10.0f, 360.0f));
     std::shared_ptr<Sphere> sphere5(new Sphere(transform5, false, 2.0f, -10.0f, 10.0f, 360.0f));
 
+    std::string obj_file = "cube.obj";
+    OBJLoader obj(obj_file.c_str());
     std::shared_ptr<Shape> mesh(new TriangleMesh(transform6, false, numTriangles, numVertices, v_indices, points, v_normals));
 
     std::shared_ptr<Primitive> prim (new Primitive(sphere, shader));

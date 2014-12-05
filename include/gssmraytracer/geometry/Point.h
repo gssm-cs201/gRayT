@@ -42,6 +42,9 @@ namespace gssmraytracer {
 
       //! get x, y or z based on the index
       const float operator[](const float index) const;
+
+      //! set x, y or z based on index
+      float& operator[](const float index);
       //! returns the x component of a Point
       const float x() const;
 
