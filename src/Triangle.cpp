@@ -118,7 +118,7 @@ namespace gssmraytracer {
 	    	float tv = b0 * uvs[0][1] + b1*uvs[1][1] + b2*uvs[2][1];
 
 	    	tHit = t;
-	    	std::shared_ptr<DifferentialGeometry> dg_temp(new DifferentialGeometry(ws_ray(t), dpdu, dpdv, Normal(0,0,0), Normal(0,0,0),
+	    	std::shared_ptr<DifferentialGeometry> dg_temp(new DifferentialGeometry(ws_ray(t-1e-3), dpdu, dpdv, Normal(0,0,0), Normal(0,0,0),
 	    		tu, tv, this));
 
 	    	getShadingGeometry(dg_temp, dg);
@@ -190,7 +190,7 @@ namespace gssmraytracer {
 
 		    	if (!SolveLinearSystem2x2(A, C, &b[1], &b[2])) {
 		    		//handle degenerate parametric mapping
-		    		b[0] = b[1] = b[2] = 1.f/2.f;
+		    		b[0] = b[1] = b[2] = 1.f/3.f;
 		    	}
 		    	else {
 		    		b[0] = 1.f - b[1] - b[2];
@@ -219,11 +219,11 @@ namespace gssmraytracer {
 		    	ts = ss.cross((Vector)ns);
 
 		    	if (ts.lengthSquared() > 0.f) {
-		    		ts = ts.normalized();
-		    		ss = ts.cross((Vector)ns);
+		    		ts.normalize();
+		    		ss = ts.cross(Vector(ns));
 		    	}
 		    	else
-		    		CoordinateSystem((Vector)ns, &ss, &ts);
+		    		CoordinateSystem(Vector(ns), &ss, &ts);
 
 
 

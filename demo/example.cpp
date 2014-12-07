@@ -294,7 +294,7 @@ int main(int argc, char* argv[]) {
     shader4->reflectivity(0.5);
     std::shared_ptr<Shader> shader5(new PhongShader(Color(0,1,0,1)));
     shader5->reflectivity(0.5);
-    std::shared_ptr<Shader> shader6(new PhongShader(Color(1,0.3,0,1)));
+    std::shared_ptr<Shader> shader6(new PhongShader(Color(1, 0.3, 0, 1)));
     shader6->reflectivity(0.5);
     BBox bbox;
     std::shared_ptr<Sphere> sphere(new Sphere(transform1, false, 4.0f, -10.0f, 10.0f, 360.0f));
