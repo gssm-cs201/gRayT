@@ -51,14 +51,14 @@ namespace gssmraytracer {
 					mImpl->p[i] = objectToWorldSpace()(P[i]);
 				}
 			if (N) {
-				mImpl->n = new Normal[mImpl->nverts];
-				for (int i = 0; i < mImpl->nverts; ++i) {
+				mImpl->n = new Normal[mImpl->ntris * 3];
+				for (int i = 0; i < mImpl->ntris * 3; ++i) {
 					mImpl->n[i] = objectToWorldSpace()(N[i]);
 				}
 			}
 			if (S) {
-				mImpl->s = new Vector[mImpl->nverts];
-				for (int i = 0; i < mImpl->nverts; ++i) {
+				mImpl->s = new Vector[mImpl->ntris * 3];
+				for (int i = 0; i < mImpl->ntris * 3; ++i) {
 					mImpl->s[i] = objectToWorldSpace()(S[i]);
 				}
 			}

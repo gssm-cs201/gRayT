@@ -51,17 +51,18 @@ namespace gssmraytracer {
 	    bool Triangle::hit(const utils::Ray &ws_ray, float &tHit,
 	                        std::shared_ptr<DifferentialGeometry> &dg) const {
 
+
 	    	const Point &p1 = mImpl->mesh->getVertexPositionArray(mImpl->v[0]);
 	    	const Point &p2 = mImpl->mesh->getVertexPositionArray(mImpl->v[1]);
 	    	const Point &p3 = mImpl->mesh->getVertexPositionArray(mImpl->v[2]);
 	    	// get triangle vertices in p1, p2, and p3
-
+	    	
 	    	Vector e1 = p2 - p1;
 	    	Vector e2 = p3 - p1;
 	    	Vector s1 = ws_ray.dir().cross(e2);
 	    	float divisor = s1.dot(e1);
 
-	    	if (divisor == 0.)
+	    	if (divisor == 0.) 
 	    		return false;
 	    	float invDivisor = 1.f / divisor;
 
@@ -83,6 +84,7 @@ namespace gssmraytracer {
 	    	if (t < ws_ray.mint() || t > ws_ray.maxt())
 	    		return false;
 
+
 	    	// compute triangle partial derivative
 	    	Vector dpdu, dpdv;
 	    	float uvs[3][2];
@@ -98,6 +100,7 @@ namespace gssmraytracer {
 	    	float determinant = du1 * dv2 - dv1 * du2;
 	    	if (determinant == 0.f) {
 	    		// handle zero determinants for triangle partial derivative matrix
+	    		CoordinateSystem(e2.cross(e1).normalized(), &dpdu, &dpdv);
 	    	}
 	    	else {
 	    		float invdet = 1.f/determinant;
@@ -107,7 +110,7 @@ namespace gssmraytracer {
 
 	    	
 
-	    	CoordinateSystem(e2.cross(e1).normalized(), &dpdu, &dpdv);
+	    	
 
 	    	// interpolate (u,v) triangle parametric coordinates
 	    	float b0 = 1 - b1 - b2;
@@ -117,8 +120,8 @@ namespace gssmraytracer {
 	    	tHit = t;
 	    	std::shared_ptr<DifferentialGeometry> dg_temp(new DifferentialGeometry(ws_ray(t), dpdu, dpdv, Normal(0,0,0), Normal(0,0,0),
 	    		tu, tv, this));
-	    	getShadingGeometry(dg_temp, dg);
 
+	    	getShadingGeometry(dg_temp, dg);
 	    	return true;
 
 	    }
@@ -145,8 +148,8 @@ namespace gssmraytracer {
 		    	const Point &p2 = mImpl->mesh->getVertexPositionArray(mImpl->v[1]);
 		    	const Point &p3 = mImpl->mesh->getVertexPositionArray(mImpl->v[2]);
 
-		    	BBox bbox(p1, p2);
-		    	bbox.combine(p3);
+		    	BBox bbox(p1, p3);
+		    	bbox = bbox.combine(BBox(p2));
 
 		    	return bbox;
 		    }
@@ -158,7 +161,7 @@ namespace gssmraytracer {
 		    	const Point &p3 = mImpl->mesh->getVertexPositionArray(mImpl->v[2]);
 
 		    	BBox bbox(worldToObjectSpace()(p1), worldToObjectSpace()(p2));
-		    	bbox.combine(worldToObjectSpace()(p3));
+		    	bbox = bbox.combine(worldToObjectSpace()(p3));
 
 
 		    	return bbox;
@@ -170,7 +173,7 @@ namespace gssmraytracer {
 
 		    void Triangle::getShadingGeometry(const std::shared_ptr<DifferentialGeometry> &dg, 
 		    								std::shared_ptr<DifferentialGeometry> &dgShading) const {
-		    	if (mImpl->mesh->n() && mImpl->mesh->s()) {
+		    	if (!mImpl->mesh->n() && !mImpl->mesh->s()) {
 		    		dgShading = dg;
 		    		return;
 		    	}
@@ -197,17 +200,21 @@ namespace gssmraytracer {
 		    	//use n and s to compute shading tangents for triangle, ss and ts
 		    	Normal ns;
 		    	Vector ss, ts;
-		    	if (mImpl->mesh->n()) ns = objectToWorldSpace()(b[0] * mImpl->mesh->n()[mImpl->v[0]] +
+		    	if (mImpl->mesh->n()) {
+		    		ns = objectToWorldSpace()(b[0] * mImpl->mesh->n()[mImpl->v[0]] +
 		    													b[1] * mImpl->mesh->n()[mImpl->v[1]] +
 		    													b[2] * mImpl->mesh->n()[mImpl->v[2]]).normalized();
+		    	}
+		    	else 
+		    		ns = dg->nn;
 
-		    	else ns = dg->nn;
-
-		    	if (mImpl->mesh->s()) ss = objectToWorldSpace()(b[0] * mImpl->mesh->s()[mImpl->v[0]] +
+		    	if (mImpl->mesh->s()) {
+		    		ss = objectToWorldSpace()(b[0] * mImpl->mesh->s()[mImpl->v[0]] +
 		    													b[1] * mImpl->mesh->s()[mImpl->v[1]] +
 		    													b[2] * mImpl->mesh->s()[mImpl->v[2]]).normalized();
-
-		    	else ss = dg->dpdu.normalized();
+		    	}
+		    	else 
+		    		ss = dg->dpdu.normalized();
 
 		    	ts = ss.cross((Vector)ns);
 

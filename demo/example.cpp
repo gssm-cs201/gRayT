@@ -131,6 +131,7 @@ int main(int argc, char* argv[]) {
     int num_width_samples = clf.find("-SX", 1, "Width Samples");
     int num_height_samples = clf.find("-SY", 1, "Height Samples");
     std::string filename = clf.find( "-name", "demo.exr", "Name of output image file" );
+    std::string obj_file = clf.find( "-obj", "cube.obj", "Name of obj file" );
     int num_threads = clf.find("-threads", omp_get_max_threads(), "Max number of threads");
     int num_frames = clf.find("-nframes", 200, "Maximum number of frames for turntable");
     int frame = clf.find("-frame", 0, "Render frame");
@@ -169,7 +170,7 @@ int main(int argc, char* argv[]) {
     transform3.translate(position3);
     transform4.translate(position4);
     transform5.translate(position5);
-    transform5.translate(position6);
+    transform6.translate(position6);
 
     Point points[8];
     int v_indices[12*3];
@@ -303,7 +304,6 @@ int main(int argc, char* argv[]) {
     std::shared_ptr<Sphere> sphere4(new Sphere(transform4, false, 3.0f, -10.0f, 10.0f, 360.0f));
     std::shared_ptr<Sphere> sphere5(new Sphere(transform5, false, 2.0f, -10.0f, 10.0f, 360.0f));
 
-    std::string obj_file = "cube.obj";
     OBJLoader obj(obj_file.c_str());
     std::shared_ptr<Shape> mesh(new TriangleMesh(transform6, false, obj.numTriangles(), obj.numVertices(), obj.vertexIndices(), obj.vertices(), obj.normals()));
     //std::shared_ptr<Shape> mesh(new TriangleMesh(transform6, false, numTriangles, numVertices, v_indices, points, v_normals));

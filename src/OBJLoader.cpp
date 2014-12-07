@@ -45,7 +45,7 @@ namespace gssmraytracer {
 				else
 					face_vertex[index] = -1;
 				face_vertices_info.push_back(face_vertex);
-				std::cout << face_vertex << std::endl;
+
 				s.erase(0, pos + ws_delimiter.length());
 			}
 			Point face_vertex(-1,-1,-1);
@@ -109,6 +109,8 @@ namespace gssmraytracer {
 				std::vector<Point> face_vertices_info;
 				parseLineForFace(line, face_vertices_info);
 				mImpl->faces.push_back(face_vertices_info);
+
+		
 			}
 		}
 
