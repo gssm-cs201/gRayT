@@ -1,13 +1,13 @@
-#include "gssmraytracer/utils/Ray.h"
-#include "gssmraytracer/math/Transform.h"
-#include "gssmraytracer/utils/Color.h"
-#include "gssmraytracer/utils/gssmraytracer.h"
-#include "gssmraytracer/geometry/Sphere.h"
+#include "grayt/utils/Ray.h"
+#include "grayt/math/Transform.h"
+#include "grayt/utils/Color.h"
+#include "grayt/utils/grayt.h"
+#include "grayt/geometry/Sphere.h"
 #include <algorithm>
 
-using namespace gssmraytracer::math;
-using namespace gssmraytracer::utils;
-namespace gssmraytracer {
+using namespace grayt::math;
+using namespace grayt::utils;
+namespace grayt {
   namespace geometry {
 
     class Sphere::Impl {

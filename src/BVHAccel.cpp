@@ -1,7 +1,7 @@
-#include "gssmraytracer/utils/BVHAccel.h"
-#include "gssmraytracer/geometry/BBox.h"
-#include "gssmraytracer/geometry/Point.h"
-#include "gssmraytracer/memory/Memory.h"
+#include "grayt/utils/BVHAccel.h"
+#include "grayt/geometry/BBox.h"
+#include "grayt/geometry/Point.h"
+#include "grayt/memory/Memory.h"
 #include <algorithm>
 
 #define SPLIT_MIDDLE 111
@@ -9,8 +9,8 @@
 #define SPLIT_EQUAL_COUNTS 333
 
 
-using namespace gssmraytracer::memory;
-namespace gssmraytracer {
+using namespace grayt::memory;
+namespace grayt {
   namespace utils {
 
 

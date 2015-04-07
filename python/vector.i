@@ -3,7 +3,7 @@
 
 %{
 #define SWIG_FILE_WITH_INIT
-#include <gssmraytracer/math/Vector.h>
+#include <grayt/math/Vector.h>
 
 %}
-%include <gssmraytracer/math/Vector.h>
+%include <grayt/math/Vector.h>

@@ -1,11 +1,11 @@
-#include <gssmraytracer/utils/Camera.h>
-#include <gssmraytracer/utils/Scene.h>
-#include <gssmraytracer/utils/Color.h>
-#include <gssmraytracer/utils/Shader.h>
-#include <gssmraytracer/math/Vector.h>
+#include <grayt/utils/Camera.h>
+#include <grayt/utils/Scene.h>
+#include <grayt/utils/Color.h>
+#include <grayt/utils/Shader.h>
+#include <grayt/math/Vector.h>
 #include <memory>
-#include <gssmraytracer/geometry/Sphere.h>
-#include <gssmraytracer/geometry/TriangleMesh.h>
+#include <grayt/geometry/Sphere.h>
+#include <grayt/geometry/TriangleMesh.h>
 #ifdef _OPENMP
 #  include <omp.h>
 #endif
@@ -18,11 +18,11 @@
 #endif
 
 
-#include <gssmraytracer/utils/Image.h>
-#include <gssmraytracer/utils/RenderGlobals.h>
-#include <gssmraytracer/utils/Color.h>
-#include <gssmraytracer/utils/Scene.h>
-#include <gssmraytracer/utils/CmdLineFind.h>
+#include <grayt/utils/Image.h>
+#include <grayt/utils/RenderGlobals.h>
+#include <grayt/utils/Color.h>
+#include <grayt/utils/Scene.h>
+#include <grayt/utils/CmdLineFind.h>
 #include <iostream>
 
 #include "ConstantShader.h"
@@ -31,13 +31,13 @@
 #include "NoiseShader.h"
 #include "LambertianShader.h"
 #include "PhongShader.h"
-#include <gssmraytracer/utils/OBJLoader.h>
+#include <grayt/utils/OBJLoader.h>
 
 #include <iostream>
 
-using namespace gssmraytracer::utils;
-using namespace gssmraytracer::geometry;
-using namespace gssmraytracer::math;
+using namespace grayt::utils;
+using namespace grayt::geometry;
+using namespace grayt::math;
 
 void display_picture() {
   const Image image = RenderGlobals::getInstance().getImage();

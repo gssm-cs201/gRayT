@@ -1,12 +1,12 @@
 #include "NoiseShader.h"
-#include <gssmraytracer/noise/PerlinNoise.h>
-#include <gssmraytracer/utils/gssmraytracer.h>
-#include <gssmraytracer/utils/Scene.h>
+#include <grayt/noise/PerlinNoise.h>
+#include <grayt/utils/grayt.h>
+#include <grayt/utils/Scene.h>
 
 
-using namespace gssmraytracer::geometry;
-using namespace gssmraytracer::noise;
-namespace gssmraytracer {
+using namespace grayt::geometry;
+using namespace grayt::noise;
+namespace grayt {
   namespace utils {
 	class NoiseShader::Impl {
 	public:

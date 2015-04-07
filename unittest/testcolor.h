@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
-#include <gssmraytracer/utils/Color.h>
-using namespace gssmraytracer::utils;
+#include <grayt/utils/Color.h>
+using namespace grayt::utils;
 namespace {
   class ColorTest : public ::testing::Test {
   protected:

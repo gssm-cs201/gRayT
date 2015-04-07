@@ -1,8 +1,8 @@
 #include <limits>
-#include "gssmraytracer/geometry/Point.h"
-#include "gssmraytracer/geometry/BBox.h"
+#include "grayt/geometry/Point.h"
+#include "grayt/geometry/BBox.h"
 
-namespace gssmraytracer {
+namespace grayt {
   namespace geometry {
     class BBox::Impl {
     public:

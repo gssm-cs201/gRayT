@@ -8,9 +8,9 @@
 #include <cstdio>
 #include <cmath>
 
-#include "gssmraytracer/noise/PerlinNoise.h"
+#include "grayt/noise/PerlinNoise.h"
 using namespace std;
-namespace gssmraytracer {
+namespace grayt {
 	namespace noise {
 
     class PerlinNoise::Impl {

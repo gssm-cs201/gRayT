@@ -1,10 +1,10 @@
-#include "gssmraytracer/utils/OBJLoader.h"
+#include "grayt/utils/OBJLoader.h"
 #include <string>
 #include <fstream>
 #include <iterator>
 #include <vector>
-using namespace gssmraytracer::geometry;
-namespace gssmraytracer {
+using namespace grayt::geometry;
+namespace grayt {
 	namespace utils {
 		class OBJLoader::Impl {
 		public:

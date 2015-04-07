@@ -1,9 +1,9 @@
 #include <vector>
-#include "gssmraytracer/utils/Scene.h"
-#include "gssmraytracer/utils/BVHAccel.h"
+#include "grayt/utils/Scene.h"
+#include "grayt/utils/BVHAccel.h"
 #include <limits>
 
-namespace gssmraytracer {
+namespace grayt {
   namespace utils {
     class Scene::Impl {
     public:

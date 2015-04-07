@@ -1,0 +1,40 @@
+#ifndef __TRIANGLE_H__
+#define __TRIANGLE_H__
+#include "grayt/geometry/TriangleMesh.h"
+namespace grayt {
+	namespace geometry {
+		class Triangle : public Shape {
+		public:
+			Triangle(const math::Transform &transform, 
+					 const bool reverseOrientation,
+						   const TriangleMesh *mesh, 
+						   const int n);
+
+			bool hit(const utils::Ray &ws_ray, float &tHit) const;
+
+      
+		    bool hit(const utils::Ray &ws_ray, float &tHit,
+		                        std::shared_ptr<DifferentialGeometry> &dg) const;
+
+		    void getUVs(float uv[3][2]) const;
+
+		      //! returns the bounding box of the shape in world space
+		    const BBox worldBB() const;
+
+		      //! returns the bounding box of the shape in object space
+		    const BBox objectBB() const;
+
+		    const bool canIntersect() const;
+
+		    void getShadingGeometry(const std::shared_ptr<DifferentialGeometry> &dg, 
+		    				std::shared_ptr<DifferentialGeometry> &dgShading) const;
+
+		private:
+			class Impl;
+			std::shared_ptr<Impl> mImpl;
+			Triangle& operator=(const Triangle &);
+			Triangle(const Triangle &);
+		};
+	}
+}
+#endif // __TRIANGLE_H__

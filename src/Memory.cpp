@@ -1,8 +1,8 @@
-#include "gssmraytracer/memory/Memory.h"
+#include "grayt/memory/Memory.h"
 #include <malloc.h>
 #include <vector>
 
-namespace gssmraytracer {
+namespace grayt {
   namespace memory {
     // Memory Allocation Functions
     void *AllocAligned(size_t size) {

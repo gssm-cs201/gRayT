@@ -1,8 +1,8 @@
-#include "gssmraytracer/geometry/Shape.h"
-#include "gssmraytracer/utils/Shader.h"
-#include "gssmraytracer/math/Transform.h"
-using namespace gssmraytracer::utils;
-namespace gssmraytracer {
+#include "grayt/geometry/Shape.h"
+#include "grayt/utils/Shader.h"
+#include "grayt/math/Transform.h"
+using namespace grayt::utils;
+namespace grayt {
   namespace geometry {
     class Shape::Impl {
     public:

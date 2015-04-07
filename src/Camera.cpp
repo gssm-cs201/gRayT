@@ -1,16 +1,16 @@
-#include "gssmraytracer/utils/Camera.h"
-#include "gssmraytracer/utils/RenderGlobals.h"
-#include "gssmraytracer/utils/Color.h"
-#include "gssmraytracer/utils/Ray.h"
-#include "gssmraytracer/geometry/Shape.h"
-#include "gssmraytracer/utils/ProgressMeter.h"
+#include "grayt/utils/Camera.h"
+#include "grayt/utils/RenderGlobals.h"
+#include "grayt/utils/Color.h"
+#include "grayt/utils/Ray.h"
+#include "grayt/geometry/Shape.h"
+#include "grayt/utils/ProgressMeter.h"
 #ifdef _OPENMP
 #include <omp.h>
 #endif
 
-using namespace gssmraytracer::geometry;
+using namespace grayt::geometry;
 
-namespace gssmraytracer {
+namespace grayt {
 namespace utils {
 
   class Camera::Impl {

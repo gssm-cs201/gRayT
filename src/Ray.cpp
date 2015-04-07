@@ -1,7 +1,7 @@
-#include "gssmraytracer/utils/Ray.h"
+#include "grayt/utils/Ray.h"
 #include <limits>
 
-namespace gssmraytracer {
+namespace grayt {
   namespace utils {
     class Ray::Impl {
     public:

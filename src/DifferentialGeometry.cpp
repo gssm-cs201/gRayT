@@ -1,6 +1,6 @@
-#include "gssmraytracer/geometry/DifferentialGeometry.h"
+#include "grayt/geometry/DifferentialGeometry.h"
 
-namespace gssmraytracer {
+namespace grayt {
   namespace geometry {
     DifferentialGeometry::DifferentialGeometry(
           const Point &P,

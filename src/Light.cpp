@@ -1,5 +1,5 @@
-#include "gssmraytracer/utils/Light.h"
-namespace gssmraytracer {
+#include "grayt/utils/Light.h"
+namespace grayt {
   namespace utils {
     class Light::Impl {
     public:

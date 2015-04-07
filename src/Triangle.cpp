@@ -1,6 +1,6 @@
-#include "gssmraytracer/geometry/Triangle.h"
-using namespace gssmraytracer::math;
-namespace gssmraytracer {
+#include "grayt/geometry/Triangle.h"
+using namespace grayt::math;
+namespace grayt {
 	namespace geometry {
 		class Triangle::Impl {
 		public:

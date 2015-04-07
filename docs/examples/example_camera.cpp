@@ -1,6 +1,6 @@
-#include <gssmraytracer/utils/Camera.h>
+#include <grayt/utils/Camera.h>
 
-using namespace gssmraytracer::utils;
+using namespace grayt::utils;
 
 void main()
 {

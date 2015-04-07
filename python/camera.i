@@ -2,7 +2,7 @@
 
 %{
 #define SWIG_FILE_WITH_INIT
-#include <gssmraytracer/utils/Camera.h>
-#include <gssmraytracer/utils/Scene.h>
+#include <grayt/utils/Camera.h>
+#include <grayt/utils/Scene.h>
 %}
-%include <gssmraytracer/utils/Camera.h>
+%include <grayt/utils/Camera.h>

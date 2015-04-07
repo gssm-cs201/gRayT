@@ -1,7 +1,7 @@
-#include "gssmraytracer/math/Transform.h"
-#include "gssmraytracer/utils/Ray.h"
-#include "gssmraytracer/geometry/Point.h"
-namespace gssmraytracer {
+#include "grayt/math/Transform.h"
+#include "grayt/utils/Ray.h"
+#include "grayt/geometry/Point.h"
+namespace grayt {
   namespace math {
     class Transform::Impl {
     public:

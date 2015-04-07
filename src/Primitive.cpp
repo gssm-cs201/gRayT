@@ -1,5 +1,5 @@
-#include "gssmraytracer/geometry/Primitive.h"
-namespace gssmraytracer {
+#include "grayt/geometry/Primitive.h"
+namespace grayt {
   namespace geometry {
     class Primitive::Impl {
     public:

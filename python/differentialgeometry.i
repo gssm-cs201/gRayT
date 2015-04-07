@@ -2,6 +2,6 @@
 
 %{
 #define SWIG_FILE_WITH_INIT
-#include <gssmraytracer/geometry/DifferentialGeometry.h>
+#include <grayt/geometry/DifferentialGeometry.h>
 %}
-%include <gssmraytracer/geometry/DifferentialGeometry.h>
+%include <grayt/geometry/DifferentialGeometry.h>

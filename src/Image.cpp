@@ -1,9 +1,9 @@
-#include "gssmraytracer/utils/Image.h"
+#include "grayt/utils/Image.h"
 #include <OpenImageIO/imageio.h>
 #include <OpenImageIO/imagebuf.h>
 #include <OpenImageIO/imagebufalgo.h>
 
-namespace gssmraytracer {
+namespace grayt {
 namespace utils {
 class Image::Impl {
 public:

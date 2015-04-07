@@ -1,7 +1,7 @@
-#include "gssmraytracer/utils/PointLight.h"
-using namespace gssmraytracer::math;
-using namespace gssmraytracer::geometry;
-namespace gssmraytracer {
+#include "grayt/utils/PointLight.h"
+using namespace grayt::math;
+using namespace grayt::geometry;
+namespace grayt {
   namespace utils {
     class PointLight::Impl {
     public:

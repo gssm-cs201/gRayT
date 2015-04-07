@@ -3,6 +3,6 @@
 
 %{
 #define SWIG_FILE_WITH_INIT
-#include <gssmraytracer/utils/Color.h>
+#include <grayt/utils/Color.h>
 %}
-%include <gssmraytracer/utils/Color.h>
+%include <grayt/utils/Color.h>

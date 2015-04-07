@@ -1,11 +1,11 @@
-#include "gssmraytracer/geometry/TriangleMesh.h"
+#include "grayt/geometry/TriangleMesh.h"
 #include <cstring>
-#include "gssmraytracer/geometry/Triangle.h"
+#include "grayt/geometry/Triangle.h"
 #include <assert.h>
 
-using namespace gssmraytracer::math;
+using namespace grayt::math;
 
-namespace gssmraytracer {
+namespace grayt {
 	namespace geometry {
 		class TriangleMesh::Impl {
 		public:

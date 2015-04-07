@@ -2,6 +2,6 @@
 
 %{
 #define SWIG_FILE_WITH_INIT
-#include <gssmraytracer/noise/PerlinNoise.h>
+#include <grayt/noise/PerlinNoise.h>
 %}
-%include <gssmraytracer/noise/PerlinNoise.h>
+%include <grayt/noise/PerlinNoise.h>

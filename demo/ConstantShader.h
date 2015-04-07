@@ -1,8 +1,8 @@
-#include <gssmraytracer/utils/Shader.h>
-#include <gssmraytracer/utils/Color.h>
+#include <grayt/utils/Shader.h>
+#include <grayt/utils/Color.h>
 #include <memory>
 
-namespace gssmraytracer {
+namespace grayt {
   namespace utils {
     class ConstantShader: public Shader {
     public:

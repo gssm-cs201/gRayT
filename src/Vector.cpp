@@ -1,7 +1,7 @@
-#include "gssmraytracer/math/Vector.h"
-#include "gssmraytracer/geometry/Normal.h"
+#include "grayt/math/Vector.h"
+#include "grayt/geometry/Normal.h"
 #include <OpenEXR/ImathVec.h>
-namespace gssmraytracer {
+namespace grayt {
   namespace math {
     class Vector::Impl {
     public:

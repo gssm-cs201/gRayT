@@ -11,11 +11,11 @@ class and replace the hardcoded information with your team's implementation.
 
 *****************************************************/
 #include "LambertianShader.h"
-#include <gssmraytracer/utils/Color.h>
-#include <gssmraytracer/utils/Scene.h>
+#include <grayt/utils/Color.h>
+#include <grayt/utils/Scene.h>
 
-using namespace gssmraytracer::geometry;
-namespace gssmraytracer {
+using namespace grayt::geometry;
+namespace grayt {
   namespace utils {
     class LambertianShader::Impl {
     public:

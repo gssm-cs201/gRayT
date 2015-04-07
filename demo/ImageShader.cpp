@@ -1,8 +1,8 @@
 #include "ImageShader.h"
-#include <gssmraytracer/utils/Color.h>
+#include <grayt/utils/Color.h>
 
-using namespace gssmraytracer::geometry;
-namespace gssmraytracer {
+using namespace grayt::geometry;
+namespace grayt {
   namespace utils {
     class ImageShader::Impl {
     public:

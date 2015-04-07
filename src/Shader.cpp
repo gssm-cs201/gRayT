@@ -1,10 +1,10 @@
-#include "gssmraytracer/utils/Shader.h"
-#include "gssmraytracer/geometry/Point.h"
-#include "gssmraytracer/utils/Scene.h"
+#include "grayt/utils/Shader.h"
+#include "grayt/geometry/Point.h"
+#include "grayt/utils/Scene.h"
 
-#include "gssmraytracer/utils/Color.h"
+#include "grayt/utils/Color.h"
 
-namespace gssmraytracer {
+namespace grayt {
   namespace utils {
     class Shader::Impl {
     public:

@@ -2,6 +2,6 @@
 
 %{
 #define SWIG_FILE_WITH_INIT
-#include <gssmraytracer/utils/Ray.h>
+#include <grayt/utils/Ray.h>
 %}
-%include <gssmraytracer/utils/Ray.h>
+%include <grayt/utils/Ray.h>

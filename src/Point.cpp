@@ -1,5 +1,5 @@
-#include "gssmraytracer/geometry/Point.h"
-namespace gssmraytracer {
+#include "grayt/geometry/Point.h"
+namespace grayt {
   namespace geometry {
     class Point::Impl {
     public:
